@@ -31,7 +31,7 @@ export default async function Home() {
 
   return (
     <>
-      <Hero hero={home.hero} caption={home.foundation.closing} />
+      <Hero hero={home.hero} />
 
       {/* Trust strip */}
       <section aria-labelledby="trust-title" className="border-y border-line py-12 md:py-16">

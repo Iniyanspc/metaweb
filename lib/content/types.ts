@@ -256,7 +256,15 @@ export interface Cta {
 }
 
 export interface HomeContent {
-  hero: { headline: string; support: string; cta: Cta; images: { main: string; detail: string } };
+  hero: {
+    /** Full sentence, used where a single string is needed (OG image, metadata). */
+    headline: string;
+    /** The tagline as displayed, one line per entry. */
+    tagLines: string[];
+    support: string;
+    cta: Cta;
+    images: { main: string; detail: string };
+  };
   trust: { line: string };
   problem: { headline: string; lines: string[]; turn: string; image: string };
   capabilities: { headline: string; support: string };

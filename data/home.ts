@@ -8,7 +8,9 @@ if (!dataEngineering?.detail?.architecture) throw new Error("data-engineering ar
 
 export const home: HomeContent = {
   hero: {
-    headline: "Engineering the data and intelligence behind better businesses.",
+    // Client tagline (replaces the copy deck's "Engineering the data and intelligence behind better businesses.")
+    headline: "In data lies intelligence. In intelligence lies better business.",
+    tagLines: ["In data lies intelligence.", "In intelligence lies better business."],
     support:
       "Data platforms, AI systems and custom software for enterprises and governments. Built from the pipeline up, and run for the long term.",
     cta: {
