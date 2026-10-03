@@ -1,6 +1,6 @@
 import type { Insight } from "@/lib/content/types";
 import { cn } from "@/lib/cn";
-import { NodePattern } from "@/components/ui/NodePattern";
+import { Photo } from "@/components/ui/Photo";
 import { Card, CardLink } from "./Card";
 
 export function formatDate(iso: string) {
@@ -12,7 +12,7 @@ export function InsightCard({ insight, feature = false }: { insight: Insight; fe
   return (
     <Card href={href} padded={false} className={cn("h-full", feature && "md:grid md:grid-cols-2")}>
       <div className={cn("relative aspect-[16/9] overflow-hidden rounded-t-card", feature && "md:aspect-auto md:rounded-l-card md:rounded-tr-none")}>
-        <NodePattern seed={insight.slug} accent="ai" />
+        <Photo name={insight.image} alt="" sizes="(min-width: 1024px) 400px, 100vw" />
       </div>
       <div className={cn("flex flex-1 flex-col p-8", feature && "md:p-10")}>
         <p className="flex flex-wrap gap-x-3 text-caption text-muted">

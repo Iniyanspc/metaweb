@@ -3,6 +3,7 @@ import type { Capability } from "@/lib/content/types";
 export const capabilities: Capability[] = [
   {
     slug: "data-engineering",
+    image: "cap-data-engineering",
     name: "Data engineering",
     pillar: "data",
     featured: true,
@@ -54,6 +55,7 @@ export const capabilities: Capability[] = [
   },
   {
     slug: "ai",
+    image: "cap-ai-screen",
     name: "AI engineering",
     pillar: "ai",
     featured: true,
@@ -100,6 +102,7 @@ export const capabilities: Capability[] = [
   },
   {
     slug: "analytics",
+    image: "cap-analytics",
     name: "Data and analytics",
     pillar: "data",
     hasPage: true,
@@ -140,6 +143,7 @@ export const capabilities: Capability[] = [
   },
   {
     slug: "custom-products",
+    image: "cap-applications",
     name: "Application engineering",
     pillar: "business",
     hasPage: true,
@@ -180,6 +184,7 @@ export const capabilities: Capability[] = [
   },
   {
     slug: "business-transformation",
+    image: "cap-transformation",
     name: "Business transformation",
     pillar: "business",
     hasPage: false,
@@ -190,6 +195,7 @@ export const capabilities: Capability[] = [
   },
   {
     slug: "managed-engineering",
+    image: "cap-managed",
     name: "Managed engineering",
     pillar: "business",
     hasPage: false,

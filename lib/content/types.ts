@@ -61,6 +61,8 @@ export interface Capability {
   services: string[];
   technologies: string[]; // slugs in technology.ts
   cta: Link;
+  /** Photo key from lib/images.ts. */
+  image?: string;
   /** Wide card in the asymmetric capability grid. */
   featured?: boolean;
   /** Has its own /solutions/[slug] page. */
@@ -86,6 +88,8 @@ export interface Industry {
   slug: Slug;
   name: string;
   icon: string;
+  /** Photo key from lib/images.ts. */
+  image?: string;
   line: string;
   challenge: string;
   dataProblems: string[];
@@ -129,6 +133,8 @@ export interface CaseStudy {
   clientLogo?: Verified<Image>;
   industry: Slug;
   capabilities: Slug[];
+  /** Photo key from lib/images.ts. Never a photo implying it shows the client. */
+  image?: string;
   title: string;
   summary: string;
   challenge: string;
@@ -189,8 +195,8 @@ export interface Insight {
   author: Slug; // TeamMember.id
   publishedAt: string; // ISO
   readingMinutes: number; // computed at build
-  /** Optional; without one, cards render an abstract node pattern seeded from the slug. */
-  featuredImage?: Image;
+  /** Photo key from lib/images.ts. */
+  image?: string;
   featured?: boolean;
   sample?: boolean; // sample content — excluded from sitemap; hidden when HIDE_SAMPLE_CONTENT=1
 }
@@ -250,18 +256,18 @@ export interface Cta {
 }
 
 export interface HomeContent {
-  hero: { headline: string; support: string; cta: Cta; diagramDescription: string };
+  hero: { headline: string; support: string; cta: Cta; images: { main: string; detail: string } };
   trust: { line: string };
-  problem: { headline: string; lines: string[]; turn: string; support: string };
-  capabilities: { headline: string };
+  problem: { headline: string; lines: string[]; turn: string; image: string };
+  capabilities: { headline: string; support: string };
   foundation: {
     headline: string;
     support: string;
     flow: ArchitectureDiagram;
     closing: string[];
   };
-  ai: { headline: string; support: string; flow: string[]; services: string[]; cta: Link };
-  process: { headline: string; support: string; steps: { title: string; body: string }[] };
+  ai: { headline: string; support: string; flow: string[]; services: string[]; cta: Link; image: string };
+  process: { headline: string; support: string; steps: { title: string; body: string }[]; image: string };
   industries: { headline: string; support: string; cta: Link; otherCta: Link };
   products: { headline: string; support: string; empty: string };
   caseStudies: { headline: string; support: string; cta: Link; more: string };
@@ -276,12 +282,15 @@ export interface PageIntro {
   /** Optional multi-line title (three-beat headlines); overrides `title` visually. */
   titleLines?: string[];
   support: string;
+  /** Optional wide photo under the page hero (key from lib/images.ts). */
+  image?: string;
   seo: SeoFields;
 }
 
 export interface PagesContent {
   solutions: PageIntro & {
     pillars: { pillar: Pillar; heading: string; line: string; capabilities: Slug[] }[];
+    image: string;
     labels: { services: string };
   };
   solutionTemplate: {

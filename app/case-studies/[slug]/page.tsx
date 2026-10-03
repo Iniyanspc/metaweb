@@ -6,7 +6,8 @@ import { ArchitectureFlow } from "@/components/diagrams/ArchitectureFlow";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { Container } from "@/components/ui/Container";
 import { Link } from "@/components/ui/Link";
-import { NodePattern } from "@/components/ui/NodePattern";
+import { Reveal } from "@/components/motion/Reveal";
+import { Photo } from "@/components/ui/Photo";
 import { PageHero } from "@/components/ui/PageHero";
 import { PlaceholderText } from "@/components/ui/PlaceholderText";
 import { Tag } from "@/components/ui/Tag";
@@ -95,9 +96,9 @@ export default async function CaseStudyPage({ params }: PageProps<"/case-studies
       </PageHero>
 
       <Container>
-        <div className="relative aspect-[21/9] overflow-hidden rounded-media">
-          <NodePattern seed={study.slug} accent="data" />
-        </div>
+        <Reveal variant="image" className="relative aspect-[21/9] rounded-media">
+          <Photo name={study.image} alt="" sizes="(min-width: 1280px) 1280px, 100vw" priority />
+        </Reveal>
       </Container>
 
       <Container className="py-(--section-y)">

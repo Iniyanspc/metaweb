@@ -11,6 +11,7 @@ export const caseStudies: CaseStudy[] = [
     client: missing("[CLIENT NAME]"),
     clientLogo: missing("[CLIENT LOGO]"),
     industry: "healthcare",
+    image: "office-floor",
     capabilities: ["data-engineering", "ai"],
     title: "[CASE STUDY TITLE]",
     summary: "[ONE-SENTENCE SUMMARY]",

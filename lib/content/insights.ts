@@ -27,9 +27,7 @@ const frontmatter = z.object({
   publishedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}/),
   featured: z.boolean().optional(),
   sample: z.boolean().optional(),
-  featuredImage: z
-    .object({ src: z.string(), alt: z.string(), width: z.number(), height: z.number() })
-    .optional(),
+  image: z.string().optional(),
 });
 
 export interface InsightFile {

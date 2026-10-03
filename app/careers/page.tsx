@@ -22,6 +22,7 @@ export default async function CareersPage() {
   return (
     <>
       <PageHero
+        image={c.image}
         title={c.title}
         support={c.support}
         breadcrumbs={[
@@ -34,7 +35,7 @@ export default async function CareersPage() {
         </div>
       </PageHero>
 
-      <Section pillar="business" labelledBy="why-title" className="pt-0 md:pt-0">
+      <Section reveal pillar="business" labelledBy="why-title" className="pt-0 md:pt-0">
         <SectionHeader id="why-title" title={c.why.heading} />
         <ul className="grid gap-(--gutter) md:grid-cols-3">
           {c.why.points.map((p) => (
@@ -46,7 +47,7 @@ export default async function CareersPage() {
         </ul>
       </Section>
 
-      <Section pillar="data" tone="mist" labelledBy="culture-title">
+      <Section reveal pillar="data" tone="mist" labelledBy="culture-title">
         <div className="grid gap-12 md:grid-cols-2 md:gap-x-(--gutter)">
           <div>
             <h2 id="culture-title" className="text-h3">
@@ -67,12 +68,12 @@ export default async function CareersPage() {
         </div>
       </Section>
 
-      <Section pillar="business" labelledBy="hiring-title">
+      <Section reveal pillar="business" labelledBy="hiring-title">
         <SectionHeader id="hiring-title" title={c.hiring.heading} />
         <ProcessTimeline steps={c.hiring.steps} label={c.hiring.heading} compact />
       </Section>
 
-      <Section pillar="business" tone="mist" labelledBy="benefits-title">
+      <Section reveal pillar="business" tone="mist" labelledBy="benefits-title">
         <h2 id="benefits-title" className="text-h3">
           {c.benefits.heading}
         </h2>
@@ -85,7 +86,7 @@ export default async function CareersPage() {
         </ul>
       </Section>
 
-      <Section id="roles" pillar="business" labelledBy="roles-title" className="scroll-mt-(--nav-height)">
+      <Section reveal id="roles" pillar="business" labelledBy="roles-title" className="scroll-mt-(--nav-height)">
         <SectionHeader id="roles-title" title={c.roles.heading} />
         {roles.length === 0 ? (
           <p className="text-body-lg">

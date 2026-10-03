@@ -3,6 +3,7 @@ import type { Industry } from "@/lib/content/types";
 export const industries: Industry[] = [
   {
     slug: "education",
+    image: "industry-education",
     name: "Education",
     icon: "graduation",
     hasPage: true,
@@ -14,6 +15,7 @@ export const industries: Industry[] = [
   },
   {
     slug: "healthcare",
+    image: "industry-healthcare",
     name: "Healthcare",
     icon: "heart-pulse",
     hasPage: true,
@@ -25,6 +27,7 @@ export const industries: Industry[] = [
   },
   {
     slug: "logistics",
+    image: "industry-logistics",
     name: "Logistics and supply chain",
     icon: "truck",
     hasPage: true,
@@ -36,6 +39,7 @@ export const industries: Industry[] = [
   },
   {
     slug: "hr-workforce",
+    image: "industry-hr",
     name: "HR and workforce",
     icon: "people",
     hasPage: true,
@@ -47,6 +51,7 @@ export const industries: Industry[] = [
   },
   {
     slug: "custom",
+    image: "industry-custom",
     name: "Custom enterprise solutions",
     icon: "building",
     hasPage: false,

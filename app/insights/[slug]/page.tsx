@@ -7,7 +7,8 @@ import { mdxComponents } from "@/components/mdx/MdxComponents";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Container } from "@/components/ui/Container";
-import { NodePattern } from "@/components/ui/NodePattern";
+import { Reveal } from "@/components/motion/Reveal";
+import { Photo } from "@/components/ui/Photo";
 import { VerifiedText } from "@/components/ui/Placeholder";
 import { getInsight, getInsights, getPages, getTeamMember } from "@/lib/content";
 import { absoluteUrl, pageMetadata } from "@/lib/seo";
@@ -76,9 +77,7 @@ export default async function InsightPage({ params }: PageProps<"/insights/[slug
             <p className="mt-6 text-body-lg text-muted">{meta.excerpt}</p>
             {author && (
               <p className="mt-8 flex items-center gap-3 text-small">
-                <span className="relative block size-10 overflow-hidden rounded-full">
-                  <NodePattern seed={author.id} accent="business" />
-                </span>
+                <span aria-hidden className="block size-10 rounded-full bg-mist" />
                 <span>
                   <span className="sr-only">{labels.by} </span>
                   <VerifiedText field={author.name} />
@@ -89,9 +88,9 @@ export default async function InsightPage({ params }: PageProps<"/insights/[slug
               </p>
             )}
           </header>
-          <div className="relative mx-auto mt-12 aspect-[21/9] max-w-5xl overflow-hidden rounded-media">
-            <NodePattern seed={meta.slug} accent="ai" />
-          </div>
+          <Reveal variant="image" className="relative mx-auto mt-12 aspect-[21/9] max-w-5xl rounded-media">
+            <Photo name={meta.image} sizes="(min-width: 1024px) 1024px, 100vw" priority />
+          </Reveal>
           <div className="prose-md mx-auto max-w-[68ch] py-16 md:py-20">{content}</div>
         </Container>
       </article>

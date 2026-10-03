@@ -1,8 +1,7 @@
 /**
  * metadatum mark + lockups.
  *
- * MARK_GEOMETRY is the single source of truth for node positions. NetworkHero
- * imports it, so the hero diagram and the logo can never drift apart.
+ * MARK_GEOMETRY is the single source of truth for the mark's node positions.
  *
  * Geometry is taken from the official neuron-compact vectors
  * (icon_primary.svg, and favicon_small.svg for the small-size variant).
@@ -21,7 +20,7 @@ export interface MarkNode {
   /** Radius in the small-size icon, where it differs. */
   rSmall?: number;
   role: NodeRole;
-  /** Label used by NetworkHero; ignored by the static logo. */
+  /** What the node stands for (data source, model, outcome); not rendered by the logo. */
   label: string;
 }
 

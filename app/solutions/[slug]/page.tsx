@@ -52,6 +52,7 @@ export default async function SolutionPage({ params }: PageProps<"/solutions/[sl
         }}
       />
       <PageHero
+        image={c.image}
         title={d?.headline ?? c.name}
         support={d?.support ?? c.line}
         pillar={c.pillar}
@@ -62,7 +63,7 @@ export default async function SolutionPage({ params }: PageProps<"/solutions/[sl
       />
 
       {d && (
-        <Section pillar={c.pillar} labelledBy="build-title" className="pt-0 md:pt-0">
+        <Section reveal pillar={c.pillar} labelledBy="build-title" className="pt-0 md:pt-0">
           <SectionHeader id="build-title" title={t.whatWeBuild} />
           <ul className="grid gap-(--gutter) md:grid-cols-2">
             {d.whatWeBuild.map((item) => (
@@ -76,14 +77,14 @@ export default async function SolutionPage({ params }: PageProps<"/solutions/[sl
       )}
 
       {d?.architecture && (
-        <Section id="architecture" pillar="bridge" tone="mist" labelledBy="arch-title" className="scroll-mt-(--nav-height)">
+        <Section reveal id="architecture" pillar="bridge" tone="mist" labelledBy="arch-title" className="scroll-mt-(--nav-height)">
           <SectionHeader id="arch-title" title={t.architecture} />
           <ArchitectureFlow nodes={flowNodes(d.architecture, technologies)} label={`${c.name} architecture`} />
         </Section>
       )}
 
       {d && (
-        <Section pillar="business" labelledBy="engage-title">
+        <Section reveal pillar="business" labelledBy="engage-title">
           <div className="grid gap-12 lg:grid-cols-12 lg:gap-x-(--gutter)">
             <div className="lg:col-span-7">
               <SectionHeader id="engage-title" title={t.engagements} className="mb-8 md:mb-10" />
@@ -117,7 +118,7 @@ export default async function SolutionPage({ params }: PageProps<"/solutions/[sl
         </Section>
       )}
 
-      <Section pillar="business" tone="mist" labelledBy="related-title">
+      <Section reveal pillar="business" tone="mist" labelledBy="related-title">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-x-(--gutter)">
           <div className="lg:col-span-4">
             <h2 className="text-h3">{t.industries}</h2>

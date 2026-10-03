@@ -23,9 +23,9 @@ export default async function AboutPage() {
 
   return (
     <>
-      <PageHero title={a.title} support={a.support} breadcrumbs={[{ label: "About", href: "/about" }]} />
+      <PageHero image={a.image} title={a.title} support={a.support} breadcrumbs={[{ label: "About", href: "/about" }]} />
 
-      <Section pillar="business" labelledBy="who-title" className="pt-0 md:pt-0">
+      <Section reveal pillar="business" labelledBy="who-title" className="pt-0 md:pt-0">
         <div className="grid gap-8 border-t border-line pt-12 lg:grid-cols-12 lg:gap-x-(--gutter)">
           <h2 id="who-title" className="text-h3 lg:col-span-4">
             {a.whoWeAre.heading}
@@ -38,7 +38,7 @@ export default async function AboutPage() {
         </div>
       </Section>
 
-      <Section pillar="bridge" tone="mist" labelledBy="beliefs-title">
+      <Section reveal pillar="bridge" tone="mist" labelledBy="beliefs-title">
         <h2 id="beliefs-title" className="text-caption text-muted">
           {a.beliefs.heading}
         </h2>
@@ -57,12 +57,12 @@ export default async function AboutPage() {
         </div>
       </Section>
 
-      <Section pillar="business" labelledBy="approach-title">
+      <Section reveal pillar="business" labelledBy="approach-title">
         <SectionHeader id="approach-title" title={a.approach.heading} support={a.approach.support} />
         <ProcessTimeline steps={home.process.steps} label={a.approach.heading} />
       </Section>
 
-      <Section pillar="data" tone="mist" labelledBy="philosophy-title">
+      <Section reveal pillar="data" tone="mist" labelledBy="philosophy-title">
         <SectionHeader id="philosophy-title" title={a.philosophy.heading} />
         <ul className="grid gap-(--gutter) sm:grid-cols-2 lg:grid-cols-4">
           {a.philosophy.points.map((p) => (
@@ -74,7 +74,7 @@ export default async function AboutPage() {
         </ul>
       </Section>
 
-      <Section pillar="business" labelledBy="timeline-title">
+      <Section reveal pillar="business" labelledBy="timeline-title">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-x-(--gutter)">
           <div className="lg:col-span-7">
             <h2 id="timeline-title" className="text-h2">
@@ -109,7 +109,7 @@ export default async function AboutPage() {
         </div>
       </Section>
 
-      <Section pillar="business" tone="mist" labelledBy="culture-title">
+      <Section reveal pillar="business" tone="mist" labelledBy="culture-title">
         <SectionHeader id="culture-title" title={a.culture.heading} />
         <ul className="grid gap-(--gutter) md:grid-cols-3">
           {a.culture.points.map((p) => (
@@ -121,7 +121,7 @@ export default async function AboutPage() {
         </ul>
       </Section>
 
-      <Section pillar="business" labelledBy="leaders-title">
+      <Section reveal pillar="business" labelledBy="leaders-title">
         <SectionHeader
           id="leaders-title"
           title={a.leadership.heading}

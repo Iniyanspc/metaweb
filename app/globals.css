@@ -226,3 +226,34 @@
   }
   .prose-md .table-wrap { overflow-x: auto; }
 }
+
+/* ---------- Scroll reveals ----------
+   Hidden start states apply only when scripting is on and motion is allowed,
+   so content is never stranded invisible. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .reveal {
+    transition:
+      opacity 700ms var(--ease-out) var(--reveal-delay, 0ms),
+      transform 900ms var(--ease-out) var(--reveal-delay, 0ms),
+      clip-path 1100ms var(--ease-out) var(--reveal-delay, 0ms);
+  }
+  .reveal:not([data-shown]) { opacity: 0; }
+  .reveal[data-reveal="up"]:not([data-shown]) { transform: translateY(28px); }
+  .reveal[data-reveal="left"]:not([data-shown]) { transform: translateX(-32px); }
+  .reveal[data-reveal="right"]:not([data-shown]) { transform: translateX(32px); }
+  .reveal[data-reveal="scale"]:not([data-shown]) { transform: scale(0.96); }
+
+  /* Image: the frame opens from the bottom while the photo settles from a zoom.
+     The clip sits on the frame's children: an observed element clipped to
+     nothing would never count as visible. */
+  .reveal[data-reveal="image"] { opacity: 1; overflow: hidden; }
+  .reveal[data-reveal="image"] > * {
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 1100ms var(--ease-out) var(--reveal-delay, 0ms);
+  }
+  .reveal[data-reveal="image"]:not([data-shown]) > * { clip-path: inset(100% 0 0 0); }
+  .reveal[data-reveal="image"] img {
+    transition: transform 1400ms var(--ease-out) var(--reveal-delay, 0ms);
+  }
+  .reveal[data-reveal="image"]:not([data-shown]) img { transform: scale(1.12); }
+}

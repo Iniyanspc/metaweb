@@ -1,5 +1,4 @@
 import type { TeamMember } from "@/lib/content/types";
-import { NodePattern } from "@/components/ui/NodePattern";
 import { VerifiedText } from "@/components/ui/Placeholder";
 import { Link } from "@/components/ui/Link";
 
@@ -11,7 +10,9 @@ export function TeamMemberCard({ member, showBio = false }: { member: TeamMember
           // eslint-disable-next-line @next/next/no-img-element -- swap to next/image once real portraits exist
           <img src={member.portrait.value.src} alt="" width={member.portrait.value.width} height={member.portrait.value.height} className="size-full object-cover" />
         ) : (
-          <NodePattern seed={member.id} accent="business" />
+          <span className="absolute inset-0 flex items-end bg-mist p-4">
+            <span className="placeholder text-caption">{member.portrait.placeholder}</span>
+          </span>
         )}
       </div>
       <h3 className="mt-5 text-h4 font-semibold">

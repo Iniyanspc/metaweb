@@ -1,6 +1,6 @@
 import type { CaseStudy, Industry } from "@/lib/content/types";
 import { cn } from "@/lib/cn";
-import { NodePattern } from "@/components/ui/NodePattern";
+import { Photo } from "@/components/ui/Photo";
 import { VerifiedText } from "@/components/ui/Placeholder";
 import { PlaceholderText } from "@/components/ui/PlaceholderText";
 import { Card, CardLink } from "./Card";
@@ -27,7 +27,7 @@ export function CaseStudyCard({
     <Card href={href} padded={!feature} className={cn("h-full", feature && "md:grid md:grid-cols-[5fr_7fr]")}>
       {feature && (
         <div className="relative aspect-[4/3] overflow-hidden rounded-t-card md:aspect-auto md:min-h-80 md:rounded-l-card md:rounded-tr-none">
-          <NodePattern seed={study.slug} accent="data" />
+          <Photo name={study.image} alt="" sizes="(min-width: 768px) 40vw, 100vw" />
         </div>
       )}
       <div className={cn("flex flex-1 flex-col", feature && "p-8 md:p-10")}>

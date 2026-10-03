@@ -15,23 +15,24 @@ export const home: HomeContent = {
       primary: { label: "Talk to our team", href: "/contact" },
       secondary: { label: "Explore our capabilities", href: "#capabilities" },
     },
-    diagramDescription:
-      "Diagram of the metadatum mark as a system. Data from ERP, CRM, documents, sensors and APIs flows into a central platform, where it is checked for quality and governance, becomes models, knowledge and search, and leaves as decisions, actions and outcomes.",
+    images: { main: "office-open", detail: "hero-code" },
   },
   trust: { line: "Trusted by teams building what comes next." },
   problem: {
     headline: "Data everywhere. Answers nowhere.",
+    // Trimmed from the copy deck's five lines to keep the section light.
     lines: [
       "Your data lives in a dozen systems that don't talk to each other.",
-      "Pipelines work until the day they quietly don't.",
       "Business teams wait days for numbers that should take minutes.",
       "AI pilots stall because the data underneath isn't ready.",
-      "Custom tools drift away from the processes they were built for.",
     ],
     turn: "We connect the pieces.",
-    support: "Data, systems, people, processes and AI, engineered into one foundation your business can build on.",
+    image: "problem-cables",
   },
-  capabilities: { headline: "Six ways we work. One foundation underneath." },
+  capabilities: {
+    headline: "Six ways we work. One foundation underneath.",
+    support: "Pick one, or bring us the whole problem.",
+  },
   foundation: {
     headline: "The foundation is data.",
     support:
@@ -44,17 +45,9 @@ export const home: HomeContent = {
     support:
       "Most AI projects don't fail at the model. They fail at the data. We build both, so what your AI says is grounded in what your business knows.",
     flow: ["Enterprise data", "Knowledge", "Models", "AI applications", "Business actions"],
-    services: [
-      "Generative AI applications",
-      "AI agents",
-      "Document intelligence",
-      "Enterprise search",
-      "Retrieval-augmented applications",
-      "AI copilots",
-      "Workflow automation",
-      "Predictive models",
-    ],
+    services: ["AI agents", "Document intelligence", "Enterprise search", "AI copilots"],
     cta: { label: "See AI engineering", href: "/solutions/ai" },
+    image: "cap-ai",
   },
   process: {
     headline: "From business problem to working product.",
@@ -68,6 +61,7 @@ export const home: HomeContent = {
       { title: "Deploy", body: "Release with monitoring, documentation and handover." },
       { title: "Scale", body: "Operate, measure and improve as usage grows." },
     ],
+    image: "process-whiteboard",
   },
   industries: {
     headline: "Domain knowledge, engineered.",

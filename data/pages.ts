@@ -12,6 +12,7 @@ export const pages: PagesContent = {
     titleLines: ["Data is infrastructure.", "AI is intelligence.", "Business is the outcome."], // copy deck
     support:
       "Three disciplines, one team, one architecture. We take you from business problem to running system without handing you between vendors.", // copy deck
+    image: "hero-team",
     seo: {
       title: "Solutions",
       description:
@@ -53,6 +54,7 @@ export const pages: PagesContent = {
   industries: {
     title: "Domain knowledge, engineered.", // copy deck
     support: "We work where complex data meets complex operations.", // copy deck
+    image: "library-old",
     seo: {
       title: "Industries",
       description:
@@ -105,6 +107,7 @@ export const pages: PagesContent = {
   about: {
     title: "We engineer the data and intelligence behind better businesses.", // copy deck
     support: "An engineering company whose foundation is data.",
+    image: "office-floor",
     seo: {
       title: "About",
       description:
@@ -196,6 +199,7 @@ export const pages: PagesContent = {
   careers: {
     title: "Build the systems other systems depend on.", // copy deck
     support: "We hire engineers who care about correctness, clarity and the people who'll use what they build.", // copy deck
+    image: "hero-code",
     seo: {
       title: "Careers",
       description: "Join metadatum to build data platforms, AI systems and software that organisations depend on every day.",

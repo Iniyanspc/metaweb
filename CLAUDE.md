@@ -59,3 +59,9 @@ Technology names (e.g. Databricks, Azure, PySpark, Power BI) may appear as *tech
 - Hero labels on the compact mark: 4 pink spokes (ERP, CRM, Documents, Sensors and IoT), 2 violet spokes (Models, Knowledge), sticks Quality → APIs and Governance → Search, chain Decisions → Actions → Outcomes.
 - The internal styleguide lives at `app/%5Fstyleguide` (folders starting with `_` are private in the App Router).
 - Industries mega-menu lists the four industries plus "Custom enterprise solutions" (five rows), then "Other industries".
+- **Redesign (2026-10-03, at the client's request) overrides docs/02 where they conflict:**
+  - No network hero and no abstract node artwork. The logo appears in the navbar and footer only.
+  - Real photography (Unsplash, registry in `lib/images.ts`, credits in `assets/images/CREDITS.md`) is used across the site. Never use photos of people to represent the metadatum team or clients; team portraits stay as placeholders until real ones arrive.
+  - Scroll motion is allowed: `Reveal` (fade/slide/image clip on scroll-in), `Parallax`/`ParallaxPhoto` (layered drift), sticky process column, header that hides on scroll down. All of it is off under reduced motion and invisible-safe without JavaScript.
+  - Keep copy short: headline, one line, a visual. Homepage sections: hero, trust strip, problem, capabilities, foundation, AI, process, industries, case study, final CTA.
+  - **"The foundation is data" section is approved as-is. Do not change it.**

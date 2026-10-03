@@ -29,6 +29,7 @@ export default async function IndustryPage({ params }: PageProps<"/industries/[s
   return (
     <>
       <PageHero
+        image={industry.image}
         title={industry.name}
         support={industry.line}
         breadcrumbs={[
@@ -39,7 +40,7 @@ export default async function IndustryPage({ params }: PageProps<"/industries/[s
         {isIconName(industry.icon) && <Icon name={industry.icon} size={32} className="order-first" />}
       </PageHero>
 
-      <Section pillar="business" labelledBy="challenge-title" className="pt-0 md:pt-0">
+      <Section reveal pillar="business" labelledBy="challenge-title" className="pt-0 md:pt-0">
         <div className="grid gap-6 border-t border-line pt-12 lg:grid-cols-12 lg:gap-x-(--gutter)">
           <h2 id="challenge-title" className="text-h3 lg:col-span-4">
             {t.challenge}
@@ -48,7 +49,7 @@ export default async function IndustryPage({ params }: PageProps<"/industries/[s
         </div>
       </Section>
 
-      <Section pillar="data" tone="mist" labelledBy="problems-title">
+      <Section reveal pillar="data" tone="mist" labelledBy="problems-title">
         <div className="grid gap-12 md:grid-cols-2 md:gap-x-(--gutter)">
           <div>
             <Node pillar="data" size={14} />
@@ -77,7 +78,7 @@ export default async function IndustryPage({ params }: PageProps<"/industries/[s
         </div>
       </Section>
 
-      <Section pillar="business" labelledBy="solutions-title">
+      <Section reveal pillar="business" labelledBy="solutions-title">
         <h2 id="solutions-title" className="text-h2">
           {t.solutions}
         </h2>
@@ -91,7 +92,7 @@ export default async function IndustryPage({ params }: PageProps<"/industries/[s
         </ul>
       </Section>
 
-      <Section pillar="business" tone="mist" labelledBy="cases-title">
+      <Section reveal pillar="business" tone="mist" labelledBy="cases-title">
         <h2 id="cases-title" className="text-h2">
           {t.caseStudies}
         </h2>

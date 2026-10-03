@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { Pillar } from "@/lib/content/types";
 import { cn } from "@/lib/cn";
+import { Reveal } from "@/components/motion/Reveal";
 import { Container } from "./Container";
 import { Node } from "./Node";
 
@@ -23,6 +24,7 @@ export function Section({
   pillar,
   tone = "canvas",
   axon = false,
+  reveal = false,
   className,
   children,
 }: {
@@ -33,6 +35,8 @@ export function Section({
   tone?: SectionTone;
   /** Sit on the homepage axon. "start" and "end" cap the line at this section's node. */
   axon?: boolean | "start" | "end";
+  /** Fade the section's content up as it scrolls into view. */
+  reveal?: boolean;
   className?: string;
   children: ReactNode;
 }) {
@@ -62,6 +66,8 @@ export function Section({
             </div>
             <div className="lg:col-span-11">{children}</div>
           </div>
+        ) : reveal ? (
+          <Reveal>{children}</Reveal>
         ) : (
           children
         )}

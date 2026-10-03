@@ -1,5 +1,4 @@
 import type { Product, ProductStatus } from "@/lib/content/types";
-import { NodePattern } from "@/components/ui/NodePattern";
 import { VerifiedText } from "@/components/ui/Placeholder";
 import { Tag } from "@/components/ui/Tag";
 import { Card, CardLink } from "./Card";
@@ -20,9 +19,8 @@ export function ProductCard({ product }: { product: Product }) {
           // eslint-disable-next-line @next/next/no-img-element -- replaced by next/image once real screenshots exist
           <img src={shot.value.src} alt={shot.value.alt} width={shot.value.width} height={shot.value.height} className="size-full object-cover" />
         ) : (
-          <div className="relative size-full">
-            <NodePattern seed={product.slug} accent="business" />
-            <span className="placeholder absolute bottom-3 left-3 text-caption">{shot?.verified === false ? shot.placeholder : "[SCREENSHOT]"}</span>
+          <div className="flex size-full items-center justify-center bg-mist">
+            <span className="placeholder text-caption">{shot?.verified === false ? shot.placeholder : "[SCREENSHOT]"}</span>
           </div>
         )}
       </div>
