@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import type { HomeContent } from "@/lib/content/types";
 
 /* A knowledge-graph view drawn like a product visualisation, flowing left to
-   right: sources, then the intelligence layer, then outcomes. */
+   right: sources, then the intelligence layer, then outcomes. Pulses change
+   colour as data becomes intelligence and then an outcome. */
 
 type Kind = "data" | "intel" | "hub" | "outcome" | "minor";
 interface GNode {
@@ -53,25 +54,56 @@ const EDGES: [string, string][] = [
   ["orders", "forecast"],
 ];
 
-/* Routes the pulses travel, source to outcome. */
+/* Routes the pulses travel. Every route passes through the Knowledge hub. */
 const ROUTES: { path: string[]; dur: number; begin: number }[] = [
   { path: ["erp", "customers", "hub", "forecast"], dur: 3.6, begin: 0 },
   { path: ["sensors", "m2", "hub", "alerts"], dur: 3.2, begin: 1.1 },
   { path: ["docs", "contracts", "hub", "decisions"], dur: 3.8, begin: 2.0 },
-  { path: ["crm", "customers", "orders", "forecast"], dur: 3.4, begin: 2.8 },
+  { path: ["crm", "customers", "hub", "m5", "decisions"], dur: 3.8, begin: 2.8 },
   { path: ["apis", "m3", "assets", "hub", "alerts"], dur: 4.2, begin: 0.6 },
 ];
 
 const at = (id: string) => NODES.find((n) => n.id === id)!;
-/* Black and white only: groups differ by tone and shape, not colour. */
+
+/* Brand palette on black: pink = data, lilac (violet on dark) = intelligence,
+   white = outcomes (ink's role on dark), soma gradient = the hub.
+   SMIL animations can't read CSS variables, so the pulse colours are literal. */
+const PINK = "#F7147F";
+const LILAC = "#D9A6F0";
+const WHITE = "#FFFFFF";
+
 const FILL: Record<Kind, string> = {
-  data: "var(--color-canvas)",
-  intel: "#8c8c8c",
-  hub: "var(--color-canvas)",
+  data: "var(--color-pink)",
+  intel: "var(--color-lilac)",
+  hub: "url(#graph-soma)",
   outcome: "var(--color-ink)",
   minor: "var(--color-canvas)",
 };
+const EDGE: Record<Kind, string> = {
+  data: "var(--color-pink)",
+  intel: "var(--color-lilac)",
+  hub: "var(--color-lilac)",
+  outcome: "var(--color-canvas)",
+  minor: "var(--color-canvas)",
+};
 const RADIUS: Record<Kind, number> = { data: 6, intel: 5, hub: 9, outcome: 6, minor: 2.2 };
+
+/** Path data, total length, and the share of the trip completed on reaching the hub. */
+function measure(path: string[]) {
+  const pts = path.map(at);
+  let total = 0;
+  let toHub = 0;
+  pts.forEach((p, i) => {
+    if (i === 0) return;
+    total += Math.hypot(p.x - pts[i - 1].x, p.y - pts[i - 1].y);
+    if (p.id === "hub") toHub = total;
+  });
+  const d = "M" + pts.map((p) => `${p.x} ${p.y}`).join(" L");
+  return { d, total, hubAt: toHub / total, end: pts[pts.length - 1] };
+}
+
+const ARRIVE = 0.96;
+const f = (n: number) => n.toFixed(3);
 
 export function NetworkGraphCard({ graph }: { graph: HomeContent["hero"]["graph"] }) {
   // Pulses run only when motion is welcome; SMIL ignores CSS media queries.
@@ -83,39 +115,80 @@ export function NetworkGraphCard({ graph }: { graph: HomeContent["hero"]["graph"
     mq.addEventListener("change", sync);
     return () => mq.removeEventListener("change", sync);
   }, []);
+  const hub = at("hub");
 
   return (
     <figure className="relative h-full overflow-hidden rounded-media bg-ink text-canvas">
       <figcaption className="absolute inset-x-5 top-4 z-10 flex items-center justify-between text-caption text-canvas/70">
         <span>{graph.caption}</span>
         <span aria-hidden className="flex gap-1">
-          <span className="size-1.5 rounded-full bg-canvas/30" />
-          <span className="size-1.5 rounded-full bg-canvas/30" />
-          <span className="size-1.5 rounded-full bg-canvas/30" />
+          <span className="size-1.5 rounded-full bg-pink" />
+          <span className="size-1.5 rounded-full bg-lilac" />
+          <span className="size-1.5 rounded-full bg-canvas" />
         </span>
       </figcaption>
 
       <svg viewBox="0 0 480 270" preserveAspectRatio="xMidYMid meet" className="absolute inset-0 block size-full" role="img" aria-label={graph.description}>
-        <g stroke="var(--color-canvas)" strokeOpacity={0.2} strokeWidth={1}>
+        <defs>
+          <linearGradient id="graph-soma" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="var(--color-soma-from)" />
+            <stop offset="1" stopColor="var(--color-soma-to)" />
+          </linearGradient>
+        </defs>
+
+        <g strokeOpacity={0.28} strokeWidth={1}>
           {EDGES.map(([a, b]) => {
             const p = at(a);
             const q = at(b);
-            return <line key={`${a}-${b}`} x1={p.x} y1={p.y} x2={q.x} y2={q.y} />;
+            return <line key={`${a}-${b}`} x1={p.x} y1={p.y} x2={q.x} y2={q.y} stroke={EDGE[p.kind]} />;
           })}
         </g>
 
         {animate &&
           ROUTES.map((r, i) => {
-            const d = "M" + r.path.map((id) => `${at(id).x} ${at(id).y}`).join(" L");
+            const { d, total, hubAt, end } = measure(r.path);
+            const dur = `${r.dur}s`;
+            const begin = `${r.begin}s`;
+            // Pink until the hub, lilac until the outcome, white on arrival.
+            const colourTimes = `0;${f(hubAt)};${ARRIVE}`;
+            const colours = `${PINK};${LILAC};${WHITE}`;
             return (
               <g key={i}>
-                <path d={d} fill="none" stroke="var(--color-canvas)" strokeOpacity={0.6} strokeWidth={1.4} strokeDasharray="14 600" strokeDashoffset={14}>
-                  <animate attributeName="stroke-dashoffset" from="14" to="-600" dur={`${r.dur}s`} begin={`${r.begin}s`} repeatCount="indefinite" />
+                {/* A short trail moving with the pulse (both at constant speed, so they stay together). */}
+                <path d={d} fill="none" stroke={PINK} strokeOpacity={0.7} strokeWidth={1.6} strokeLinecap="round" strokeDasharray={`16 ${Math.ceil(total) + 40}`} strokeDashoffset={16} opacity={0}>
+                  <set attributeName="opacity" to="1" begin={begin} />
+                  <animate attributeName="stroke-dashoffset" from="16" to={`${-Math.ceil(total)}`} dur={dur} begin={begin} repeatCount="indefinite" />
+                  <animate attributeName="stroke" values={colours} keyTimes={colourTimes} calcMode="discrete" dur={dur} begin={begin} repeatCount="indefinite" />
                 </path>
                 {/* Hidden until its first run, or it would sit at the SVG origin. */}
-                <circle r={2.6} fill="var(--color-canvas)" opacity={0}>
-                  <set attributeName="opacity" to="1" begin={`${r.begin}s`} />
-                  <animateMotion path={d} dur={`${r.dur}s`} begin={`${r.begin}s`} repeatCount="indefinite" keyTimes="0;1" keySplines="0.4 0 0.2 1" calcMode="spline" />
+                <circle r={3} fill={PINK} opacity={0}>
+                  <set attributeName="opacity" to="1" begin={begin} />
+                  <animateMotion path={d} dur={dur} begin={begin} repeatCount="indefinite" calcMode="paced" />
+                  <animate attributeName="fill" values={colours} keyTimes={colourTimes} calcMode="discrete" dur={dur} begin={begin} repeatCount="indefinite" />
+                </circle>
+                {/* The hub flashes lilac as the pulse passes through it. */}
+                <circle cx={hub.x} cy={hub.y} r={12} fill="none" stroke={LILAC} strokeWidth={1.5} opacity={0}>
+                  <animate
+                    attributeName="opacity"
+                    values="0;0;0.9;0;0"
+                    keyTimes={`0;${f(hubAt - 0.02)};${f(hubAt)};${f(Math.min(hubAt + 0.12, 0.99))};1`}
+                    dur={dur}
+                    begin={begin}
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="r"
+                    values="12;12;12;24;24"
+                    keyTimes={`0;${f(hubAt - 0.02)};${f(hubAt)};${f(Math.min(hubAt + 0.12, 0.99))};1`}
+                    dur={dur}
+                    begin={begin}
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                {/* The outcome rings out white on arrival. */}
+                <circle cx={end.x} cy={end.y} r={7} fill="none" stroke={WHITE} strokeWidth={1.5} opacity={0}>
+                  <animate attributeName="opacity" values="0;0;0.9;0" keyTimes={`0;${ARRIVE - 0.01};${ARRIVE + 0.01};1`} dur={dur} begin={begin} repeatCount="indefinite" />
+                  <animate attributeName="r" values="7;7;8;20" keyTimes={`0;${ARRIVE - 0.01};${ARRIVE + 0.01};1`} dur={dur} begin={begin} repeatCount="indefinite" />
                 </circle>
               </g>
             );
@@ -124,7 +197,7 @@ export function NetworkGraphCard({ graph }: { graph: HomeContent["hero"]["graph"
         {NODES.map((n) => (
           <g key={n.id}>
             {n.kind === "hub" && (
-              <circle cx={n.x} cy={n.y} r={16} fill="none" stroke="var(--color-canvas)" strokeOpacity={0.4}>
+              <circle cx={n.x} cy={n.y} r={16} fill="none" stroke="var(--color-lilac)" strokeOpacity={0.45}>
                 {animate && <animate attributeName="r" values="14;19;14" dur="3.2s" repeatCount="indefinite" />}
               </circle>
             )}
@@ -134,7 +207,7 @@ export function NetworkGraphCard({ graph }: { graph: HomeContent["hero"]["graph"
               r={RADIUS[n.kind]}
               fill={FILL[n.kind]}
               fillOpacity={n.kind === "minor" ? 0.45 : 1}
-              // Outcomes are hollow white rings, the end of the line.
+              // Outcomes are white rings: where the line ends.
               {...(n.kind === "outcome" ? { stroke: "var(--color-canvas)", strokeWidth: 2 } : {})}
             />
             {n.label && (
@@ -157,11 +230,11 @@ export function NetworkGraphCard({ graph }: { graph: HomeContent["hero"]["graph"
 
       <ul aria-hidden className="absolute bottom-4 left-5 z-10 flex flex-wrap gap-x-4 gap-y-1 text-caption text-canvas/70">
         <li className="flex items-center gap-1.5">
-          <span className="size-2 rounded-full bg-canvas" />
+          <span className="size-2 rounded-full bg-pink" />
           {graph.legend.data}
         </li>
         <li className="flex items-center gap-1.5">
-          <span className="size-2 rounded-full bg-[#8c8c8c]" />
+          <span className="size-2 rounded-full bg-lilac" />
           {graph.legend.intelligence}
         </li>
         <li className="flex items-center gap-1.5">

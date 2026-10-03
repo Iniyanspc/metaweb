@@ -9,7 +9,8 @@ import { NetworkGraphCard } from "./NetworkGraphCard";
 
 /**
  * Homepage opening: the mark beside the tagline, the description and actions
- * below, then the office photo with a live knowledge-graph card beside it.
+ * below, then the office photo with a live knowledge-graph card overlapping
+ * its lower right corner, each drifting at its own speed.
  */
 export function Hero({ hero }: { hero: HomeContent["hero"] }) {
   return (
@@ -47,20 +48,19 @@ export function Hero({ hero }: { hero: HomeContent["hero"] }) {
           </div>
         </div>
 
-        {/* Photo and graph side by side: the graph never covers the photo. They drift at different speeds. */}
-        <div className="mt-12 grid gap-(--gutter) md:mt-16 lg:grid-cols-12 lg:items-stretch">
+        {/* The graph card overlaps the photo's lower right (empty desks), leaving the people in view, and moves faster than the photo. */}
+        <div className="relative mt-12 md:mt-16 lg:mb-28">
           <ParallaxPhoto
             name={hero.images.main}
             priority
             speed={50}
             delay={250}
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            className="aspect-[16/9] lg:col-span-6"
-            // Frame low so the people at the table stay in view.
+            sizes="(min-width: 1280px) 1280px, 100vw"
+            className="aspect-[4/3] md:aspect-[16/9] lg:aspect-[21/9]"
             imageClassName="object-[45%_75%]"
           />
-          <Parallax speed={-24} className="lg:col-span-6">
-            <Reveal variant="scale" delay={450} className="aspect-[16/9] rounded-media">
+          <Parallax speed={-70} className="mt-(--gutter) lg:absolute lg:right-[2%] lg:-bottom-28 lg:mt-0 lg:w-[36%]">
+            <Reveal variant="scale" delay={550} className="aspect-[16/9] rounded-media lg:shadow-[0_24px_48px_-24px_rgb(0_0_0/0.5)] lg:ring-8 lg:ring-canvas">
               <NetworkGraphCard graph={hero.graph} />
             </Reveal>
           </Parallax>
