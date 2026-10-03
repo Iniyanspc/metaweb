@@ -3,135 +3,157 @@
 import { useEffect, useState } from "react";
 import type { HomeContent } from "@/lib/content/types";
 
-/* A knowledge graph on a symmetric grid, mirrored top to bottom around the
-   Knowledge hub: five sources, a diamond of four intelligence nodes, three
-   outcomes. Pulses change colour as data becomes intelligence, then an outcome. */
+/* The knowledge graph as an infinity loop. Sources sit on the left lobe,
+   outcomes on the right, the intelligence layer on the four arms, and
+   Knowledge at the crossing. Pulses travel the curve itself, slowly,
+   changing colour as data becomes intelligence and then an outcome. */
+
+const W = 480;
+const H = 270;
+const CX = W / 2;
+const CY = H / 2;
+const A = 190; // half-width of the infinity
+const STRETCH = 1.45; // taller lobes than a pure lemniscate
+
+const deg = (d: number) => (d * Math.PI) / 180;
+
+/** Lemniscate of Bernoulli. t=0° right tip, 90° and 270° the crossing, 180° left tip. */
+function curve(tDeg: number) {
+  const t = deg(tDeg);
+  const s = Math.sin(t);
+  const c = Math.cos(t);
+  const k = 1 + s * s;
+  return { x: CX + (A * c) / k, y: CY + (STRETCH * A * s * c) / k };
+}
 
 type Kind = "data" | "intel" | "hub" | "outcome" | "relay";
-type LabelSide = "left" | "right" | "above" | "below";
 interface GNode {
   id: string;
+  t?: number; // position on the curve, degrees
   x: number;
   y: number;
   kind: Kind;
   label?: string;
-  side?: LabelSide;
 }
 
-const W = 480;
-const H = 270;
-const CY = H / 2;
+const onCurve = (id: string, t: number, kind: Kind, label: string): GNode => ({ id, t, kind, label, ...curve(t) });
+
+// Lobe centres, used for spokes and for placing labels outside the loops.
+const LEFT_FOCUS = { x: CX - A * 0.62, y: CY };
+const RIGHT_FOCUS = { x: CX + A * 0.62, y: CY };
 
 const NODES: GNode[] = [
-  // Sources: one column, evenly spaced around the centre line
-  { id: "erp", x: 78, y: CY - 100, kind: "data", label: "ERP", side: "left" },
-  { id: "crm", x: 78, y: CY - 50, kind: "data", label: "CRM", side: "left" },
-  { id: "sensors", x: 78, y: CY, kind: "data", label: "Sensors", side: "left" },
-  { id: "docs", x: 78, y: CY + 50, kind: "data", label: "Documents", side: "left" },
-  { id: "apis", x: 78, y: CY + 100, kind: "data", label: "APIs", side: "left" },
-  // Relays between sources and the intelligence layer (mirrored pair)
-  { id: "r1", x: 128, y: CY - 26, kind: "relay" },
-  { id: "r2", x: 128, y: CY + 26, kind: "relay" },
-  // Intelligence: a diamond around the hub
-  { id: "customers", x: 170, y: CY - 66, kind: "intel", label: "Customers", side: "above" },
-  { id: "orders", x: 310, y: CY - 66, kind: "intel", label: "Orders", side: "above" },
-  { id: "assets", x: 170, y: CY + 66, kind: "intel", label: "Assets", side: "below" },
-  { id: "contracts", x: 310, y: CY + 66, kind: "intel", label: "Contracts", side: "below" },
-  { id: "hub", x: 240, y: CY, kind: "hub", label: "Knowledge", side: "below" },
-  // Relays before the outcomes (mirrored pair)
-  { id: "r3", x: 362, y: CY - 100, kind: "relay" },
-  { id: "r4", x: 362, y: CY + 100, kind: "relay" },
-  // Outcomes: one column, evenly spaced
-  { id: "forecast", x: 404, y: CY - 60, kind: "outcome", label: "Forecast", side: "right" },
-  { id: "alerts", x: 404, y: CY, kind: "outcome", label: "Alerts", side: "right" },
-  { id: "decisions", x: 404, y: CY + 60, kind: "outcome", label: "Decisions", side: "right" },
-];
-
-/* Listed as mirrored pairs so the drawing stays symmetric. */
-const EDGES: [string, string][] = [
-  ["erp", "customers"], ["apis", "assets"],
-  ["crm", "customers"], ["docs", "assets"],
-  ["crm", "r1"], ["docs", "r2"],
-  ["sensors", "r1"], ["sensors", "r2"],
-  ["r1", "hub"], ["r2", "hub"],
-  ["customers", "hub"], ["assets", "hub"],
-  ["orders", "hub"], ["contracts", "hub"],
-  ["customers", "orders"], ["assets", "contracts"],
-  ["orders", "r3"], ["contracts", "r4"],
-  ["r3", "forecast"], ["r4", "decisions"],
-  ["orders", "forecast"], ["contracts", "decisions"],
-  ["hub", "forecast"], ["hub", "decisions"],
-  ["hub", "alerts"],
-];
-
-/* Pulse routes, also in mirrored pairs; every route passes through the hub. */
-const ROUTES: { path: string[]; dur: number; begin: number }[] = [
-  { path: ["erp", "customers", "hub", "forecast"], dur: 3.6, begin: 0 },
-  { path: ["apis", "assets", "hub", "decisions"], dur: 3.6, begin: 1.8 },
-  { path: ["sensors", "r1", "hub", "alerts"], dur: 3.0, begin: 0.9 },
-  { path: ["crm", "customers", "orders", "hub", "decisions"], dur: 4.4, begin: 2.6 },
-  { path: ["docs", "assets", "contracts", "hub", "forecast"], dur: 4.4, begin: 0.4 },
+  // Left lobe: data sources, top to bottom
+  onCurve("erp", 140, "data", "ERP"),
+  onCurve("crm", 160, "data", "CRM"),
+  onCurve("sensors", 180, "data", "Sensors"),
+  onCurve("docs", 200, "data", "Documents"),
+  onCurve("apis", 220, "data", "APIs"),
+  // The four arms into the crossing: intelligence
+  onCurve("customers", 121, "intel", "Customers"),
+  onCurve("assets", 239, "intel", "Assets"),
+  onCurve("orders", 301, "intel", "Orders"),
+  onCurve("contracts", 59, "intel", "Contracts"),
+  // Right lobe: outcomes, top to bottom
+  onCurve("forecast", 320, "outcome", "Forecast"),
+  onCurve("alerts", 340, "outcome", "Alerts"),
+  onCurve("decisions", 0, "outcome", "Decisions"),
+  onCurve("actions", 20, "outcome", "Actions"),
+  onCurve("reports", 40, "outcome", "Reports"),
+  // The crossing
+  { id: "hub", x: CX, y: CY, kind: "hub", label: "Knowledge" },
+  // Lobe centres: quiet relays that tie each loop together
+  { id: "lf", ...LEFT_FOCUS, kind: "relay" },
+  { id: "rf", ...RIGHT_FOCUS, kind: "relay" },
 ];
 
 const at = (id: string) => NODES.find((n) => n.id === id)!;
 
-/* Rich takes on the brand palette, each staying in its family.
-   SMIL animations can't read CSS variables, so these are literal. */
-const C = {
-  pink: "#E5097A", // data: a deeper, richer pink
-  pinkLight: "#F7147F",
-  violet: "#7A0BB0", // intelligence: saturated violet
-  violetLight: "#9B2FCC",
-  plum: "#3D0B52", // outcomes: brand plum, ink's family on light
-  relay: "#B9A7C6", // muted lilac-grey for structural relays
-};
+/* Faint spokes from each lobe centre, mirrored left and right. */
+const SPOKES: [string, string][] = [
+  ...["erp", "crm", "sensors", "docs", "apis", "customers", "assets"].map((id) => ["lf", id] as [string, string]),
+  ...["forecast", "alerts", "decisions", "actions", "reports", "orders", "contracts"].map((id) => ["rf", id] as [string, string]),
+];
 
-const NODE_COLOUR: Record<Kind, string> = {
-  data: C.pink,
-  intel: C.violet,
-  hub: "url(#ng-soma)",
-  outcome: C.plum,
-  relay: C.relay,
-};
-const RADIUS: Record<Kind, number> = { data: 7, intel: 7, hub: 12, outcome: 8, relay: 3 };
+/* Pulses: a source travels the curve through the crossing to an outcome on
+   the other lobe. Upper-left arms cross to lower-right and lower-left to
+   upper-right, exactly as the infinity does. */
+const ROUTES: { from: number; to: number; begin: number }[] = [
+  { from: 140, to: 40, begin: 0 }, // ERP → Reports
+  { from: 220, to: 320, begin: 3.5 }, // APIs → Forecast
+  { from: 180, to: 0, begin: 7 }, // Sensors → (right tip) Decisions
+  { from: 160, to: 20, begin: 10.5 }, // CRM → Actions
+  { from: 200, to: 340, begin: 14 }, // Documents → Alerts
+];
+const SPEED = 30; // user units per second: slow and steady
 
-/* Edge colour follows the layers it joins: data → intelligence → outcome. */
-function edgeColours(a: GNode, b: GNode): [string, string] {
-  const tone = (n: GNode) =>
-    n.kind === "data" ? C.pinkLight : n.kind === "outcome" ? C.plum : n.kind === "relay" ? (n.x < 240 ? C.pinkLight : C.violetLight) : C.violetLight;
-  return [tone(a), tone(b)];
-}
-
-/** Path data, length, and the share of the trip completed on reaching the hub. */
-function measure(path: string[]) {
-  const pts = path.map(at);
+/** Path along the curve from one parameter to another, through the crossing. */
+function routePath(from: number, to: number) {
+  // Upper-left sources run down in t through 90°; lower-left sources run up through 270°.
+  const dir = from < 180 || (from === 180 && to <= 90) ? -1 : 1;
+  const target = dir === -1 ? (to > from ? to - 360 : to) : to < from ? to + 360 : to;
+  const pts: { x: number; y: number }[] = [];
+  for (let t = from; dir === -1 ? t >= target : t <= target; t += dir * 2) pts.push(curve(t));
+  pts.push(curve(target));
   let total = 0;
   let toHub = 0;
+  const crossing = dir === -1 ? 90 : 270;
   pts.forEach((p, i) => {
     if (i === 0) return;
     total += Math.hypot(p.x - pts[i - 1].x, p.y - pts[i - 1].y);
-    if (p.id === "hub") toHub = total;
+    const t = from + dir * 2 * i;
+    if (toHub === 0 && (dir === -1 ? t <= crossing : t >= crossing)) toHub = total;
   });
-  const d = "M" + pts.map((p) => `${p.x} ${p.y}`).join(" L");
-  return { d, total, hubAt: toHub / total, end: pts[pts.length - 1] };
+  const d = "M" + pts.map((p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" L");
+  return { d, total, hubAt: toHub / total, end: curve(to) };
 }
 
-function labelProps(n: GNode) {
-  const gap = RADIUS[n.kind] + 9;
-  switch (n.side) {
-    case "left":
-      return { x: n.x - gap, y: n.y, textAnchor: "end" as const, dominantBaseline: "middle" as const };
-    case "right":
-      return { x: n.x + gap, y: n.y, textAnchor: "start" as const, dominantBaseline: "middle" as const };
-    case "above":
-      return { x: n.x, y: n.y - gap - 2, textAnchor: "middle" as const, dominantBaseline: "auto" as const };
-    default:
-      // The hub's label clears its glow ring.
-      return { x: n.x, y: n.y + (n.kind === "hub" ? 34 : gap + 2), textAnchor: "middle" as const, dominantBaseline: "hanging" as const };
+/** The whole infinity as one smooth closed path. */
+const INFINITY = (() => {
+  const pts: string[] = [];
+  for (let t = 0; t <= 360; t += 2) {
+    const p = curve(t);
+    pts.push(`${p.x.toFixed(1)} ${p.y.toFixed(1)}`);
   }
+  return "M" + pts.join(" L") + " Z";
+})();
+
+/* Rich takes on the brand palette, each staying in its family.
+   SMIL animations can't read CSS variables, so these are literal. */
+const C = {
+  pink: "#E5097A",
+  pinkLight: "#F7147F",
+  violet: "#7A0BB0",
+  violetLight: "#9B2FCC",
+  plum: "#3D0B52",
+  relay: "#B9A7C6",
+};
+const NODE_COLOUR: Record<Kind, string> = { data: C.pink, intel: C.violet, hub: "url(#ng-soma)", outcome: C.plum, relay: C.relay };
+const RADIUS: Record<Kind, number> = { data: 7, intel: 6.5, hub: 13, outcome: 7, relay: 3 };
+
+/** Labels sit outside the loops: away from the lobe centre, or above/below on the arms. */
+function labelProps(n: GNode) {
+  if (n.kind === "hub") return { x: n.x, y: n.y + 40, textAnchor: "middle" as const, dominantBaseline: "hanging" as const };
+  const gap = RADIUS[n.kind] + 9;
+  if (n.kind === "intel") {
+    const up = n.y < CY;
+    return { x: n.x, y: up ? n.y - gap : n.y + gap, textAnchor: "middle" as const, dominantBaseline: up ? ("auto" as const) : ("hanging" as const) };
+  }
+  const focus = n.x < CX ? LEFT_FOCUS : RIGHT_FOCUS;
+  const dx = n.x - focus.x;
+  const dy = n.y - focus.y;
+  const len = Math.hypot(dx, dy) || 1;
+  const ux = dx / len;
+  const uy = dy / len;
+  return {
+    x: n.x + ux * gap,
+    y: n.y + uy * gap,
+    textAnchor: ux < -0.3 ? ("end" as const) : ux > 0.3 ? ("start" as const) : ("middle" as const),
+    dominantBaseline: uy < -0.5 ? ("auto" as const) : uy > 0.5 ? ("hanging" as const) : ("middle" as const),
+  };
 }
 
-const ARRIVE = 0.96;
+const ARRIVE = 0.97;
 const f = (n: number) => n.toFixed(3);
 
 export function NetworkGraph({ graph }: { graph: HomeContent["hero"]["graph"] }) {
@@ -144,7 +166,6 @@ export function NetworkGraph({ graph }: { graph: HomeContent["hero"]["graph"] })
     mq.addEventListener("change", sync);
     return () => mq.removeEventListener("change", sync);
   }, []);
-  const hub = at("hub");
 
   return (
     <figure className="text-ink">
@@ -156,66 +177,61 @@ export function NetworkGraph({ graph }: { graph: HomeContent["hero"]["graph"] })
             <stop offset="0" stopColor="var(--color-soma-from)" />
             <stop offset="1" stopColor="var(--color-soma-to)" />
           </linearGradient>
+          {/* The loop shifts colour left to right: data, intelligence at the crossing, outcomes. */}
+          <linearGradient id="ng-loop" gradientUnits="userSpaceOnUse" x1={CX - A} y1={CY} x2={CX + A} y2={CY}>
+            <stop offset="0" stopColor={C.pinkLight} />
+            <stop offset="0.5" stopColor={C.violetLight} />
+            <stop offset="1" stopColor={C.plum} />
+          </linearGradient>
           <radialGradient id="ng-glow">
             <stop offset="0" stopColor={C.violetLight} stopOpacity={0.35} />
             <stop offset="1" stopColor={C.violetLight} stopOpacity={0} />
           </radialGradient>
-          {EDGES.map(([a, b]) => {
-            const p = at(a);
-            const q = at(b);
-            const [from, to] = edgeColours(p, q);
-            return (
-              <linearGradient key={`${a}-${b}`} id={`ng-e-${a}-${b}`} gradientUnits="userSpaceOnUse" x1={p.x} y1={p.y} x2={q.x} y2={q.y}>
-                <stop offset="0" stopColor={from} />
-                <stop offset="1" stopColor={to} />
-              </linearGradient>
-            );
-          })}
         </defs>
 
-        {/* Soft glow behind the hub */}
-        <circle cx={hub.x} cy={hub.y} r={48} fill="url(#ng-glow)" />
+        <circle cx={CX} cy={CY} r={52} fill="url(#ng-glow)" />
 
-        <g strokeOpacity={0.4} strokeWidth={1.2} strokeLinecap="round">
-          {EDGES.map(([a, b]) => {
+        {/* Spokes inside each lobe */}
+        <g strokeWidth={1} strokeOpacity={0.22}>
+          {SPOKES.map(([a, b]) => {
             const p = at(a);
             const q = at(b);
-            return <line key={`${a}-${b}`} x1={p.x} y1={p.y} x2={q.x} y2={q.y} stroke={`url(#ng-e-${a}-${b})`} />;
+            return <line key={`${a}-${b}`} x1={p.x} y1={p.y} x2={q.x} y2={q.y} stroke={p.x < CX ? C.pinkLight : C.plum} />;
           })}
         </g>
 
+        {/* The infinity */}
+        <path d={INFINITY} fill="none" stroke="url(#ng-loop)" strokeWidth={2.2} strokeOpacity={0.55} />
+
         {animate &&
           ROUTES.map((r, i) => {
-            const { d, total, hubAt, end } = measure(r.path);
-            const dur = `${r.dur}s`;
+            const { d, total, hubAt, end } = routePath(r.from, r.to);
+            const dur = `${(total / SPEED).toFixed(1)}s`;
             const begin = `${r.begin}s`;
-            // Pink until the hub, violet until the outcome, plum on arrival.
+            // Pink until the crossing, violet until the outcome, plum on arrival.
             const colourTimes = `0;${f(hubAt)};${ARRIVE}`;
             const colours = `${C.pinkLight};${C.violetLight};${C.plum}`;
-            const hubTimes = `0;${f(hubAt - 0.02)};${f(hubAt)};${f(Math.min(hubAt + 0.12, 0.99))};1`;
+            const hubTimes = `0;${f(hubAt - 0.015)};${f(hubAt)};${f(Math.min(hubAt + 0.08, 0.99))};1`;
             return (
               <g key={i}>
-                {/* A short trail moving with the pulse (both at constant speed, so they stay together). */}
-                <path d={d} fill="none" stroke={C.pinkLight} strokeOpacity={0.75} strokeWidth={2} strokeLinecap="round" strokeDasharray={`18 ${Math.ceil(total) + 40}`} strokeDashoffset={18} opacity={0}>
+                <path d={d} fill="none" stroke={C.pinkLight} strokeOpacity={0.8} strokeWidth={2.4} strokeLinecap="round" strokeDasharray={`26 ${Math.ceil(total) + 60}`} strokeDashoffset={26} opacity={0}>
                   <set attributeName="opacity" to="1" begin={begin} />
-                  <animate attributeName="stroke-dashoffset" from="18" to={`${-Math.ceil(total)}`} dur={dur} begin={begin} repeatCount="indefinite" />
+                  <animate attributeName="stroke-dashoffset" from="26" to={`${-Math.ceil(total)}`} dur={dur} begin={begin} repeatCount="indefinite" />
                   <animate attributeName="stroke" values={colours} keyTimes={colourTimes} calcMode="discrete" dur={dur} begin={begin} repeatCount="indefinite" />
                 </path>
                 {/* Hidden until its first run, or it would sit at the SVG origin. */}
-                <circle r={3.4} fill={C.pinkLight} opacity={0}>
+                <circle r={3.8} fill={C.pinkLight} opacity={0}>
                   <set attributeName="opacity" to="1" begin={begin} />
                   <animateMotion path={d} dur={dur} begin={begin} repeatCount="indefinite" calcMode="paced" />
                   <animate attributeName="fill" values={colours} keyTimes={colourTimes} calcMode="discrete" dur={dur} begin={begin} repeatCount="indefinite" />
                 </circle>
-                {/* The hub flashes violet as the pulse passes through it. */}
-                <circle cx={hub.x} cy={hub.y} r={14} fill="none" stroke={C.violetLight} strokeWidth={1.5} opacity={0}>
+                <circle cx={CX} cy={CY} r={15} fill="none" stroke={C.violetLight} strokeWidth={1.5} opacity={0}>
                   <animate attributeName="opacity" values="0;0;0.8;0;0" keyTimes={hubTimes} dur={dur} begin={begin} repeatCount="indefinite" />
-                  <animate attributeName="r" values="14;14;14;28;28" keyTimes={hubTimes} dur={dur} begin={begin} repeatCount="indefinite" />
+                  <animate attributeName="r" values="15;15;15;32;32" keyTimes={hubTimes} dur={dur} begin={begin} repeatCount="indefinite" />
                 </circle>
-                {/* The outcome rings out plum on arrival. */}
                 <circle cx={end.x} cy={end.y} r={9} fill="none" stroke={C.plum} strokeWidth={1.5} opacity={0}>
-                  <animate attributeName="opacity" values="0;0;0.8;0" keyTimes={`0;${ARRIVE - 0.01};${ARRIVE + 0.01};1`} dur={dur} begin={begin} repeatCount="indefinite" />
-                  <animate attributeName="r" values="9;9;10;22" keyTimes={`0;${ARRIVE - 0.01};${ARRIVE + 0.01};1`} dur={dur} begin={begin} repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0;0;0.8;0" keyTimes={`0;${ARRIVE - 0.01};${ARRIVE + 0.005};1`} dur={dur} begin={begin} repeatCount="indefinite" />
+                  <animate attributeName="r" values="9;9;10;22" keyTimes={`0;${ARRIVE - 0.01};${ARRIVE + 0.005};1`} dur={dur} begin={begin} repeatCount="indefinite" />
                 </circle>
               </g>
             );
@@ -224,14 +240,13 @@ export function NetworkGraph({ graph }: { graph: HomeContent["hero"]["graph"] })
         {NODES.map((n) => (
           <g key={n.id}>
             {n.kind === "hub" && (
-              <circle cx={n.x} cy={n.y} r={20} fill="none" stroke={C.violetLight} strokeOpacity={0.45} strokeWidth={1.2}>
-                {animate && <animate attributeName="r" values="18;23;18" dur="3.2s" repeatCount="indefinite" />}
+              <circle cx={n.x} cy={n.y} r={21} fill="none" stroke={C.violetLight} strokeOpacity={0.45} strokeWidth={1.2}>
+                {animate && <animate attributeName="r" values="19;24;19" dur="4s" repeatCount="indefinite" />}
               </circle>
             )}
-            {/* Halo: a soft ring in the node's own colour gives depth on white. */}
             {n.kind !== "relay" && n.kind !== "hub" && <circle cx={n.x} cy={n.y} r={RADIUS[n.kind] + 5} fill={NODE_COLOUR[n.kind]} fillOpacity={0.12} />}
             <circle cx={n.x} cy={n.y} r={RADIUS[n.kind]} fill={NODE_COLOUR[n.kind]} />
-            {n.kind === "outcome" && <circle cx={n.x} cy={n.y} r={3} fill="var(--color-canvas)" />}
+            {n.kind === "outcome" && <circle cx={n.x} cy={n.y} r={2.8} fill="var(--color-canvas)" />}
             {n.label && (
               <text
                 {...labelProps(n)}
@@ -240,6 +255,11 @@ export function NetworkGraph({ graph }: { graph: HomeContent["hero"]["graph"] })
                 fill={n.kind === "hub" ? "var(--color-ink)" : "var(--color-muted)"}
                 fontWeight={n.kind === "hub" ? 600 : 500}
                 fontFamily="var(--font-sans)"
+                // A white halo lets lines pass cleanly behind the label.
+                stroke="var(--color-canvas)"
+                strokeWidth={4}
+                strokeLinejoin="round"
+                paintOrder="stroke"
               >
                 {n.label}
               </text>
