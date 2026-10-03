@@ -34,14 +34,28 @@ export default async function Home() {
     <>
       <Hero hero={home.hero} />
 
+      {/* The foundation is data — kept exactly as approved */}
+      <Section pillar="data" tone="mist" labelledBy="foundation-title">
+        <SectionHeader id="foundation-title" pillar="data" title={home.foundation.headline} support={home.foundation.support} />
+        <ArchitectureFlow nodes={flowNodes(home.foundation.flow, technologies)} label="From sources to business outcomes" />
+        <p className="mt-12 font-display text-h2 lg:mt-4">
+          {home.foundation.closing.map((line) => (
+            <span key={line} className="block">
+              {line}
+            </span>
+          ))}
+        </p>
+      </Section>
+
       {/* The knowledge graph, on its own in open white space */}
-      <section aria-label={home.hero.graph.caption} className="pb-(--section-y)">
+      <section aria-label={home.hero.graph.caption} className="py-(--section-y)">
         <div className="mx-auto w-full max-w-[calc(64rem+2*var(--page-margin))] px-(--page-margin)">
           <Reveal variant="fade">
             <NetworkGraph graph={home.hero.graph} />
           </Reveal>
         </div>
       </section>
+
 
       {/* Trust strip */}
       <section aria-labelledby="trust-title" className="border-y border-line py-12 md:py-16">
@@ -97,19 +111,6 @@ export default async function Home() {
           <SectionHeader id="capabilities-title" title={home.capabilities.headline} support={home.capabilities.support} />
         </Reveal>
         <CapabilityStack capabilities={capabilities} pillarLabels={pillarLabels} />
-      </Section>
-
-      {/* The foundation is data — kept exactly as approved */}
-      <Section pillar="data" tone="mist" labelledBy="foundation-title">
-        <SectionHeader id="foundation-title" pillar="data" title={home.foundation.headline} support={home.foundation.support} />
-        <ArchitectureFlow nodes={flowNodes(home.foundation.flow, technologies)} label="From sources to business outcomes" />
-        <p className="mt-12 font-display text-h2 lg:mt-4">
-          {home.foundation.closing.map((line) => (
-            <span key={line} className="block">
-              {line}
-            </span>
-          ))}
-        </p>
       </Section>
 
       {/* AI — the only plum section */}
