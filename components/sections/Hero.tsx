@@ -14,12 +14,12 @@ export function Hero({ hero }: { hero: HomeContent["hero"] }) {
     <section aria-labelledby="hero-title" className="overflow-x-clip pb-(--section-y)">
       <Container className="pt-12 md:pt-20">
         {/* Tagline with the mark on its right. From md up both are sized from one value,
-            --tag, which scales with the row's width so the tagline holds two lines and the
-            mark is exactly two line-heights tall. */}
+            --tag, which scales with the row's width: the tagline holds two lines and the
+            mark stands about half as tall again, centred beside it. */}
         <div className="@container">
-          <div className="flex items-start gap-5 md:items-center md:gap-10 md:[--tag:clamp(2rem,5.1cqi,4.25rem)]">
+          <div className="flex items-start gap-5 md:items-center md:gap-10 md:[--tag:clamp(1.75rem,4.2cqi,3.5rem)]">
             <Reveal className="min-w-0 flex-1">
-              <h1 id="hero-title" className="text-h1 md:text-(length:--tag) md:leading-[1.05]">
+              <h1 id="hero-title" className="text-h2 text-pretty md:text-(length:--tag) md:leading-[1.05] md:tracking-[-0.03em]">
                 {hero.tagLines.map((line) => (
                   <span key={line} className="block">
                     {line}
@@ -28,7 +28,7 @@ export function Hero({ hero }: { hero: HomeContent["hero"] }) {
               </h1>
             </Reveal>
             <Reveal variant="scale" delay={120} className="shrink-0">
-              <Mark size={56} title="" className="md:size-[calc(var(--tag)*2.1)]" />
+              <Mark size={64} title="" className="md:size-[calc(var(--tag)*3.2)]" />
             </Reveal>
           </div>
         </div>
