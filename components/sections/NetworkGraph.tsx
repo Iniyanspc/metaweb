@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 import type { HomeContent } from "@/lib/content/types";
 
-/* The knowledge graph as an infinity loop. Sources sit on the left lobe,
-   outcomes on the right, the intelligence layer on the four arms, and
-   Knowledge at the crossing. Pulses travel the curve itself, slowly,
-   changing colour as data becomes intelligence and then an outcome. */
+/* The knowledge graph, with its nodes arranged in an infinity: sources around
+   the left loop, outcomes around the right, the intelligence layer on the
+   four arms, and Knowledge at the crossing. Nodes are joined by straight
+   edges; slow pulses hop node to node, changing colour as data becomes
+   intelligence and then an outcome. The curve only places the nodes. */
 
 const W = 480;
 const H = 270;
@@ -17,7 +18,7 @@ const STRETCH = 1.45; // taller lobes than a pure lemniscate
 
 const deg = (d: number) => (d * Math.PI) / 180;
 
-/** Lemniscate of Bernoulli. t=0° right tip, 90° and 270° the crossing, 180° left tip. */
+/** Lemniscate of Bernoulli, used to place nodes. t=0° right tip, 90°/270° the crossing, 180° left tip. */
 function curve(tDeg: number) {
   const t = deg(tDeg);
   const s = Math.sin(t);
@@ -69,54 +70,56 @@ const NODES: GNode[] = [
 
 const at = (id: string) => NODES.find((n) => n.id === id)!;
 
-/* Faint spokes from each lobe centre, mirrored left and right. */
-const SPOKES: [string, string][] = [
-  ...["erp", "crm", "sensors", "docs", "apis", "customers", "assets"].map((id) => ["lf", id] as [string, string]),
-  ...["forecast", "alerts", "decisions", "actions", "reports", "orders", "contracts"].map((id) => ["rf", id] as [string, string]),
+/* Straight edges, listed as mirrored pairs: a chain around each loop, the
+   arms into the crossing, and spokes from each loop's centre. */
+const EDGES: [string, string][] = [
+  // Around the loops
+  ["customers", "erp"], ["orders", "forecast"],
+  ["erp", "crm"], ["forecast", "alerts"],
+  ["crm", "sensors"], ["alerts", "decisions"],
+  ["sensors", "docs"], ["decisions", "actions"],
+  ["docs", "apis"], ["actions", "reports"],
+  ["apis", "assets"], ["reports", "contracts"],
+  // Cross-links that tie each loop to its arms
+  ["crm", "customers"], ["alerts", "orders"],
+  ["docs", "assets"], ["actions", "contracts"],
+  // The arms into the crossing
+  ["customers", "hub"], ["orders", "hub"],
+  ["assets", "hub"], ["contracts", "hub"],
+  // Spokes from each loop's centre
+  ["lf", "erp"], ["rf", "forecast"],
+  ["lf", "crm"], ["rf", "alerts"],
+  ["lf", "sensors"], ["rf", "decisions"],
+  ["lf", "docs"], ["rf", "actions"],
+  ["lf", "apis"], ["rf", "reports"],
+  ["lf", "customers"], ["rf", "orders"],
+  ["lf", "assets"], ["rf", "contracts"],
 ];
 
-/* Pulses: a source travels the curve through the crossing to an outcome on
-   the other lobe. Upper-left arms cross to lower-right and lower-left to
-   upper-right, exactly as the infinity does. */
-const ROUTES: { from: number; to: number; begin: number }[] = [
-  { from: 140, to: 40, begin: 0 }, // ERP → Reports
-  { from: 220, to: 320, begin: 3.5 }, // APIs → Forecast
-  { from: 180, to: 0, begin: 7 }, // Sensors → (right tip) Decisions
-  { from: 160, to: 20, begin: 10.5 }, // CRM → Actions
-  { from: 200, to: 340, begin: 14 }, // Documents → Alerts
+/* Pulse routes through Knowledge, crossing over as the infinity does:
+   upper-left to lower-right, lower-left to upper-right. */
+const ROUTES: { path: string[]; begin: number }[] = [
+  { path: ["erp", "customers", "hub", "contracts", "reports"], begin: 0 },
+  { path: ["apis", "assets", "hub", "orders", "forecast"], begin: 3.5 },
+  { path: ["sensors", "lf", "customers", "hub", "contracts", "rf", "decisions"], begin: 7 },
+  { path: ["crm", "erp", "customers", "hub", "contracts", "reports", "actions"], begin: 10.5 },
+  { path: ["docs", "apis", "assets", "hub", "orders", "forecast", "alerts"], begin: 14 },
 ];
 const SPEED = 30; // user units per second: slow and steady
 
-/** Path along the curve from one parameter to another, through the crossing. */
-function routePath(from: number, to: number) {
-  // Upper-left sources run down in t through 90°; lower-left sources run up through 270°.
-  const dir = from < 180 || (from === 180 && to <= 90) ? -1 : 1;
-  const target = dir === -1 ? (to > from ? to - 360 : to) : to < from ? to + 360 : to;
-  const pts: { x: number; y: number }[] = [];
-  for (let t = from; dir === -1 ? t >= target : t <= target; t += dir * 2) pts.push(curve(t));
-  pts.push(curve(target));
+/** Path data, length, and the share of the trip completed on reaching the hub. */
+function measure(path: string[]) {
+  const pts = path.map(at);
   let total = 0;
   let toHub = 0;
-  const crossing = dir === -1 ? 90 : 270;
   pts.forEach((p, i) => {
     if (i === 0) return;
     total += Math.hypot(p.x - pts[i - 1].x, p.y - pts[i - 1].y);
-    const t = from + dir * 2 * i;
-    if (toHub === 0 && (dir === -1 ? t <= crossing : t >= crossing)) toHub = total;
+    if (p.id === "hub") toHub = total;
   });
   const d = "M" + pts.map((p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" L");
-  return { d, total, hubAt: toHub / total, end: curve(to) };
+  return { d, total, hubAt: toHub / total, end: pts[pts.length - 1] };
 }
-
-/** The whole infinity as one smooth closed path. */
-const INFINITY = (() => {
-  const pts: string[] = [];
-  for (let t = 0; t <= 360; t += 2) {
-    const p = curve(t);
-    pts.push(`${p.x.toFixed(1)} ${p.y.toFixed(1)}`);
-  }
-  return "M" + pts.join(" L") + " Z";
-})();
 
 /* Rich takes on the brand palette, each staying in its family.
    SMIL animations can't read CSS variables, so these are literal. */
@@ -130,6 +133,14 @@ const C = {
 };
 const NODE_COLOUR: Record<Kind, string> = { data: C.pink, intel: C.violet, hub: "url(#ng-soma)", outcome: C.plum, relay: C.relay };
 const RADIUS: Record<Kind, number> = { data: 7, intel: 6.5, hub: 13, outcome: 7, relay: 3 };
+
+/* Edge colour follows the layers it joins: data → intelligence → outcome. */
+function tone(n: GNode) {
+  if (n.kind === "data") return C.pinkLight;
+  if (n.kind === "outcome") return C.plum;
+  if (n.kind === "relay") return n.x < CX ? C.pinkLight : C.plum;
+  return C.violetLight;
+}
 
 /** Labels sit outside the loops: away from the lobe centre, or above/below on the arms. */
 function labelProps(n: GNode) {
@@ -177,12 +188,16 @@ export function NetworkGraph({ graph }: { graph: HomeContent["hero"]["graph"] })
             <stop offset="0" stopColor="var(--color-soma-from)" />
             <stop offset="1" stopColor="var(--color-soma-to)" />
           </linearGradient>
-          {/* The loop shifts colour left to right: data, intelligence at the crossing, outcomes. */}
-          <linearGradient id="ng-loop" gradientUnits="userSpaceOnUse" x1={CX - A} y1={CY} x2={CX + A} y2={CY}>
-            <stop offset="0" stopColor={C.pinkLight} />
-            <stop offset="0.5" stopColor={C.violetLight} />
-            <stop offset="1" stopColor={C.plum} />
-          </linearGradient>
+          {EDGES.map(([a, b]) => {
+            const p = at(a);
+            const q = at(b);
+            return (
+              <linearGradient key={`${a}-${b}`} id={`ng-e-${a}-${b}`} gradientUnits="userSpaceOnUse" x1={p.x} y1={p.y} x2={q.x} y2={q.y}>
+                <stop offset="0" stopColor={tone(p)} />
+                <stop offset="1" stopColor={tone(q)} />
+              </linearGradient>
+            );
+          })}
           <radialGradient id="ng-glow">
             <stop offset="0" stopColor={C.violetLight} stopOpacity={0.35} />
             <stop offset="1" stopColor={C.violetLight} stopOpacity={0} />
@@ -191,21 +206,29 @@ export function NetworkGraph({ graph }: { graph: HomeContent["hero"]["graph"] })
 
         <circle cx={CX} cy={CY} r={52} fill="url(#ng-glow)" />
 
-        {/* Spokes inside each lobe */}
-        <g strokeWidth={1} strokeOpacity={0.22}>
-          {SPOKES.map(([a, b]) => {
+        <g strokeLinecap="round">
+          {EDGES.map(([a, b]) => {
             const p = at(a);
             const q = at(b);
-            return <line key={`${a}-${b}`} x1={p.x} y1={p.y} x2={q.x} y2={q.y} stroke={p.x < CX ? C.pinkLight : C.plum} />;
+            const spoke = p.kind === "relay";
+            return (
+              <line
+                key={`${a}-${b}`}
+                x1={p.x}
+                y1={p.y}
+                x2={q.x}
+                y2={q.y}
+                stroke={`url(#ng-e-${a}-${b})`}
+                strokeWidth={spoke ? 1 : 1.6}
+                strokeOpacity={spoke ? 0.22 : 0.5}
+              />
+            );
           })}
         </g>
 
-        {/* The infinity */}
-        <path d={INFINITY} fill="none" stroke="url(#ng-loop)" strokeWidth={2.2} strokeOpacity={0.55} />
-
         {animate &&
           ROUTES.map((r, i) => {
-            const { d, total, hubAt, end } = routePath(r.from, r.to);
+            const { d, total, hubAt, end } = measure(r.path);
             const dur = `${(total / SPEED).toFixed(1)}s`;
             const begin = `${r.begin}s`;
             // Pink until the crossing, violet until the outcome, plum on arrival.
