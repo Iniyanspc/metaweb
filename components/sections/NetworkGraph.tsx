@@ -3,123 +3,189 @@
 import { useEffect, useState } from "react";
 import type { HomeContent } from "@/lib/content/types";
 
-/* The knowledge graph, with its nodes arranged in an infinity: sources around
-   the left loop, outcomes around the right, the intelligence layer on the
-   four arms, and Knowledge at the crossing. Nodes are joined by straight
-   edges; slow pulses hop node to node, changing colour as data becomes
-   intelligence and then an outcome. The curve only places the nodes. */
+/* An organic knowledge graph. Data sources gather loosely on one side,
+   the intelligence layer in the middle around Knowledge, outcomes on the
+   far side; unlabelled nodes fill the space between. Positions come from a
+   small deterministic force layout and edges join nearest neighbours, so it
+   reads like a real graph rather than a drawn shape. Slow pulses take
+   shortest paths through Knowledge, changing colour as they go.
 
-const W = 480;
-const H = 270;
-const CX = W / 2;
-const CY = H / 2;
-const A = 190; // half-width of the infinity
-const STRETCH = 1.45; // taller lobes than a pure lemniscate
+   Layout runs in normalised flow space: u along the flow (0 → 1), v across
+   it. Desktop maps u to x; phones map u to y so the graph fills a tall screen.
+   Only + - * / and Math.sqrt are used so every engine computes identical
+   positions (server and client markup must match). */
 
-const deg = (d: number) => (d * Math.PI) / 180;
-
-/** Lemniscate of Bernoulli, used to place nodes. t=0° right tip, 90°/270° the crossing, 180° left tip. */
-function curve(tDeg: number) {
-  const t = deg(tDeg);
-  const s = Math.sin(t);
-  const c = Math.cos(t);
-  const k = 1 + s * s;
-  return { x: CX + (A * c) / k, y: CY + (STRETCH * A * s * c) / k };
-}
-
-type Kind = "data" | "intel" | "hub" | "outcome" | "relay";
-interface GNode {
+type Kind = "data" | "intel" | "hub" | "outcome" | "minor";
+interface Seed {
   id: string;
-  t?: number; // position on the curve, degrees
-  x: number;
-  y: number;
   kind: Kind;
   label?: string;
+  u: [number, number]; // allowed range along the flow
+}
+interface LNode {
+  id: string;
+  kind: Kind;
+  label?: string;
+  u: number;
+  v: number;
+  uMin: number;
+  uMax: number;
 }
 
-const onCurve = (id: string, t: number, kind: Kind, label: string): GNode => ({ id, t, kind, label, ...curve(t) });
-
-// Lobe centres, used for spokes and for placing labels outside the loops.
-const LEFT_FOCUS = { x: CX - A * 0.62, y: CY };
-const RIGHT_FOCUS = { x: CX + A * 0.62, y: CY };
-
-const NODES: GNode[] = [
-  // Left lobe: data sources, top to bottom
-  onCurve("erp", 140, "data", "ERP"),
-  onCurve("crm", 160, "data", "CRM"),
-  onCurve("sensors", 180, "data", "Sensors"),
-  onCurve("docs", 200, "data", "Documents"),
-  onCurve("apis", 220, "data", "APIs"),
-  // The four arms into the crossing: intelligence
-  onCurve("customers", 121, "intel", "Customers"),
-  onCurve("assets", 239, "intel", "Assets"),
-  onCurve("orders", 301, "intel", "Orders"),
-  onCurve("contracts", 59, "intel", "Contracts"),
-  // Right lobe: outcomes, top to bottom
-  onCurve("forecast", 320, "outcome", "Forecast"),
-  onCurve("alerts", 340, "outcome", "Alerts"),
-  onCurve("decisions", 0, "outcome", "Decisions"),
-  onCurve("actions", 20, "outcome", "Actions"),
-  onCurve("reports", 40, "outcome", "Reports"),
-  // The crossing
-  { id: "hub", x: CX, y: CY, kind: "hub", label: "Knowledge" },
-  // Lobe centres: quiet relays that tie each loop together
-  { id: "lf", ...LEFT_FOCUS, kind: "relay" },
-  { id: "rf", ...RIGHT_FOCUS, kind: "relay" },
+const SEEDS: Seed[] = [
+  // Sources
+  ...["ERP", "CRM", "Sensors", "Documents", "APIs", "Spreadsheets", "Legacy databases", "Event streams"].map(
+    (label): Seed => ({ id: label, kind: "data", label, u: [0.03, 0.22] }),
+  ),
+  // Intelligence, either side of the hub
+  ...["Customers", "Products", "Suppliers"].map((label): Seed => ({ id: label, kind: "intel", label, u: [0.3, 0.44] })),
+  ...["Orders", "Assets", "Contracts"].map((label): Seed => ({ id: label, kind: "intel", label, u: [0.56, 0.7] })),
+  // Outcomes
+  ...["Forecasts", "Alerts", "Decisions", "Actions", "Reports", "Dashboards"].map(
+    (label): Seed => ({ id: label, kind: "outcome", label, u: [0.8, 0.97] }),
+  ),
+  // Unlabelled nodes give the graph its texture
+  ...Array.from({ length: 30 }, (_, i): Seed => ({ id: `m${i}`, kind: "minor", u: [0.06, 0.94] })),
 ];
 
-const at = (id: string) => NODES.find((n) => n.id === id)!;
+const ASPECT = 1.85; // flow axis is this much longer than the cross axis
+const HUB = "Knowledge";
 
-/* Straight edges, listed as mirrored pairs: a chain around each loop, the
-   arms into the crossing, and spokes from each loop's centre. */
-const EDGES: [string, string][] = [
-  // Around the loops
-  ["customers", "erp"], ["orders", "forecast"],
-  ["erp", "crm"], ["forecast", "alerts"],
-  ["crm", "sensors"], ["alerts", "decisions"],
-  ["sensors", "docs"], ["decisions", "actions"],
-  ["docs", "apis"], ["actions", "reports"],
-  ["apis", "assets"], ["reports", "contracts"],
-  // Cross-links that tie each loop to its arms
-  ["crm", "customers"], ["alerts", "orders"],
-  ["docs", "assets"], ["actions", "contracts"],
-  // The arms into the crossing
-  ["customers", "hub"], ["orders", "hub"],
-  ["assets", "hub"], ["contracts", "hub"],
-  // Spokes from each loop's centre
-  ["lf", "erp"], ["rf", "forecast"],
-  ["lf", "crm"], ["rf", "alerts"],
-  ["lf", "sensors"], ["rf", "decisions"],
-  ["lf", "docs"], ["rf", "actions"],
-  ["lf", "apis"], ["rf", "reports"],
-  ["lf", "customers"], ["rf", "orders"],
-  ["lf", "assets"], ["rf", "contracts"],
-];
+/** Deterministic PRNG (mulberry32). */
+function rng(seed: number) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
-/* Pulse routes through Knowledge, crossing over as the infinity does:
-   upper-left to lower-right, lower-left to upper-right. */
-const ROUTES: { path: string[]; begin: number }[] = [
-  { path: ["erp", "customers", "hub", "contracts", "reports"], begin: 0 },
-  { path: ["apis", "assets", "hub", "orders", "forecast"], begin: 3.5 },
-  { path: ["sensors", "lf", "customers", "hub", "contracts", "rf", "decisions"], begin: 7 },
-  { path: ["crm", "erp", "customers", "hub", "contracts", "reports", "actions"], begin: 10.5 },
-  { path: ["docs", "apis", "assets", "hub", "orders", "forecast", "alerts"], begin: 14 },
-];
-const SPEED = 30; // user units per second: slow and steady
+const dist = (a: LNode, b: LNode) => {
+  const du = (a.u - b.u) * ASPECT;
+  const dv = a.v - b.v;
+  return Math.sqrt(du * du + dv * dv);
+};
 
-/** Path data, length, and the share of the trip completed on reaching the hub. */
-function measure(path: string[]) {
-  const pts = path.map(at);
-  let total = 0;
-  let toHub = 0;
-  pts.forEach((p, i) => {
-    if (i === 0) return;
-    total += Math.hypot(p.x - pts[i - 1].x, p.y - pts[i - 1].y);
-    if (p.id === "hub") toHub = total;
+function buildGraph() {
+  const rand = rng(20261004);
+  const nodes: LNode[] = SEEDS.map((s) => ({
+    id: s.id,
+    kind: s.kind,
+    label: s.label,
+    u: s.u[0] + rand() * (s.u[1] - s.u[0]),
+    v: 0.08 + rand() * 0.84,
+    uMin: s.u[0],
+    uMax: s.u[1],
+  }));
+  nodes.push({ id: HUB, kind: "hub", label: HUB, u: 0.5, v: 0.5, uMin: 0.5, uMax: 0.5 });
+
+  // Relax: push apart anything closer than its comfort distance.
+  const comfort = (n: LNode) => (n.kind === "hub" ? 0.26 : n.kind === "minor" ? 0.1 : 0.15);
+  for (let iter = 0; iter < 160; iter++) {
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i];
+        const b = nodes[j];
+        const want = (comfort(a) + comfort(b)) / 2;
+        const d = dist(a, b) || 0.0001;
+        if (d >= want) continue;
+        const push = ((want - d) / d) * 0.5;
+        const du = (a.u - b.u) * push;
+        const dv = (a.v - b.v) * push;
+        if (a.kind !== "hub") {
+          a.u += du / ASPECT;
+          a.v += dv;
+        }
+        if (b.kind !== "hub") {
+          b.u -= du / ASPECT;
+          b.v -= dv;
+        }
+      }
+    }
+    for (const n of nodes) {
+      if (n.kind === "hub") continue;
+      n.u = Math.min(n.uMax, Math.max(n.uMin, n.u));
+      n.v = Math.min(0.94, Math.max(0.06, n.v));
+    }
+  }
+
+  // Edges: each node to its nearest neighbours (no long jumps), intelligence to the hub.
+  const key = (a: string, b: string) => (a < b ? `${a}|${b}` : `${b}|${a}`);
+  const edges = new Map<string, [LNode, LNode]>();
+  const add = (a: LNode, b: LNode) => edges.set(key(a.id, b.id), [a, b]);
+  for (const n of nodes) {
+    const k = n.kind === "minor" ? 2 : 3;
+    nodes
+      .filter((m) => m !== n && Math.abs(m.u - n.u) < 0.2)
+      .sort((a, b) => dist(n, a) - dist(n, b))
+      .slice(0, k)
+      .forEach((m) => add(n, m));
+  }
+  const hub = nodes.find((n) => n.kind === "hub")!;
+  nodes.filter((n) => n.kind === "intel").forEach((n) => add(n, hub));
+
+  // Make sure everything is one connected graph.
+  const parent = new Map(nodes.map((n) => [n.id, n.id]));
+  const find = (id: string): string => (parent.get(id) === id ? id : find(parent.get(id)!));
+  const union = (a: string, b: string) => parent.set(find(a), find(b));
+  edges.forEach(([a, b]) => union(a.id, b.id));
+  for (const n of nodes) {
+    if (find(n.id) === find(hub.id)) continue;
+    const nearest = nodes.filter((m) => find(m.id) === find(hub.id)).sort((a, b) => dist(n, a) - dist(n, b))[0];
+    add(n, nearest);
+    union(n.id, nearest.id);
+  }
+
+  return { nodes, edges: [...edges.values()], hub };
+}
+
+const GRAPH = buildGraph();
+
+/** Shortest path by distance (Dijkstra) between two node ids. */
+function shortestPath(from: string, to: string): LNode[] {
+  const { nodes, edges } = GRAPH;
+  const adj = new Map<string, LNode[]>(nodes.map((n) => [n.id, []]));
+  edges.forEach(([a, b]) => {
+    adj.get(a.id)!.push(b);
+    adj.get(b.id)!.push(a);
   });
-  const d = "M" + pts.map((p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" L");
-  return { d, total, hubAt: toHub / total, end: pts[pts.length - 1] };
+  const best = new Map<string, number>([[from, 0]]);
+  const prev = new Map<string, string>();
+  const open = new Set([from]);
+  while (open.size) {
+    const id = [...open].sort((a, b) => best.get(a)! - best.get(b)!)[0];
+    open.delete(id);
+    if (id === to) break;
+    const here = nodes.find((n) => n.id === id)!;
+    for (const nb of adj.get(id)!) {
+      const cost = best.get(id)! + dist(here, nb);
+      if (cost < (best.get(nb.id) ?? Infinity)) {
+        best.set(nb.id, cost);
+        prev.set(nb.id, id);
+        open.add(nb.id);
+      }
+    }
+  }
+  const path: string[] = [to];
+  while (path[0] !== from) path.unshift(prev.get(path[0])!);
+  return path.map((id) => nodes.find((n) => n.id === id)!);
 }
+
+/* Each pulse: a source, through Knowledge, to an outcome. */
+const PAIRS: [string, string, number][] = [
+  ["ERP", "Forecasts", 0],
+  ["Sensors", "Alerts", 3],
+  ["Documents", "Decisions", 6],
+  ["CRM", "Dashboards", 9],
+  ["Event streams", "Actions", 12],
+  ["Spreadsheets", "Reports", 15],
+];
+const ROUTES = PAIRS.map(([from, to, begin]) => {
+  const first = shortestPath(from, HUB);
+  const second = shortestPath(HUB, to);
+  return { nodes: [...first, ...second.slice(1)], hubIndex: first.length - 1, begin };
+});
 
 /* Rich takes on the brand palette, each staying in its family.
    SMIL animations can't read CSS variables, so these are literal. */
@@ -129,43 +195,168 @@ const C = {
   violet: "#7A0BB0",
   violetLight: "#9B2FCC",
   plum: "#3D0B52",
-  relay: "#B9A7C6",
+  minor: "#B9A7C6",
 };
-const NODE_COLOUR: Record<Kind, string> = { data: C.pink, intel: C.violet, hub: "url(#ng-soma)", outcome: C.plum, relay: C.relay };
-const RADIUS: Record<Kind, number> = { data: 7, intel: 6.5, hub: 13, outcome: 7, relay: 3 };
+const FILL: Record<Kind, string> = { data: C.pink, intel: C.violet, hub: "", outcome: C.plum, minor: C.minor };
 
-/* Edge colour follows the layers it joins: data → intelligence → outcome. */
-function tone(n: GNode) {
+function tone(n: LNode) {
   if (n.kind === "data") return C.pinkLight;
   if (n.kind === "outcome") return C.plum;
-  if (n.kind === "relay") return n.x < CX ? C.pinkLight : C.plum;
+  if (n.kind === "minor") return n.u < 0.38 ? C.pinkLight : n.u > 0.62 ? C.plum : C.violetLight;
   return C.violetLight;
 }
 
-/** Labels sit outside the loops: away from the lobe centre, or above/below on the arms. */
-function labelProps(n: GNode) {
-  if (n.kind === "hub") return { x: n.x, y: n.y + 40, textAnchor: "middle" as const, dominantBaseline: "hanging" as const };
-  const gap = RADIUS[n.kind] + 9;
-  if (n.kind === "intel") {
-    const up = n.y < CY;
-    return { x: n.x, y: up ? n.y - gap : n.y + gap, textAnchor: "middle" as const, dominantBaseline: up ? ("auto" as const) : ("hanging" as const) };
-  }
-  const focus = n.x < CX ? LEFT_FOCUS : RIGHT_FOCUS;
-  const dx = n.x - focus.x;
-  const dy = n.y - focus.y;
-  const len = Math.hypot(dx, dy) || 1;
-  const ux = dx / len;
-  const uy = dy / len;
-  return {
-    x: n.x + ux * gap,
-    y: n.y + uy * gap,
-    textAnchor: ux < -0.3 ? ("end" as const) : ux > 0.3 ? ("start" as const) : ("middle" as const),
-    dominantBaseline: uy < -0.5 ? ("auto" as const) : uy > 0.5 ? ("hanging" as const) : ("middle" as const),
-  };
+interface Frame {
+  id: string;
+  w: number;
+  h: number;
+  pad: number;
+  vertical: boolean;
+  r: Record<Kind, number>;
+  font: number;
+  speed: number;
 }
 
-const ARRIVE = 0.97;
-const f = (n: number) => n.toFixed(3);
+function Graph({ frame, animate, description, className }: { frame: Frame; animate: boolean; description: string; className: string }) {
+  const { w, h, pad, vertical, r } = frame;
+  const pos = (n: LNode) =>
+    vertical ? { x: pad + n.v * (w - 2 * pad), y: pad + n.u * (h - 2 * pad) } : { x: pad + n.u * (w - 2 * pad), y: pad + n.v * (h - 2 * pad) };
+  const hub = pos(GRAPH.hub);
+  const id = (s: string) => `${frame.id}-${s.replace(/\W/g, "")}`;
+
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="xMidYMid meet" className={className} role="img" aria-label={description}>
+      <defs>
+        <linearGradient id={id("soma")} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="var(--color-soma-from)" />
+          <stop offset="1" stopColor="var(--color-soma-to)" />
+        </linearGradient>
+        <radialGradient id={id("glow")}>
+          <stop offset="0" stopColor={C.violetLight} stopOpacity={0.3} />
+          <stop offset="1" stopColor={C.violetLight} stopOpacity={0} />
+        </radialGradient>
+        {GRAPH.edges.map(([a, b]) => {
+          const p = pos(a);
+          const q = pos(b);
+          return (
+            <linearGradient key={`${a.id}-${b.id}`} id={id(`e-${a.id}-${b.id}`)} gradientUnits="userSpaceOnUse" x1={p.x} y1={p.y} x2={q.x} y2={q.y}>
+              <stop offset="0" stopColor={tone(a)} />
+              <stop offset="1" stopColor={tone(b)} />
+            </linearGradient>
+          );
+        })}
+      </defs>
+
+      <circle cx={hub.x} cy={hub.y} r={r.hub * 5} fill={`url(#${id("glow")})`} />
+
+      <g strokeLinecap="round">
+        {GRAPH.edges.map(([a, b]) => {
+          const p = pos(a);
+          const q = pos(b);
+          const quiet = a.kind === "minor" && b.kind === "minor";
+          return (
+            <line
+              key={`${a.id}-${b.id}`}
+              x1={p.x}
+              y1={p.y}
+              x2={q.x}
+              y2={q.y}
+              stroke={`url(#${id(`e-${a.id}-${b.id}`)})`}
+              strokeWidth={quiet ? r.minor * 0.35 : r.minor * 0.5}
+              strokeOpacity={quiet ? 0.3 : 0.5}
+            />
+          );
+        })}
+      </g>
+
+      {animate &&
+        ROUTES.map((route, i) => {
+          const pts = route.nodes.map(pos);
+          let total = 0;
+          let toHub = 0;
+          pts.forEach((p, k) => {
+            if (k === 0) return;
+            const dx = p.x - pts[k - 1].x;
+            const dy = p.y - pts[k - 1].y;
+            total += Math.sqrt(dx * dx + dy * dy);
+            if (k === route.hubIndex) toHub = total;
+          });
+          const hubAt = toHub / total;
+          const d = "M" + pts.map((p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" L");
+          const end = pts[pts.length - 1];
+          const dur = `${(total / frame.speed).toFixed(1)}s`;
+          const begin = `${route.begin}s`;
+          const f = (n: number) => n.toFixed(3);
+          const colourTimes = `0;${f(hubAt)};0.97`;
+          const colours = `${C.pinkLight};${C.violetLight};${C.plum}`;
+          const hubTimes = `0;${f(hubAt - 0.012)};${f(hubAt)};${f(Math.min(hubAt + 0.07, 0.99))};1`;
+          const trail = r.data * 3;
+          return (
+            <g key={i}>
+              <path d={d} fill="none" stroke={C.pinkLight} strokeOpacity={0.8} strokeWidth={r.minor * 0.8} strokeLinecap="round" strokeDasharray={`${trail} ${Math.ceil(total) + 2 * trail}`} strokeDashoffset={trail} opacity={0}>
+                <set attributeName="opacity" to="1" begin={begin} />
+                <animate attributeName="stroke-dashoffset" from={`${trail}`} to={`${-Math.ceil(total)}`} dur={dur} begin={begin} repeatCount="indefinite" />
+                <animate attributeName="stroke" values={colours} keyTimes={colourTimes} calcMode="discrete" dur={dur} begin={begin} repeatCount="indefinite" />
+              </path>
+              {/* Hidden until its first run, or it would sit at the SVG origin. */}
+              <circle r={r.minor * 1.2} fill={C.pinkLight} opacity={0}>
+                <set attributeName="opacity" to="1" begin={begin} />
+                <animateMotion path={d} dur={dur} begin={begin} repeatCount="indefinite" calcMode="paced" />
+                <animate attributeName="fill" values={colours} keyTimes={colourTimes} calcMode="discrete" dur={dur} begin={begin} repeatCount="indefinite" />
+              </circle>
+              <circle cx={hub.x} cy={hub.y} r={r.hub * 1.2} fill="none" stroke={C.violetLight} strokeWidth={r.minor * 0.5} opacity={0}>
+                <animate attributeName="opacity" values="0;0;0.8;0;0" keyTimes={hubTimes} dur={dur} begin={begin} repeatCount="indefinite" />
+                <animate attributeName="r" values={`${r.hub * 1.2};${r.hub * 1.2};${r.hub * 1.2};${r.hub * 2.6};${r.hub * 2.6}`} keyTimes={hubTimes} dur={dur} begin={begin} repeatCount="indefinite" />
+              </circle>
+              <circle cx={end.x} cy={end.y} r={r.outcome * 1.2} fill="none" stroke={C.plum} strokeWidth={r.minor * 0.5} opacity={0}>
+                <animate attributeName="opacity" values="0;0;0.8;0" keyTimes="0;0.96;0.975;1" dur={dur} begin={begin} repeatCount="indefinite" />
+                <animate attributeName="r" values={`${r.outcome * 1.2};${r.outcome * 1.2};${r.outcome * 1.3};${r.outcome * 3}`} keyTimes="0;0.96;0.975;1" dur={dur} begin={begin} repeatCount="indefinite" />
+              </circle>
+            </g>
+          );
+        })}
+
+      {GRAPH.nodes.map((n) => {
+        const p = pos(n);
+        const rad = r[n.kind];
+        return (
+          <g key={n.id}>
+            {n.kind === "hub" && (
+              <circle cx={p.x} cy={p.y} r={rad * 1.6} fill="none" stroke={C.violetLight} strokeOpacity={0.45} strokeWidth={r.minor * 0.4}>
+                {animate && <animate attributeName="r" values={`${rad * 1.5};${rad * 1.9};${rad * 1.5}`} dur="4s" repeatCount="indefinite" />}
+              </circle>
+            )}
+            {n.kind !== "minor" && n.kind !== "hub" && <circle cx={p.x} cy={p.y} r={rad * 1.7} fill={FILL[n.kind]} fillOpacity={0.12} />}
+            <circle cx={p.x} cy={p.y} r={rad} fill={n.kind === "hub" ? `url(#${id("soma")})` : FILL[n.kind]} fillOpacity={n.kind === "minor" ? 0.65 : 1} />
+            {n.kind === "outcome" && <circle cx={p.x} cy={p.y} r={rad * 0.38} fill="var(--color-canvas)" />}
+            {n.label && (
+              <text
+                x={p.x}
+                y={p.y + rad * (n.kind === "hub" ? 2.4 : 1.7) + frame.font * 0.35}
+                textAnchor="middle"
+                dominantBaseline="hanging"
+                fontSize={n.kind === "hub" ? frame.font * 1.15 : frame.font}
+                fill={n.kind === "hub" ? "var(--color-ink)" : "var(--color-muted)"}
+                fontWeight={n.kind === "hub" ? 600 : 500}
+                fontFamily="var(--font-sans)"
+                // A white halo lets edges pass cleanly behind the label.
+                stroke="var(--color-canvas)"
+                strokeWidth={frame.font * 0.35}
+                strokeLinejoin="round"
+                paintOrder="stroke"
+              >
+                {n.label}
+              </text>
+            )}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+const WIDE: Frame = { id: "ngw", w: 1600, h: 860, pad: 70, vertical: false, r: { data: 11, intel: 10, hub: 20, outcome: 11, minor: 4 }, font: 17, speed: 80 };
+const TALL: Frame = { id: "ngt", w: 420, h: 820, pad: 40, vertical: true, r: { data: 7, intel: 6.5, hub: 13, outcome: 7, minor: 2.6 }, font: 11.5, speed: 40 };
 
 export function NetworkGraph({ graph }: { graph: HomeContent["hero"]["graph"] }) {
   // Pulses run only when motion is welcome; SMIL ignores CSS media queries.
@@ -179,119 +370,13 @@ export function NetworkGraph({ graph }: { graph: HomeContent["hero"]["graph"] })
   }, []);
 
   return (
-    <figure className="text-ink">
+    <figure className="flex h-full flex-col text-ink">
       <figcaption className="text-center text-caption text-muted">{graph.caption}</figcaption>
-
-      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" className="mt-6 block aspect-[16/9] w-full overflow-visible" role="img" aria-label={graph.description}>
-        <defs>
-          <linearGradient id="ng-soma" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="var(--color-soma-from)" />
-            <stop offset="1" stopColor="var(--color-soma-to)" />
-          </linearGradient>
-          {EDGES.map(([a, b]) => {
-            const p = at(a);
-            const q = at(b);
-            return (
-              <linearGradient key={`${a}-${b}`} id={`ng-e-${a}-${b}`} gradientUnits="userSpaceOnUse" x1={p.x} y1={p.y} x2={q.x} y2={q.y}>
-                <stop offset="0" stopColor={tone(p)} />
-                <stop offset="1" stopColor={tone(q)} />
-              </linearGradient>
-            );
-          })}
-          <radialGradient id="ng-glow">
-            <stop offset="0" stopColor={C.violetLight} stopOpacity={0.35} />
-            <stop offset="1" stopColor={C.violetLight} stopOpacity={0} />
-          </radialGradient>
-        </defs>
-
-        <circle cx={CX} cy={CY} r={52} fill="url(#ng-glow)" />
-
-        <g strokeLinecap="round">
-          {EDGES.map(([a, b]) => {
-            const p = at(a);
-            const q = at(b);
-            const spoke = p.kind === "relay";
-            return (
-              <line
-                key={`${a}-${b}`}
-                x1={p.x}
-                y1={p.y}
-                x2={q.x}
-                y2={q.y}
-                stroke={`url(#ng-e-${a}-${b})`}
-                strokeWidth={spoke ? 1 : 1.6}
-                strokeOpacity={spoke ? 0.22 : 0.5}
-              />
-            );
-          })}
-        </g>
-
-        {animate &&
-          ROUTES.map((r, i) => {
-            const { d, total, hubAt, end } = measure(r.path);
-            const dur = `${(total / SPEED).toFixed(1)}s`;
-            const begin = `${r.begin}s`;
-            // Pink until the crossing, violet until the outcome, plum on arrival.
-            const colourTimes = `0;${f(hubAt)};${ARRIVE}`;
-            const colours = `${C.pinkLight};${C.violetLight};${C.plum}`;
-            const hubTimes = `0;${f(hubAt - 0.015)};${f(hubAt)};${f(Math.min(hubAt + 0.08, 0.99))};1`;
-            return (
-              <g key={i}>
-                <path d={d} fill="none" stroke={C.pinkLight} strokeOpacity={0.8} strokeWidth={2.4} strokeLinecap="round" strokeDasharray={`26 ${Math.ceil(total) + 60}`} strokeDashoffset={26} opacity={0}>
-                  <set attributeName="opacity" to="1" begin={begin} />
-                  <animate attributeName="stroke-dashoffset" from="26" to={`${-Math.ceil(total)}`} dur={dur} begin={begin} repeatCount="indefinite" />
-                  <animate attributeName="stroke" values={colours} keyTimes={colourTimes} calcMode="discrete" dur={dur} begin={begin} repeatCount="indefinite" />
-                </path>
-                {/* Hidden until its first run, or it would sit at the SVG origin. */}
-                <circle r={3.8} fill={C.pinkLight} opacity={0}>
-                  <set attributeName="opacity" to="1" begin={begin} />
-                  <animateMotion path={d} dur={dur} begin={begin} repeatCount="indefinite" calcMode="paced" />
-                  <animate attributeName="fill" values={colours} keyTimes={colourTimes} calcMode="discrete" dur={dur} begin={begin} repeatCount="indefinite" />
-                </circle>
-                <circle cx={CX} cy={CY} r={15} fill="none" stroke={C.violetLight} strokeWidth={1.5} opacity={0}>
-                  <animate attributeName="opacity" values="0;0;0.8;0;0" keyTimes={hubTimes} dur={dur} begin={begin} repeatCount="indefinite" />
-                  <animate attributeName="r" values="15;15;15;32;32" keyTimes={hubTimes} dur={dur} begin={begin} repeatCount="indefinite" />
-                </circle>
-                <circle cx={end.x} cy={end.y} r={9} fill="none" stroke={C.plum} strokeWidth={1.5} opacity={0}>
-                  <animate attributeName="opacity" values="0;0;0.8;0" keyTimes={`0;${ARRIVE - 0.01};${ARRIVE + 0.005};1`} dur={dur} begin={begin} repeatCount="indefinite" />
-                  <animate attributeName="r" values="9;9;10;22" keyTimes={`0;${ARRIVE - 0.01};${ARRIVE + 0.005};1`} dur={dur} begin={begin} repeatCount="indefinite" />
-                </circle>
-              </g>
-            );
-          })}
-
-        {NODES.map((n) => (
-          <g key={n.id}>
-            {n.kind === "hub" && (
-              <circle cx={n.x} cy={n.y} r={21} fill="none" stroke={C.violetLight} strokeOpacity={0.45} strokeWidth={1.2}>
-                {animate && <animate attributeName="r" values="19;24;19" dur="4s" repeatCount="indefinite" />}
-              </circle>
-            )}
-            {n.kind !== "relay" && n.kind !== "hub" && <circle cx={n.x} cy={n.y} r={RADIUS[n.kind] + 5} fill={NODE_COLOUR[n.kind]} fillOpacity={0.12} />}
-            <circle cx={n.x} cy={n.y} r={RADIUS[n.kind]} fill={NODE_COLOUR[n.kind]} />
-            {n.kind === "outcome" && <circle cx={n.x} cy={n.y} r={2.8} fill="var(--color-canvas)" />}
-            {n.label && (
-              <text
-                {...labelProps(n)}
-                // Larger on small screens, where the whole graph is drawn small.
-                className="text-[12px] sm:text-[10px] md:text-[8.5px]"
-                fill={n.kind === "hub" ? "var(--color-ink)" : "var(--color-muted)"}
-                fontWeight={n.kind === "hub" ? 600 : 500}
-                fontFamily="var(--font-sans)"
-                // A white halo lets lines pass cleanly behind the label.
-                stroke="var(--color-canvas)"
-                strokeWidth={4}
-                strokeLinejoin="round"
-                paintOrder="stroke"
-              >
-                {n.label}
-              </text>
-            )}
-          </g>
-        ))}
-      </svg>
-
-      <ul aria-hidden className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-caption text-muted">
+      <div className="relative mt-4 min-h-0 flex-1">
+        <Graph frame={WIDE} animate={animate} description={graph.description} className="absolute inset-0 hidden size-full md:block" />
+        <Graph frame={TALL} animate={animate} description={graph.description} className="absolute inset-0 size-full md:hidden" />
+      </div>
+      <ul aria-hidden className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-caption text-muted">
         <li className="flex items-center gap-1.5">
           <span className="size-2.5 rounded-full" style={{ background: C.pink }} />
           {graph.legend.data}

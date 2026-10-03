@@ -22,7 +22,7 @@ export const home: HomeContent = {
       caption: "From sources to decisions",
       legend: { data: "Data", intelligence: "Intelligence", outcomes: "Outcomes" },
       description:
-        "Illustration of a knowledge graph shaped like an infinity sign: data from ERP, CRM, sensors, documents and APIs flows through customers, assets, orders and contracts to knowledge at the centre, and on to forecasts, alerts, decisions, actions and reports.",
+        "Illustration of a knowledge graph: data from ERP, CRM, sensors, documents, APIs, spreadsheets, legacy databases and event streams connects through customers, products, suppliers, orders, assets and contracts to knowledge at the centre, and on to forecasts, alerts, decisions, actions, reports and dashboards.",
     },
   },
   trust: { line: "Trusted by teams building what comes next." },

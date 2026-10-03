@@ -47,10 +47,10 @@ export default async function Home() {
         </p>
       </Section>
 
-      {/* The knowledge graph, on its own in open white space */}
-      <section aria-label={home.hero.graph.caption} className="py-(--section-y)">
-        <div className="mx-auto w-full max-w-[calc(64rem+2*var(--page-margin))] px-(--page-margin)">
-          <Reveal variant="fade">
+      {/* The knowledge graph: one full screen, page-wide, with white space above and below */}
+      <section aria-label={home.hero.graph.caption} className="flex h-svh min-h-[40rem] flex-col py-[9svh]">
+        <div className="mx-auto flex min-h-0 w-full max-w-[110rem] flex-1 flex-col px-(--page-margin)">
+          <Reveal variant="fade" className="flex min-h-0 flex-1 flex-col">
             <NetworkGraph graph={home.hero.graph} />
           </Reveal>
         </div>
