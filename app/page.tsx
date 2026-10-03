@@ -1,9 +1,9 @@
-import { CapabilityCard } from "@/components/cards/CapabilityCard";
 import { CaseStudyCard } from "@/components/cards/CaseStudyCard";
 import { IndustryCard } from "@/components/cards/IndustryCard";
 import { ArchitectureFlow } from "@/components/diagrams/ArchitectureFlow";
 import { ParallaxPhoto } from "@/components/motion/ParallaxPhoto";
 import { Reveal } from "@/components/motion/Reveal";
+import { CapabilityStack } from "@/components/sections/CapabilityStack";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { Hero } from "@/components/sections/Hero";
 import { Button } from "@/components/ui/Button";
@@ -11,18 +11,22 @@ import { LogoSlot } from "@/components/ui/Placeholder";
 import { Section } from "@/components/ui/Section";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Tag } from "@/components/ui/Tag";
-import { getCapabilities, getCaseStudies, getHome, getIndustries, getSite, getTechnologies } from "@/lib/content";
+import { getCapabilities, getCaseStudies, getHome, getIndustries, getPages, getSite, getTechnologies } from "@/lib/content";
+import type { Pillar } from "@/lib/content/types";
 import { flowNodes } from "@/lib/content/resolve";
 
 export default async function Home() {
-  const [home, site, capabilities, industries, caseStudies, technologies] = await Promise.all([
+  const [home, site, capabilities, industries, caseStudies, technologies, pages] = await Promise.all([
     getHome(),
     getSite(),
     getCapabilities(),
     getIndustries(),
     getCaseStudies(),
     getTechnologies(),
+    getPages(),
   ]);
+  const pillarLabels = Object.fromEntries(pages.solutions.pillars.map((p) => [p.pillar, p.heading])) as Record<Pillar, string>;
+  pillarLabels.bridge ??= "Data and intelligence";
   const [featuredStudy] = [...caseStudies].sort((a, b) => Number(b.featured ?? false) - Number(a.featured ?? false));
 
   return (
@@ -82,13 +86,7 @@ export default async function Home() {
         <Reveal>
           <SectionHeader id="capabilities-title" title={home.capabilities.headline} support={home.capabilities.support} />
         </Reveal>
-        <ul className="grid gap-(--gutter) sm:grid-cols-2 lg:grid-cols-3">
-          {capabilities.map((c, i) => (
-            <li key={c.slug}>
-              <CapabilityCard capability={c} delay={(i % 3) * 90} />
-            </li>
-          ))}
-        </ul>
+        <CapabilityStack capabilities={capabilities} pillarLabels={pillarLabels} />
       </Section>
 
       {/* The foundation is data — kept exactly as approved */}
