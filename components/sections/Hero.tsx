@@ -6,20 +6,18 @@ import { Container } from "@/components/ui/Container";
 import { Mark } from "@/components/brand/Logo";
 
 /**
- * Homepage opening: the tagline with the mark on its right, the description and actions
- * below, then the office photo drifting gently as the page scrolls.
+ * Homepage opening: a split hero (tagline, description and actions on the left,
+ * the mark as the visual on the right), then the office photo drifting gently.
  */
 export function Hero({ hero }: { hero: HomeContent["hero"] }) {
   return (
     <section aria-labelledby="hero-title" className="overflow-x-clip pb-(--section-y)">
       <Container className="pt-12 md:pt-20">
-        {/* Tagline with the mark on its right. From md up both are sized from one value,
-            --tag, which scales with the row's width: the tagline holds two lines and the
-            mark stands about half as tall again, centred beside it. */}
-        <div className="@container">
-          <div className="flex items-start gap-5 md:items-center md:gap-10 md:[--tag:clamp(1.75rem,4.2cqi,3.5rem)]">
-            <Reveal className="min-w-0 flex-1">
-              <h1 id="hero-title" className="text-h2 text-pretty md:text-(length:--tag) md:leading-[1.05] md:tracking-[-0.03em]">
+        {/* Split hero: text column on the left sharing one edge, the mark as the visual on the right. */}
+        <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-x-(--gutter)">
+          <div className="lg:col-span-7">
+            <Reveal>
+              <h1 id="hero-title" className="text-[clamp(2.25rem,1.4rem+3.2vw,3.75rem)] leading-[1.06] tracking-[-0.03em] text-balance">
                 {hero.tagLines.map((line) => (
                   <span key={line} className="block">
                     {line}
@@ -27,24 +25,28 @@ export function Hero({ hero }: { hero: HomeContent["hero"] }) {
                 ))}
               </h1>
             </Reveal>
-            <Reveal variant="scale" delay={120} className="shrink-0">
-              <Mark size={64} title="" className="md:size-[calc(var(--tag)*3.2)]" />
+            <Reveal delay={140}>
+              <p className="mt-6 max-w-[46ch] text-body-lg text-muted">{hero.support}</p>
+            </Reveal>
+            <Reveal delay={240} className="mt-10 flex flex-wrap gap-3">
+              <Button href={hero.cta.primary.href} size="lg">
+                {hero.cta.primary.label}
+              </Button>
+              {hero.cta.secondary && (
+                <Button href={hero.cta.secondary.href} variant="secondary" size="lg">
+                  {hero.cta.secondary.label}
+                </Button>
+              )}
             </Reveal>
           </div>
+          <Reveal variant="scale" delay={180} className="order-first lg:order-none lg:col-span-5 lg:flex lg:justify-center">
+            <span className="relative inline-flex items-center justify-center">
+              {/* A faint soma-coloured glow seats the mark on the page. */}
+              <span aria-hidden className="absolute inset-[-18%] hidden rounded-full lg:block bg-[radial-gradient(closest-side,rgb(208_10_136/0.10),rgb(108_17_152/0.06)_55%,transparent)]" />
+              <Mark size={96} title="" className="relative size-24 lg:size-[clamp(14rem,22vw,19rem)]" />
+            </span>
+          </Reveal>
         </div>
-        <Reveal delay={240} className="mt-8 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
-          <p className="max-w-[56ch] text-body-lg text-muted">{hero.support}</p>
-          <div className="flex shrink-0 flex-wrap gap-3">
-            <Button href={hero.cta.primary.href} size="lg">
-              {hero.cta.primary.label}
-            </Button>
-            {hero.cta.secondary && (
-              <Button href={hero.cta.secondary.href} variant="secondary" size="lg">
-                {hero.cta.secondary.label}
-              </Button>
-            )}
-          </div>
-        </Reveal>
 
         <div className="mt-12 md:mt-16">
           <ParallaxPhoto

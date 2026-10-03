@@ -13,7 +13,7 @@ const OPEN_DELAY = 80;
 const CLOSE_DELAY = 160;
 
 const itemClasses =
-  "inline-flex h-10 items-center gap-1.5 rounded-pill px-3.5 text-small font-medium text-ink transition-colors duration-200 ease-out " +
+  "inline-flex h-10 items-center gap-1.5 whitespace-nowrap rounded-pill px-3 text-small font-medium text-ink transition-colors duration-200 ease-out xl:px-3.5 " +
   "hover:bg-mist focus-visible:shadow-(--focus-ring)";
 
 export function DesktopNav({ items }: { items: NavItem[] }) {
