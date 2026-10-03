@@ -1,0 +1,161 @@
+/* metadatum — brand tokens (Tailwind CSS v4, CSS-first config)
+   Source of truth for colour, type, radius, motion. Components use these
+   via Tailwind utilities (bg-pink, text-ink, rounded-card…) — never raw hex. */
+
+@import "tailwindcss";
+
+/* Lets /_styleguide render hover and focus states statically: data-force="hover" | "focus" */
+@custom-variant force-hover (&[data-force="hover"]);
+@custom-variant force-focus (&[data-force="focus"]);
+
+@theme {
+  /* Colour — sampled from the logo asset sheet; *derived marked */
+  --color-canvas: #ffffff;
+  --color-ink: #000000;
+  --color-pink: #f7147f;          /* data — graphics + large text only */
+  --color-pink-ink: #c8076a;      /* derived — pink at body size, 5.7:1 */
+  --color-violet: #820aaa;        /* intelligence */
+  --color-soma-from: #d00a88;
+  --color-soma-to: #6c1198;
+  --color-plum: #3d0b52;          /* dark sections */
+  --color-plum-50: #f5eef8;       /* derived — placeholder fill */
+  --color-lilac: #d9a6f0;         /* derived — violet on plum, 7.8:1 */
+  --color-mist: #f4f3f6;          /* alternate section bg */
+  --color-line: #e4e2e8;          /* derived — borders */
+  --color-muted: #5b5763;         /* derived — secondary text */
+
+  /* Type — families are injected by next/font as CSS variables */
+  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+
+  --text-display: clamp(3rem, 1.6rem + 5.6vw, 5.5rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.035em;
+  --text-h1: clamp(2.5rem, 1.6rem + 3.6vw, 4rem);
+  --text-h1--line-height: 1.05;
+  --text-h1--letter-spacing: -0.03em;
+  --text-h2: clamp(2rem, 1.55rem + 1.8vw, 2.75rem);
+  --text-h2--line-height: 1.1;
+  --text-h2--letter-spacing: -0.025em;
+  --text-h3: clamp(1.5rem, 1.35rem + 0.6vw, 1.75rem);
+  --text-h3--line-height: 1.2;
+  --text-h3--letter-spacing: -0.015em;
+  --text-h4: clamp(1.125rem, 1.07rem + 0.25vw, 1.25rem);
+  --text-h4--line-height: 1.3;
+  --text-h4--letter-spacing: -0.005em;
+  --text-body-lg: clamp(1.125rem, 1.07rem + 0.25vw, 1.25rem);
+  --text-body-lg--line-height: 1.55;
+  --text-body: clamp(1rem, 0.97rem + 0.12vw, 1.0625rem);
+  --text-body--line-height: 1.6;
+  --text-small: clamp(0.875rem, 0.85rem + 0.12vw, 0.9375rem);
+  --text-small--line-height: 1.5;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.4;
+  --text-caption--letter-spacing: 0.01em;
+
+  /* Radius — by hierarchy */
+  --radius-pill: 999px;
+  --radius-card: 4px;
+  --radius-media: 2px;
+
+  /* Layout */
+  --container-site: 80rem;        /* 1280px */
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 160ms;
+  --duration-base: 200ms;
+  --duration-menu: 240ms;
+}
+
+:root {
+  --soma-gradient: linear-gradient(135deg, var(--color-soma-from), var(--color-soma-to));
+  --focus-ring: 0 0 0 3px var(--color-canvas), 0 0 0 5px var(--color-violet);
+  --shadow-menu: 0 24px 48px -24px rgb(61 11 82 / 0.25);
+  --page-margin: clamp(20px, 5vw, 80px);
+  --section-y: clamp(64px, 4rem + 4vw, 128px);
+  --gutter: 16px;
+  --nav-height: 72px;
+}
+
+@media (min-width: 768px) {
+  :root { --gutter: 24px; }
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; max-width: 68ch; }
+  ::selection { background: var(--color-pink); color: var(--color-canvas); }
+  :focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: 2px; }
+  .bg-plum ::selection { background: var(--color-lilac); color: var(--color-plum); }
+  /* Violet disappears on dark surfaces; the ring turns lilac there. */
+  /* Descendants only, so an ink button on white keeps the violet ring. */
+  .bg-plum * { --focus-ring: 0 0 0 2px var(--color-plum), 0 0 0 4px var(--color-lilac); }
+  .bg-ink * { --focus-ring: 0 0 0 2px var(--color-ink), 0 0 0 4px var(--color-lilac); }
+}
+
+/* A utility (not a component class) so variants like before: and hover: work. */
+@utility bg-soma {
+  background-image: var(--soma-gradient);
+}
+
+@layer components {
+  .placeholder {
+    display: inline-block;
+    border: 1px dashed var(--color-plum);
+    background: var(--color-plum-50);
+    color: var(--color-plum);
+    padding: 0.05em 0.4em;
+    border-radius: 2px;
+    font-family: var(--font-sans);
+  }
+
+  .skip-link {
+    position: absolute;
+    left: var(--page-margin);
+    top: 12px;
+    z-index: 100;
+    transform: translateY(-200%);
+    background: var(--color-ink);
+    color: var(--color-canvas);
+    padding: 12px 20px;
+    border-radius: var(--radius-pill);
+    font-weight: 500;
+  }
+  .skip-link:focus-visible { transform: none; }
+
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size var(--duration-base) var(--ease-out);
+  }
+  .link-underline:hover, .link-underline:focus-visible { background-size: 100% 1px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

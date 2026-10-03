@@ -1,0 +1,62 @@
+import type { Industry } from "@/lib/content/types";
+
+export const industries: Industry[] = [
+  {
+    slug: "education",
+    name: "Education",
+    icon: "graduation",
+    hasPage: true,
+    line: "Data platforms and tools that help institutions see every learner clearly.",
+    challenge: "Student, academic and operational data sit in separate systems, so institutions plan on last term's numbers.",
+    dataProblems: ["Student records split across admissions, LMS and finance", "Manual reporting to regulators", "No single view of outcomes"],
+    aiOpportunities: ["Early-warning signals for at-risk students", "AI tutors grounded in course material", "Automated document processing for admissions"],
+    solutions: ["Student analytics", "Institutional data platforms", "Learning platforms", "Education management systems", "AI learning tools"],
+  },
+  {
+    slug: "healthcare",
+    name: "Healthcare",
+    icon: "heart-pulse",
+    hasPage: true,
+    line: "Operational intelligence and document automation for care providers.",
+    challenge: "Clinical and operational data are fragmented and heavily regulated, and much of the work still runs on documents.",
+    dataProblems: ["Patient data across disconnected systems", "Unstructured clinical documents", "Slow, manual operational reporting"],
+    aiOpportunities: ["Document intelligence for claims and records", "Capacity and demand forecasting", "Assistants for administrative workflows"],
+    solutions: ["Healthcare analytics", "Patient data platforms", "Operational intelligence", "Document processing", "Workflow automation"],
+  },
+  {
+    slug: "logistics",
+    name: "Logistics and supply chain",
+    icon: "truck",
+    hasPage: true,
+    line: "Visibility from warehouse to doorstep, in time to act on it.",
+    challenge: "Fleet, warehouse and partner data arrive late and in different formats, so problems surface after they've cost money.",
+    dataProblems: ["Telemetry, WMS and partner feeds that don't line up", "Batch reports that arrive too late", "Poor master data"],
+    aiOpportunities: ["Demand forecasting", "Route optimisation", "Exception detection and alerting"],
+    solutions: ["Fleet analytics", "Supply chain visibility", "Demand forecasting", "Logistics dashboards", "Data integration"],
+  },
+  {
+    slug: "hr-workforce",
+    name: "HR and workforce",
+    icon: "people",
+    hasPage: true,
+    line: "One trusted view of your people, from hiring to payroll.",
+    challenge: "HR, payroll and recruitment systems disagree with each other, and workforce decisions wait on spreadsheets.",
+    dataProblems: ["Employee records duplicated across HRMS, payroll and ATS", "Manual payroll reconciliation", "No reliable headcount history"],
+    aiOpportunities: ["Candidate screening support", "Policy and HR helpdesk assistants", "Attrition and capacity forecasting"],
+    solutions: ["HRMS", "Workforce analytics", "Employee data platforms", "Recruitment systems", "Payroll integrations"],
+  },
+  {
+    slug: "custom",
+    name: "Custom enterprise solutions",
+    icon: "building",
+    hasPage: false,
+    line: "Technology built specifically for how your organisation works.",
+    challenge: "Off-the-shelf software fits most of the process and none of what makes your business different.",
+    dataProblems: ["Workarounds in spreadsheets", "Systems that can't share data", "Processes nobody has documented"],
+    aiOpportunities: ["AI-assisted workflows inside your own tools", "Search across internal knowledge", "Automated document handling"],
+    solutions: ["Enterprise applications", "SaaS products", "Internal platforms", "Workflow systems", "AI-powered business tools"],
+  },
+];
+
+export const otherIndustries =
+  "We build domain-specific technology wherever complex data and business processes need to become simpler, smarter, and scalable.";
