@@ -15,6 +15,7 @@ export function ParallaxPhoto({
   alt,
   delay = 0,
   className,
+  imageClassName,
 }: {
   name: string;
   sizes: string;
@@ -23,11 +24,13 @@ export function ParallaxPhoto({
   alt?: string;
   delay?: number;
   className?: string;
+  /** Classes for the image itself, e.g. object-position to keep a subject in frame. */
+  imageClassName?: string;
 }) {
   return (
     <Reveal variant="image" delay={delay} className={cn("relative overflow-hidden rounded-media", className)}>
       <Parallax speed={speed} className="absolute inset-x-0 -top-[12%] -bottom-[12%]">
-        <Photo name={name} sizes={sizes} priority={priority} alt={alt} />
+        <Photo name={name} sizes={sizes} priority={priority} alt={alt} className={imageClassName} />
       </Parallax>
     </Reveal>
   );
