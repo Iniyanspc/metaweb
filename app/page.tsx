@@ -6,6 +6,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { CapabilityStack } from "@/components/sections/CapabilityStack";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { Hero } from "@/components/sections/Hero";
+import { NetworkGraph } from "@/components/sections/NetworkGraph";
 import { Button } from "@/components/ui/Button";
 import { LogoSlot } from "@/components/ui/Placeholder";
 import { Section } from "@/components/ui/Section";
@@ -32,6 +33,15 @@ export default async function Home() {
   return (
     <>
       <Hero hero={home.hero} />
+
+      {/* The knowledge graph, on its own in open white space */}
+      <section aria-label={home.hero.graph.caption} className="pb-(--section-y)">
+        <div className="mx-auto w-full max-w-[calc(64rem+2*var(--page-margin))] px-(--page-margin)">
+          <Reveal variant="fade">
+            <NetworkGraph graph={home.hero.graph} />
+          </Reveal>
+        </div>
+      </section>
 
       {/* Trust strip */}
       <section aria-labelledby="trust-title" className="border-y border-line py-12 md:py-16">

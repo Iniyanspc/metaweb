@@ -65,26 +65,26 @@ const ROUTES: { path: string[]; dur: number; begin: number }[] = [
 
 const at = (id: string) => NODES.find((n) => n.id === id)!;
 
-/* Brand palette on black: pink = data, lilac (violet on dark) = intelligence,
-   white = outcomes (ink's role on dark), soma gradient = the hub.
-   SMIL animations can't read CSS variables, so the pulse colours are literal. */
+/* Brand palette on white: pink = data, violet = intelligence, ink = outcomes,
+   soma gradient = the hub. SMIL animations can't read CSS variables, so the
+   pulse colours are literal. */
 const PINK = "#F7147F";
-const LILAC = "#D9A6F0";
-const WHITE = "#FFFFFF";
+const VIOLET = "#820AAA";
+const INK = "#000000";
 
 const FILL: Record<Kind, string> = {
   data: "var(--color-pink)",
-  intel: "var(--color-lilac)",
+  intel: "var(--color-violet)",
   hub: "url(#graph-soma)",
-  outcome: "var(--color-ink)",
-  minor: "var(--color-canvas)",
+  outcome: "var(--color-canvas)",
+  minor: "var(--color-muted)",
 };
 const EDGE: Record<Kind, string> = {
   data: "var(--color-pink)",
-  intel: "var(--color-lilac)",
-  hub: "var(--color-lilac)",
-  outcome: "var(--color-canvas)",
-  minor: "var(--color-canvas)",
+  intel: "var(--color-violet)",
+  hub: "var(--color-violet)",
+  outcome: "var(--color-ink)",
+  minor: "var(--color-muted)",
 };
 const RADIUS: Record<Kind, number> = { data: 6, intel: 5, hub: 9, outcome: 6, minor: 2.2 };
 
@@ -105,7 +105,7 @@ function measure(path: string[]) {
 const ARRIVE = 0.96;
 const f = (n: number) => n.toFixed(3);
 
-export function NetworkGraphCard({ graph }: { graph: HomeContent["hero"]["graph"] }) {
+export function NetworkGraph({ graph }: { graph: HomeContent["hero"]["graph"] }) {
   // Pulses run only when motion is welcome; SMIL ignores CSS media queries.
   const [animate, setAnimate] = useState(false);
   useEffect(() => {
@@ -118,17 +118,10 @@ export function NetworkGraphCard({ graph }: { graph: HomeContent["hero"]["graph"
   const hub = at("hub");
 
   return (
-    <figure className="relative h-full overflow-hidden rounded-media bg-ink text-canvas">
-      <figcaption className="absolute inset-x-5 top-4 z-10 flex items-center justify-between text-caption text-canvas/70">
-        <span>{graph.caption}</span>
-        <span aria-hidden className="flex gap-1">
-          <span className="size-1.5 rounded-full bg-pink" />
-          <span className="size-1.5 rounded-full bg-lilac" />
-          <span className="size-1.5 rounded-full bg-canvas" />
-        </span>
-      </figcaption>
+    <figure className="text-ink">
+      <figcaption className="text-center text-caption text-muted">{graph.caption}</figcaption>
 
-      <svg viewBox="0 0 480 270" preserveAspectRatio="xMidYMid meet" className="absolute inset-0 block size-full" role="img" aria-label={graph.description}>
+      <svg viewBox="16 18 448 252" preserveAspectRatio="xMidYMid meet" className="mt-6 block aspect-[16/9] w-full overflow-visible" role="img" aria-label={graph.description}>
         <defs>
           <linearGradient id="graph-soma" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" stopColor="var(--color-soma-from)" />
@@ -136,7 +129,7 @@ export function NetworkGraphCard({ graph }: { graph: HomeContent["hero"]["graph"
           </linearGradient>
         </defs>
 
-        <g strokeOpacity={0.28} strokeWidth={1}>
+        <g strokeOpacity={0.22} strokeWidth={1}>
           {EDGES.map(([a, b]) => {
             const p = at(a);
             const q = at(b);
@@ -149,9 +142,9 @@ export function NetworkGraphCard({ graph }: { graph: HomeContent["hero"]["graph"
             const { d, total, hubAt, end } = measure(r.path);
             const dur = `${r.dur}s`;
             const begin = `${r.begin}s`;
-            // Pink until the hub, lilac until the outcome, white on arrival.
+            // Pink until the hub, violet until the outcome, ink on arrival.
             const colourTimes = `0;${f(hubAt)};${ARRIVE}`;
-            const colours = `${PINK};${LILAC};${WHITE}`;
+            const colours = `${PINK};${VIOLET};${INK}`;
             return (
               <g key={i}>
                 {/* A short trail moving with the pulse (both at constant speed, so they stay together). */}
@@ -166,8 +159,8 @@ export function NetworkGraphCard({ graph }: { graph: HomeContent["hero"]["graph"
                   <animateMotion path={d} dur={dur} begin={begin} repeatCount="indefinite" calcMode="paced" />
                   <animate attributeName="fill" values={colours} keyTimes={colourTimes} calcMode="discrete" dur={dur} begin={begin} repeatCount="indefinite" />
                 </circle>
-                {/* The hub flashes lilac as the pulse passes through it. */}
-                <circle cx={hub.x} cy={hub.y} r={12} fill="none" stroke={LILAC} strokeWidth={1.5} opacity={0}>
+                {/* The hub flashes violet as the pulse passes through it. */}
+                <circle cx={hub.x} cy={hub.y} r={12} fill="none" stroke={VIOLET} strokeWidth={1.5} opacity={0}>
                   <animate
                     attributeName="opacity"
                     values="0;0;0.9;0;0"
@@ -185,8 +178,8 @@ export function NetworkGraphCard({ graph }: { graph: HomeContent["hero"]["graph"
                     repeatCount="indefinite"
                   />
                 </circle>
-                {/* The outcome rings out white on arrival. */}
-                <circle cx={end.x} cy={end.y} r={7} fill="none" stroke={WHITE} strokeWidth={1.5} opacity={0}>
+                {/* The outcome rings out on arrival. */}
+                <circle cx={end.x} cy={end.y} r={7} fill="none" stroke={INK} strokeWidth={1.5} opacity={0}>
                   <animate attributeName="opacity" values="0;0;0.9;0" keyTimes={`0;${ARRIVE - 0.01};${ARRIVE + 0.01};1`} dur={dur} begin={begin} repeatCount="indefinite" />
                   <animate attributeName="r" values="7;7;8;20" keyTimes={`0;${ARRIVE - 0.01};${ARRIVE + 0.01};1`} dur={dur} begin={begin} repeatCount="indefinite" />
                 </circle>
@@ -197,7 +190,7 @@ export function NetworkGraphCard({ graph }: { graph: HomeContent["hero"]["graph"
         {NODES.map((n) => (
           <g key={n.id}>
             {n.kind === "hub" && (
-              <circle cx={n.x} cy={n.y} r={16} fill="none" stroke="var(--color-lilac)" strokeOpacity={0.45}>
+              <circle cx={n.x} cy={n.y} r={16} fill="none" stroke="var(--color-violet)" strokeOpacity={0.35}>
                 {animate && <animate attributeName="r" values="14;19;14" dur="3.2s" repeatCount="indefinite" />}
               </circle>
             )}
@@ -206,19 +199,19 @@ export function NetworkGraphCard({ graph }: { graph: HomeContent["hero"]["graph"
               cy={n.y}
               r={RADIUS[n.kind]}
               fill={FILL[n.kind]}
-              fillOpacity={n.kind === "minor" ? 0.45 : 1}
-              // Outcomes are white rings: where the line ends.
-              {...(n.kind === "outcome" ? { stroke: "var(--color-canvas)", strokeWidth: 2 } : {})}
+              fillOpacity={n.kind === "minor" ? 0.5 : 1}
+              // Outcomes are ink rings: where the line ends.
+              {...(n.kind === "outcome" ? { stroke: "var(--color-ink)", strokeWidth: 2 } : {})}
             />
             {n.label && (
               <text
                 x={n.x}
                 // The hub's label clears its pulsing ring.
-                y={n.y + (n.kind === "hub" ? 32 : RADIUS[n.kind] + 12)}
+                y={n.y + (n.kind === "hub" ? 30 : RADIUS[n.kind] + 11)}
                 textAnchor="middle"
-                fontSize={10}
-                fill="var(--color-canvas)"
-                fillOpacity={n.kind === "hub" ? 0.95 : 0.7}
+                // Larger on small screens, where the whole graph is drawn small.
+                className="text-[12px] sm:text-[10px] md:text-[8px]"
+                fill={n.kind === "hub" ? "var(--color-ink)" : "var(--color-muted)"}
                 fontFamily="var(--font-sans)"
               >
                 {n.label}
@@ -228,17 +221,17 @@ export function NetworkGraphCard({ graph }: { graph: HomeContent["hero"]["graph"
         ))}
       </svg>
 
-      <ul aria-hidden className="absolute bottom-4 left-5 z-10 flex flex-wrap gap-x-4 gap-y-1 text-caption text-canvas/70">
+      <ul aria-hidden className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-caption text-muted">
         <li className="flex items-center gap-1.5">
           <span className="size-2 rounded-full bg-pink" />
           {graph.legend.data}
         </li>
         <li className="flex items-center gap-1.5">
-          <span className="size-2 rounded-full bg-lilac" />
+          <span className="size-2 rounded-full bg-violet" />
           {graph.legend.intelligence}
         </li>
         <li className="flex items-center gap-1.5">
-          <span className="size-2.5 rounded-full border-2 border-canvas" />
+          <span className="size-2.5 rounded-full border-2 border-ink" />
           {graph.legend.outcomes}
         </li>
       </ul>
