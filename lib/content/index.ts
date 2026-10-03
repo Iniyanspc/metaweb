@@ -2,6 +2,7 @@
  * The only module pages import content from. Swap `source` for a CMS adapter
  * that implements ContentSource; pages and components don't change.
  */
+import { readInsights } from "./insights";
 import { staticSource } from "./source/static";
 import type {
   Capability,
@@ -64,4 +65,18 @@ export async function getCaseStudies(filter: { industry?: string; capability?: s
 
 export async function getCaseStudy(slug: string) {
   return (await source.getCaseStudies()).find((cs) => cs.slug === slug);
+}
+
+/* ---------- Insights (MDX) ---------- */
+
+export async function getInsights() {
+  return (await readInsights()).map((f) => f.meta);
+}
+
+export async function getInsight(slug: string) {
+  return (await readInsights()).find((f) => f.meta.slug === slug);
+}
+
+export async function getTeamMember(id: string) {
+  return (await source.getTeam()).find((m) => m.id === id);
 }

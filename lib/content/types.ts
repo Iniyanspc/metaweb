@@ -76,7 +76,7 @@ export interface Capability {
 }
 
 export interface ArchitectureDiagram {
-  nodes: { id: string; label: string; pillar: Pillar; detail?: string }[];
+  nodes: { id: string; label: string; pillar: Pillar; detail?: string; technologies?: string[] }[];
   edges: { from: string; to: string }[];
 }
 
@@ -189,9 +189,10 @@ export interface Insight {
   author: Slug; // TeamMember.id
   publishedAt: string; // ISO
   readingMinutes: number; // computed at build
-  featuredImage: Image;
+  /** Optional; without one, cards render an abstract node pattern seeded from the slug. */
+  featuredImage?: Image;
   featured?: boolean;
-  sample?: boolean; // sample content — excluded from sitemap and hidden in production
+  sample?: boolean; // sample content — excluded from sitemap; hidden when HIDE_SAMPLE_CONTENT=1
 }
 
 /* ---------- Careers ---------- */
@@ -261,9 +262,9 @@ export interface HomeContent {
   };
   ai: { headline: string; support: string; flow: string[]; services: string[]; cta: Link };
   process: { headline: string; support: string; steps: { title: string; body: string }[] };
-  industries: { headline: string; support: string };
+  industries: { headline: string; support: string; cta: Link; otherCta: Link };
   products: { headline: string; support: string; empty: string };
-  caseStudies: { headline: string; support: string; cta: Link };
+  caseStudies: { headline: string; support: string; cta: Link; more: string };
   technology: { headline: string; support: string; note: string; cta: Link };
   team: { headline: string; support: string; cta: Link };
   insights: { headline: string; cta: Link; empty: string };

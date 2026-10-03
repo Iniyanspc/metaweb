@@ -1,0 +1,36 @@
+/* A single pink pulse travels the flow once when the diagram is ≥40% in view,
+   turning violet after the data platform and ink after applications. */
+.pulse {
+  opacity: 0;
+}
+.played .pulse {
+  animation: travel-y 2.4s var(--ease-out) both;
+}
+@media (min-width: 1024px) {
+  .played .pulse {
+    animation-name: travel-x;
+  }
+}
+@keyframes travel-x {
+  0% { left: 0%; opacity: 1; background: var(--color-pink); }
+  42% { background: var(--color-pink); }
+  48% { background: var(--color-violet); }
+  84% { background: var(--color-violet); }
+  90% { background: var(--color-ink); }
+  97% { opacity: 1; }
+  100% { left: 100%; opacity: 0; background: var(--color-ink); }
+}
+@keyframes travel-y {
+  0% { top: 0%; opacity: 1; background: var(--color-pink); }
+  42% { background: var(--color-pink); }
+  48% { background: var(--color-violet); }
+  84% { background: var(--color-violet); }
+  90% { background: var(--color-ink); }
+  97% { opacity: 1; }
+  100% { top: 100%; opacity: 0; background: var(--color-ink); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .played .pulse {
+    animation: none;
+  }
+}

@@ -30,13 +30,13 @@ export const capabilities: Capability[] = [
       ],
       architecture: {
         nodes: [
-          { id: "sources", label: "Sources", pillar: "data", detail: "ERP, CRM, files, sensors, APIs, legacy databases." },
-          { id: "ingest", label: "Ingestion", pillar: "data", detail: "Batch and real-time, with contracts." },
-          { id: "transform", label: "Transformation", pillar: "data", detail: "Tested, versioned, documented models." },
-          { id: "platform", label: "Data platform", pillar: "bridge", detail: "Lakehouse or warehouse with governance built in." },
-          { id: "analytics", label: "Analytics", pillar: "ai", detail: "Semantic layers and dashboards people trust." },
-          { id: "ai", label: "AI", pillar: "ai", detail: "Models and retrieval that read from governed data." },
-          { id: "apps", label: "Applications", pillar: "business", detail: "The tools your teams use every day." },
+          { id: "sources", label: "Sources", pillar: "data", detail: "ERP, CRM, files, sensors, APIs, legacy databases.", technologies: ["sql", "postgresql"] },
+          { id: "ingest", label: "Ingestion", pillar: "data", detail: "Batch and real-time, with contracts so upstream changes don't break downstream.", technologies: ["azure-data-factory", "kafka", "airflow"] },
+          { id: "transform", label: "Transformation", pillar: "data", detail: "Tested, versioned, documented models.", technologies: ["dbt", "apache-spark"] },
+          { id: "platform", label: "Data platform", pillar: "bridge", detail: "A lakehouse or warehouse with governance built in.", technologies: ["databricks", "delta-lake"] },
+          { id: "analytics", label: "Analytics", pillar: "ai", detail: "Semantic layers and dashboards people trust.", technologies: ["power-bi", "dbt"] },
+          { id: "ai", label: "AI", pillar: "ai", detail: "Models and retrieval that read from governed data.", technologies: ["llm-apis", "vector-search", "mlflow"] },
+          { id: "apps", label: "Applications", pillar: "business", detail: "The tools your teams use every day.", technologies: ["nextjs", "python"] },
           { id: "outcomes", label: "Business outcomes", pillar: "business", detail: "Faster decisions, lower cost, fewer manual steps." },
         ],
         edges: [

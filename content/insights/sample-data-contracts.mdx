@@ -1,0 +1,52 @@
+---
+title: "Data contracts: stop upstream changes breaking everything downstream"
+excerpt: "A data contract is a promise between the team that produces data and the teams that depend on it. Here is how we put them in place without slowing anyone down."
+category: "Data engineering"
+author: "leader-1"
+publishedAt: "2026-10-01"
+featured: true
+sample: true
+---
+
+<Callout title="Sample article">
+This is sample content that shows how articles are laid out. Replace it with a real article, or set `HIDE_SAMPLE_CONTENT=1` to hide all sample content.
+</Callout>
+
+Most pipeline failures we're called in to fix don't start in the pipeline. They start upstream, when a source system renames a column, changes a type, or starts sending nulls where there never were any. Nothing tells the data team until a dashboard is wrong.
+
+## What a data contract is
+
+A data contract is an agreement, written down and enforced in code, about the shape and meaning of a dataset. It names the owner, the schema, the freshness guarantee, and what happens when any of those change.
+
+| Part | What it covers | Enforced by |
+|---|---|---|
+| Schema | Columns, types, nullability | Validation at ingestion |
+| Semantics | What each field means | Documentation and review |
+| Freshness | How late data may arrive | Monitoring and alerts |
+| Ownership | Who to call when it breaks | The contract itself |
+
+## How we put them in place
+
+1. Start with the three datasets that break most often, not all of them.
+2. Write the contract with the producing team, in their terms.
+3. Validate at the boundary, before anything lands in the platform.
+4. Fail loudly and early, with a message that names the owner.
+
+A minimal schema check at ingestion looks like this:
+
+```python
+from pydantic import BaseModel, Field
+
+class Order(BaseModel):
+    order_id: str
+    customer_id: str
+    amount: float = Field(ge=0)
+    currency: str = Field(min_length=3, max_length=3)
+
+def validate(rows: list[dict]) -> list[Order]:
+    return [Order(**row) for row in rows]
+```
+
+## What changes
+
+Upstream teams learn about breaking changes before they ship them, not after. Downstream teams stop writing defensive code for problems that should never reach them. And when something does break, everyone knows whose problem it is.

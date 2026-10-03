@@ -72,6 +72,8 @@ export const home: HomeContent = {
   industries: {
     headline: "Domain knowledge, engineered.",
     support: "We work where complex data meets complex operations.",
+    cta: { label: "See all industries", href: "/industries" },
+    otherCta: { label: "Tell us about yours", href: "/contact?topic=other-industry" },
   },
   products: {
     headline: "Built by us. Ready for you.",
@@ -82,6 +84,7 @@ export const home: HomeContent = {
     headline: "Work that shipped.",
     support: "What was broken, what we built, and what changed.",
     cta: { label: "See all case studies", href: "/case-studies" },
+    more: "More case studies are being written up with our clients' approval.",
   },
   technology: {
     headline: "The right tool, not the fashionable one.",
