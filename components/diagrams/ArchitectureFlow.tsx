@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useState, type CSSProperties } from "react";
 import type { Pillar } from "@/lib/content/types";
 import { cn } from "@/lib/cn";
 import { useInViewOnce } from "@/lib/hooks/useInViewOnce";
@@ -36,10 +36,14 @@ export function ArchitectureFlow({
   const baseId = useId();
 
   return (
-    <div ref={ref} className={cn("relative", played && styles.played)}>
-      <ol aria-label={label} className="relative grid gap-0 lg:grid-cols-8 lg:gap-(--gutter) lg:pb-44">
+    <div
+      ref={ref}
+      className={cn("relative", played && styles.played)}
+      style={{ "--cols": `repeat(${nodes.length}, minmax(0, 1fr))`, "--half-col": `calc(100% / ${nodes.length * 2})` } as CSSProperties}
+    >
+      <ol aria-label={label} className="relative grid gap-0 lg:grid-cols-(--cols) lg:gap-(--gutter) lg:pb-44">
         {/* The edge: vertical on mobile (through the dots), horizontal on desktop. */}
-        <span aria-hidden className="absolute top-5 bottom-5 left-[9px] w-0.5 bg-ink/15 lg:top-[9px] lg:right-[calc(100%/16)] lg:bottom-auto lg:left-[calc(100%/16)] lg:h-0.5 lg:w-auto">
+        <span aria-hidden className="absolute top-5 bottom-5 left-[9px] w-0.5 bg-ink/15 lg:top-[9px] lg:right-(--half-col) lg:bottom-auto lg:left-(--half-col) lg:h-0.5 lg:w-auto">
           <span className={cn("absolute left-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full lg:top-1/2 lg:left-0 lg:translate-y-[-50%]", styles.pulse)} />
         </span>
         {nodes.map((n, i) => {

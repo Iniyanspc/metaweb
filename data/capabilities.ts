@@ -65,6 +65,34 @@ export const capabilities: Capability[] = [
     ],
     technologies: ["python", "langgraph", "vector-search", "llm-apis", "mlflow"],
     cta: { label: "See AI engineering", href: "/solutions/ai" },
+    detail: {
+      headline: "AI that knows your business.",
+      support:
+        "Retrieval, agents and copilots that read from governed enterprise data, with evaluation, guardrails and cost control built in.",
+      whatWeBuild: [
+        { title: "Retrieval applications", body: "Answers grounded in your documents and data, with sources people can check." },
+        { title: "Agents and automation", body: "Multi-step workflows that act inside your systems, with a human where it matters." },
+        { title: "Document intelligence", body: "Contracts, claims and forms turned into structured, searchable data." },
+        { title: "Evaluation and guardrails", body: "Test sets, monitoring and limits, so quality and cost stay where you set them." },
+      ],
+      architecture: {
+        nodes: [
+          { id: "data", label: "Governed data", pillar: "data", detail: "The same platform your analytics trusts.", technologies: ["databricks", "postgresql"] },
+          { id: "index", label: "Knowledge index", pillar: "bridge", detail: "Documents and records chunked, embedded and kept in sync.", technologies: ["vector-search"] },
+          { id: "models", label: "Models", pillar: "ai", detail: "The right model for each task, swappable as better ones arrive.", technologies: ["llm-apis"] },
+          { id: "orchestration", label: "Orchestration", pillar: "ai", detail: "Retrieval, tools and agents composed into reliable flows.", technologies: ["langgraph", "python"] },
+          { id: "evaluation", label: "Evaluation", pillar: "ai", detail: "Every release measured against your own test cases.", technologies: ["mlflow"] },
+          { id: "apps", label: "AI applications", pillar: "business", detail: "Copilots, search and assistants inside the tools people use.", technologies: ["nextjs", "typescript"] },
+          { id: "actions", label: "Business actions", pillar: "business", detail: "Faster answers, fewer manual steps, decisions people can trace." },
+        ],
+        edges: [],
+      },
+      engagements: [
+        { title: "Proof of value", body: "One use case, real data, measured against a baseline in weeks." },
+        { title: "Production rollout", body: "A pilot hardened with evaluation, security and cost controls." },
+        { title: "AI platform", body: "Shared retrieval, model access and guardrails for every team." },
+      ],
+    },
     seo: {
       title: "AI engineering company",
       description: "Retrieval, agents and copilots built on governed enterprise data, with evaluation, guardrails and cost control.",
@@ -79,6 +107,36 @@ export const capabilities: Capability[] = [
     services: ["BI infrastructure", "Semantic layers", "Executive dashboards", "Forecasting", "Self-serve analytics"],
     technologies: ["power-bi", "dbt", "sql"],
     cta: { label: "See analytics", href: "/solutions/analytics" },
+    seo: {
+      title: "Data analytics company",
+      description: "Semantic layers, dashboards and forecasting built on trusted data, so leadership gets numbers it actually uses.",
+    },
+    detail: {
+      headline: "From operational data to decisions.",
+      support: "Semantic layers, dashboards and forecasting that leadership actually opens.",
+      whatWeBuild: [
+        { title: "Semantic layers", body: "One definition of every metric, so every dashboard tells the same story." },
+        { title: "Dashboards", body: "Built around the decisions people make, not the data that happens to exist." },
+        { title: "Forecasting", body: "Demand, capacity and revenue forecasts with their uncertainty shown." },
+        { title: "Self-serve analytics", body: "Governed access so teams answer their own questions safely." },
+      ],
+      architecture: {
+        nodes: [
+          { id: "sources", label: "Operational data", pillar: "data", detail: "ERP, CRM, finance and operational systems.", technologies: ["sql", "postgresql"] },
+          { id: "modelling", label: "Modelling", pillar: "data", detail: "Tested, documented transformations.", technologies: ["dbt"] },
+          { id: "semantic", label: "Semantic layer", pillar: "bridge", detail: "Metrics defined once and reused everywhere.", technologies: ["dbt", "power-bi"] },
+          { id: "dashboards", label: "Dashboards", pillar: "ai", detail: "Reports people open every morning.", technologies: ["power-bi"] },
+          { id: "forecasting", label: "Forecasting", pillar: "ai", detail: "Models that look forward, not only back.", technologies: ["python", "mlflow"] },
+          { id: "decisions", label: "Decisions", pillar: "business", detail: "Faster, better-informed decisions across the business." },
+        ],
+        edges: [],
+      },
+      engagements: [
+        { title: "Metrics reset", body: "One agreed set of KPIs, defined and automated." },
+        { title: "BI modernisation", body: "Legacy reports rebuilt on a governed semantic layer." },
+        { title: "Forecasting", body: "A forecasting capability built on the data you already have." },
+      ],
+    },
   },
   {
     slug: "custom-products",
@@ -89,6 +147,36 @@ export const capabilities: Capability[] = [
     services: ["Enterprise applications", "SaaS products", "Internal tools", "System integrations", "Customer-facing apps"],
     technologies: ["typescript", "nextjs", "python", "postgresql"],
     cta: { label: "See custom products", href: "/solutions/custom-products" },
+    seo: {
+      title: "Custom software development",
+      description: "Enterprise applications, SaaS products and internal tools built by the same team that builds your data foundation.",
+    },
+    detail: {
+      headline: "Software shaped around your business.",
+      support: "From first workshop to production application, built by the same team that builds your data foundation.",
+      whatWeBuild: [
+        { title: "Enterprise applications", body: "Systems that fit your process instead of forcing you into someone else's." },
+        { title: "SaaS products", body: "Multi-tenant products, from first version to scale." },
+        { title: "Internal tools", body: "The spreadsheets and workarounds replaced with software people want to use." },
+        { title: "Integrations", body: "Your systems connected, so data moves without copy and paste." },
+      ],
+      architecture: {
+        nodes: [
+          { id: "systems", label: "Your systems and data", pillar: "data", detail: "ERP, CRM and the data platform underneath.", technologies: ["postgresql", "sql"] },
+          { id: "integration", label: "Integration layer", pillar: "data", detail: "APIs and events that keep systems in step.", technologies: ["kafka", "python"] },
+          { id: "platform", label: "Application platform", pillar: "bridge", detail: "Secure, observable services built to be handed over.", technologies: ["typescript", "docker"] },
+          { id: "intelligence", label: "Intelligent features", pillar: "ai", detail: "Search, assistants and automation where they help.", technologies: ["llm-apis"] },
+          { id: "apps", label: "Applications", pillar: "business", detail: "Web and mobile interfaces your teams use every day.", technologies: ["nextjs"] },
+          { id: "users", label: "Users and outcomes", pillar: "business", detail: "Fewer manual steps and processes that hold up." },
+        ],
+        edges: [],
+      },
+      engagements: [
+        { title: "Discovery to MVP", body: "From problem framing to a working first version in users' hands." },
+        { title: "Replatforming", body: "A legacy application rebuilt without stopping the business." },
+        { title: "Product team", body: "A long-running team that builds and runs your product with you." },
+      ],
+    },
   },
   {
     slug: "business-transformation",

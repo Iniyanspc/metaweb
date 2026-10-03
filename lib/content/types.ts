@@ -270,3 +270,95 @@ export interface HomeContent {
   insights: { headline: string; cta: Link; empty: string };
   finalCta: { headline: string[]; support: string; cta: Link };
 }
+
+export interface PageIntro {
+  title: string;
+  /** Optional multi-line title (three-beat headlines); overrides `title` visually. */
+  titleLines?: string[];
+  support: string;
+  seo: SeoFields;
+}
+
+export interface PagesContent {
+  solutions: PageIntro & {
+    pillars: { pillar: Pillar; heading: string; line: string; capabilities: Slug[] }[];
+    labels: { services: string };
+  };
+  solutionTemplate: {
+    whatWeBuild: string;
+    architecture: string;
+    engagements: string;
+    technologies: string;
+    industries: string;
+    caseStudies: string;
+    noCaseStudies: string;
+  };
+  industries: PageIntro & { otherHeading: string; otherCta: Link };
+  industryTemplate: {
+    challenge: string;
+    dataProblems: string;
+    aiOpportunities: string;
+    solutions: string;
+    caseStudies: string;
+    noCaseStudies: string;
+  };
+  products: PageIntro & { allLabel: string };
+  caseStudies: PageIntro & { empty: string };
+  caseStudyTemplate: {
+    client: string;
+    industry: string;
+    challenge: string;
+    approach: string;
+    architecture: string;
+    implementation: string;
+    outcome: string;
+    metrics: string;
+  };
+  about: PageIntro & {
+    whoWeAre: { heading: string; body: string[] };
+    beliefs: { heading: string; lines: string[] };
+    mission: { heading: string; body: string };
+    approach: { heading: string; support: string };
+    philosophy: { heading: string; points: { title: string; body: string }[] };
+    timeline: { heading: string; entries: { year: string; text: string }[] };
+    locations: { heading: string };
+    culture: { heading: string; points: { title: string; body: string }[] };
+    leadership: { heading: string; cta: Link };
+    careers: { heading: string; body: string; cta: Link };
+  };
+  team: PageIntro & { groupOrder: TeamGroup[] };
+  technology: PageIntro & { note: string };
+  insights: PageIntro & { allLabel: string; featuredLabel: string; empty: string; related: string; by: string };
+  careers: PageIntro & {
+    why: { heading: string; points: { title: string; body: string }[] };
+    culture: { heading: string; body: string[] };
+    learning: { heading: string; body: string };
+    hiring: { heading: string; steps: { title: string; body: string }[] };
+    benefits: { heading: string; items: string[] };
+    roles: { heading: string; empty: string; apply: string };
+  };
+  contact: PageIntro & {
+    form: {
+      name: string;
+      email: string;
+      company: string;
+      jobTitle: string;
+      industry: string;
+      industryOptions: string[];
+      building: string;
+      buildingOptions: string[];
+      scope: string;
+      scopeOptions: string[];
+      message: string;
+      submit: string;
+      sending: string;
+      success: string;
+      errorEmail: string;
+      errorRequired: string;
+      errorServer: string;
+    };
+    details: { heading: string; email: string; phone: string; offices: string; response: string };
+  };
+  legal: { privacy: PageIntro; terms: PageIntro };
+  notFound: { title: string; support: string; cta: Link };
+}

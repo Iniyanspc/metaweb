@@ -7,6 +7,7 @@ import { staticSource } from "./source/static";
 import type {
   Capability,
   HomeContent,
+  PagesContent,
   CaseStudy,
   Industry,
   Navigation,
@@ -21,6 +22,7 @@ import type {
 export interface ContentSource {
   getSite(): Promise<SiteConfig>;
   getHome(): Promise<HomeContent>;
+  getPages(): Promise<PagesContent>;
   getNavigation(): Promise<Navigation>;
   getCapabilities(): Promise<Capability[]>;
   getIndustries(): Promise<Industry[]>;
@@ -37,6 +39,7 @@ const source: ContentSource = staticSource;
 
 export const getSite = () => source.getSite();
 export const getHome = () => source.getHome();
+export const getPages = () => source.getPages();
 export const getNavigation = () => source.getNavigation();
 export const getCapabilities = () => source.getCapabilities();
 export const getIndustries = () => source.getIndustries();

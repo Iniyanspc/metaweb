@@ -8,6 +8,7 @@ import { roles } from "@/data/careers";
 import { home } from "@/data/home";
 import { industries, otherIndustries } from "@/data/industries";
 import { navigation } from "@/data/navigation";
+import { pages } from "@/data/pages";
 import { products } from "@/data/products";
 import { site } from "@/data/site";
 import { team } from "@/data/team";
@@ -20,6 +21,9 @@ export const staticSource: ContentSource = {
   },
   async getHome() {
     return home;
+  },
+  async getPages() {
+    return pages;
   },
   async getNavigation() {
     return navigation;
