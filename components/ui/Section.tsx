@@ -31,7 +31,8 @@ export function Section({
   labelledBy?: string;
   pillar: Pillar;
   tone?: SectionTone;
-  axon?: boolean;
+  /** Sit on the homepage axon. "start" and "end" cap the line at this section's node. */
+  axon?: boolean | "start" | "end";
   className?: string;
   children: ReactNode;
 }) {
@@ -48,7 +49,9 @@ export function Section({
             <div aria-hidden className="relative hidden lg:block">
               <span
                 className={cn(
-                  "absolute top-[calc(-1*var(--section-y))] bottom-[calc(-1*var(--section-y))] left-1/2 w-0.5 -translate-x-1/2",
+                  "absolute left-1/2 w-0.5 -translate-x-1/2",
+                  axon === "start" ? "top-6" : "top-[calc(-1*var(--section-y))]",
+                  axon === "end" ? "h-[calc(var(--section-y)+24px)]" : "bottom-[calc(-1*var(--section-y))]",
                   tone === "plum" ? "bg-canvas/30" : "bg-ink",
                 )}
               />

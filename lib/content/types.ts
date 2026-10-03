@@ -240,3 +240,32 @@ export interface Navigation {
   footer: { heading: string; links: Link[] }[];
   legal: Link[];
 }
+
+/* ---------- Page copy ---------- */
+
+export interface Cta {
+  primary: Link;
+  secondary?: Link;
+}
+
+export interface HomeContent {
+  hero: { headline: string; support: string; cta: Cta; diagramDescription: string };
+  trust: { line: string };
+  problem: { headline: string; lines: string[]; turn: string; support: string };
+  capabilities: { headline: string };
+  foundation: {
+    headline: string;
+    support: string;
+    flow: ArchitectureDiagram;
+    closing: string[];
+  };
+  ai: { headline: string; support: string; flow: string[]; services: string[]; cta: Link };
+  process: { headline: string; support: string; steps: { title: string; body: string }[] };
+  industries: { headline: string; support: string };
+  products: { headline: string; support: string; empty: string };
+  caseStudies: { headline: string; support: string; cta: Link };
+  technology: { headline: string; support: string; note: string; cta: Link };
+  team: { headline: string; support: string; cta: Link };
+  insights: { headline: string; cta: Link; empty: string };
+  finalCta: { headline: string[]; support: string; cta: Link };
+}

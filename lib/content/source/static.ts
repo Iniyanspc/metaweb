@@ -5,6 +5,7 @@
 import { capabilities } from "@/data/capabilities";
 import { caseStudies } from "@/data/case-studies";
 import { roles } from "@/data/careers";
+import { home } from "@/data/home";
 import { industries, otherIndustries } from "@/data/industries";
 import { navigation } from "@/data/navigation";
 import { products } from "@/data/products";
@@ -16,6 +17,9 @@ import type { ContentSource } from "../index";
 export const staticSource: ContentSource = {
   async getSite() {
     return site;
+  },
+  async getHome() {
+    return home;
   },
   async getNavigation() {
     return navigation;
