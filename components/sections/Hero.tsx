@@ -5,10 +5,12 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Mark } from "@/components/brand/Logo";
+import { NetworkGraphCard } from "./NetworkGraphCard";
 
 /**
  * Homepage opening: the mark beside the tagline, the description and actions
- * below, then a layered photo band whose two photos drift at different speeds.
+ * below, then a photo band with a live knowledge-graph card layered over it, each
+ * drifting at its own speed.
  */
 export function Hero({ hero }: { hero: HomeContent["hero"] }) {
   return (
@@ -48,9 +50,11 @@ export function Hero({ hero }: { hero: HomeContent["hero"] }) {
 
         <div className="relative mt-12 md:mt-16">
           <ParallaxPhoto name={hero.images.main} priority speed={50} delay={250} sizes="(min-width: 1280px) 1280px, 100vw" className="aspect-[4/3] md:aspect-[21/9]" />
-          {/* Second layer: a smaller photo that overlaps the band's lower edge and moves faster. */}
-          <Parallax speed={-70} className="absolute -bottom-16 right-[4%] hidden w-[30%] md:block">
-            <ParallaxPhoto name={hero.images.detail} speed={20} delay={550} sizes="400px" className="aspect-[4/5] shadow-[0_24px_48px_-24px_rgb(0_0_0/0.35)] ring-8 ring-canvas" />
+          {/* Second layer: a live knowledge-graph card that overlaps the band's lower edge and moves faster. */}
+          <Parallax speed={-70} className="absolute -bottom-16 right-[4%] hidden w-[30%] min-w-72 md:block">
+            <Reveal variant="scale" delay={550} className="aspect-[4/5] rounded-media shadow-[0_24px_48px_-24px_rgb(0_0_0/0.45)] ring-8 ring-canvas">
+              <NetworkGraphCard graph={hero.graph} />
+            </Reveal>
           </Parallax>
         </div>
       </Container>

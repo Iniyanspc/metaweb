@@ -263,7 +263,9 @@ export interface HomeContent {
     tagLines: string[];
     support: string;
     cta: Cta;
-    images: { main: string; detail: string };
+    images: { main: string };
+    /** The graph card layered over the hero photo. */
+    graph: { caption: string; legend: { data: string; intelligence: string; outcomes: string }; description: string };
   };
   trust: { line: string };
   problem: { headline: string; lines: string[]; turn: string; image: string };

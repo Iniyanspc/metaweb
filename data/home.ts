@@ -17,7 +17,13 @@ export const home: HomeContent = {
       primary: { label: "Talk to our team", href: "/contact" },
       secondary: { label: "Explore our capabilities", href: "#capabilities" },
     },
-    images: { main: "office-open", detail: "hero-code" },
+    images: { main: "office-open" },
+    graph: {
+      caption: "From sources to decisions",
+      legend: { data: "Data", intelligence: "Intelligence", outcomes: "Outcomes" },
+      description:
+        "Illustration of a knowledge graph: data from ERP, CRM, sensors, documents and APIs connects through customers, orders, assets and contracts to forecasts, alerts and decisions.",
+    },
   },
   trust: { line: "Trusted by teams building what comes next." },
   problem: {
