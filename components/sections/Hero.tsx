@@ -1,4 +1,5 @@
 import type { HomeContent } from "@/lib/content/types";
+import { Parallax } from "@/components/motion/Parallax";
 import { ParallaxPhoto } from "@/components/motion/ParallaxPhoto";
 import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/Button";
@@ -7,9 +8,13 @@ import { Mark } from "@/components/brand/Logo";
 
 /**
  * Homepage opening: the two-line tagline with the mark on its right, the
- * description as a single base line under both, actions, then the office photo.
+ * description on a base line under both, actions, then the office photo with
+ * a picture-in-picture card carrying the mark.
  */
 export function Hero({ hero }: { hero: HomeContent["hero"] }) {
+  const split = hero.support.indexOf(". ");
+  const lead = split === -1 ? hero.support : hero.support.slice(0, split + 1);
+  const rest = split === -1 ? "" : hero.support.slice(split + 2);
   return (
     <section aria-labelledby="hero-title" className="overflow-x-clip pb-(--section-y)">
       <Container className="pt-12 md:pt-20">
@@ -32,9 +37,12 @@ export function Hero({ hero }: { hero: HomeContent["hero"] }) {
             </Reveal>
           </div>
           <Reveal delay={260}>
-            <p className="mt-8 max-w-none border-t border-line pt-6 text-body-lg text-muted xl:whitespace-nowrap xl:text-[min(var(--text-body-lg),1.5cqi)]">
-              {hero.support}
-            </p>
+            <div className="mt-8 border-t border-line pt-6">
+              <p className="max-w-[72ch] text-body-lg text-muted">
+                {/* The first sentence is the lead, set in ink. */}
+                <span className="text-ink">{lead}</span> {rest}
+              </p>
+            </div>
           </Reveal>
           <Reveal delay={360} className="mt-8 flex flex-wrap gap-3">
             <Button href={hero.cta.primary.href} size="lg">
@@ -48,7 +56,7 @@ export function Hero({ hero }: { hero: HomeContent["hero"] }) {
           </Reveal>
         </div>
 
-        <div className="mt-12 md:mt-16">
+        <div className="relative mt-12 md:mt-16 md:mb-16">
           <ParallaxPhoto
             name={hero.images.main}
             priority
@@ -59,6 +67,13 @@ export function Hero({ hero }: { hero: HomeContent["hero"] }) {
             // Frame low so the people at the table stay in view.
             imageClassName="object-[45%_75%]"
           />
+          {/* Picture in picture: a white card with the mark, overlapping the photo's lower
+              right (clear of the people) and drifting faster than the photo. */}
+          <Parallax speed={-70} className="absolute right-[4%] -bottom-16 hidden w-[22%] min-w-52 md:block">
+            <Reveal variant="scale" delay={550} className="flex aspect-[4/5] items-center justify-center rounded-media bg-canvas shadow-[0_24px_48px_-24px_rgb(0_0_0/0.35)] ring-8 ring-canvas">
+              <Mark size={160} title="metadatum" className="size-[62%]" />
+            </Reveal>
+          </Parallax>
         </div>
       </Container>
     </section>

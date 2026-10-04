@@ -11,8 +11,9 @@ export const home: HomeContent = {
     // Client tagline (replaces the copy deck's "Engineering the data and intelligence behind better businesses.")
     headline: "In data lies intelligence. In intelligence lies better business.",
     tagLines: ["In data lies intelligence.", "In intelligence lies better business."],
+    // First sentence leads; the rest follows in the muted tone.
     support:
-      "Data platforms, AI systems and custom software for enterprises and governments. Built from the pipeline up, and run for the long term.",
+      "Data holds the answers your business is looking for. We engineer the platforms that hold it, the AI that understands it, the agents that act on it, and the products that bring it to life.",
     cta: {
       primary: { label: "Talk to our team", href: "/contact" },
       secondary: { label: "Explore our capabilities", href: "#capabilities" },
