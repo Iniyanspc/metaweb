@@ -18,17 +18,19 @@ const VIOLET = "var(--color-violet)";
 const PLUM = "var(--color-plum)";
 const KIND_COLOUR = { data: PINK, reason: VIOLET, act: PLUM } as const;
 
-const TITLE_MS = 2000;
-const STEP_MS = 900;
-const STAGE_MS = 1400;
-const CHAR_MS = 38;
+/** Playback speed: 2 = twice the original pace. Every duration below divides by it. */
+const SPEED = 2;
+const TITLE_MS = 2000 / SPEED;
+const STEP_MS = 900 / SPEED;
+const STAGE_MS = 1400 / SPEED;
+const CHAR_MS = 38 / SPEED;
 
 /** Phase lengths in ms, derived from the copy so longer text gets more time. */
 function timeline(story: Story) {
-  const task = story.task.steps.length * STEP_MS + 1400;
-  const loop = story.loop.length * STAGE_MS + 600;
+  const task = story.task.steps.length * STEP_MS + 1400 / SPEED;
+  const loop = story.loop.length * STAGE_MS + 600 / SPEED;
   const { question, answer, chips } = story.chat;
-  const chat = (question.length + answer.length) * CHAR_MS + 900 + chips.length * 350 + 2200;
+  const chat = (question.length + answer.length) * CHAR_MS + (900 + chips.length * 350 + 2200) / SPEED;
   const phases = [
     { act: 0, kind: "title" as const, ms: TITLE_MS },
     { act: 0, kind: "scene" as const, ms: task },
@@ -240,12 +242,12 @@ function LoopScene({ story, elapsed }: { story: Story; elapsed: number }) {
 function ChatScene({ story, elapsed }: { story: Story; elapsed: number }) {
   const { question, answer, chips, thinking } = story.chat;
   const chars = Math.floor(elapsed / CHAR_MS);
-  const pauseChars = Math.round(900 / CHAR_MS);
+  const pauseChars = Math.round(900 / SPEED / CHAR_MS);
   const q = question.slice(0, chars);
   const answerChars = chars - question.length - pauseChars;
   const a = answerChars > 0 ? answer.slice(0, answerChars) : "";
   const answerDoneAt = (question.length + answer.length + pauseChars) * CHAR_MS;
-  const shown = elapsed > answerDoneAt ? Math.min(chips.length, Math.floor((elapsed - answerDoneAt) / 350) + 1) : 0;
+  const shown = elapsed > answerDoneAt ? Math.min(chips.length, Math.floor((elapsed - answerDoneAt) / (350 / SPEED)) + 1) : 0;
   return (
     <Scene>
       <div className="flex h-full flex-col justify-end gap-2 text-small">
