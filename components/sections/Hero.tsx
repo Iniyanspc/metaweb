@@ -6,43 +6,45 @@ import { Container } from "@/components/ui/Container";
 import { Mark } from "@/components/brand/Logo";
 
 /**
- * Homepage opening: a split hero (tagline, description and actions on the left,
- * the mark as the visual on the right), then the office photo drifting gently.
+ * Homepage opening: the two-line tagline with the mark on its right, the
+ * description as a single base line under both, actions, then the office photo.
  */
 export function Hero({ hero }: { hero: HomeContent["hero"] }) {
   return (
     <section aria-labelledby="hero-title" className="overflow-x-clip pb-(--section-y)">
       <Container className="pt-12 md:pt-20">
-        {/* Split hero: text column on the left sharing one edge, the mark as the visual on the right. */}
-        <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-x-(--gutter)">
-          <div className="lg:col-span-7">
-            <Reveal>
-              <h1 id="hero-title" className="text-[clamp(2.25rem,1.4rem+3.2vw,3.75rem)] leading-[1.06] tracking-[-0.03em] text-balance">
+        {/* Tagline (two lines) with the mark on its right, then the description as one
+            line underneath both, like a base. From md up the tagline, mark and base line
+            all scale from the row's width (container query units) so they stay in step. */}
+        <div className="@container">
+          <div className="flex flex-col-reverse gap-6 md:flex-row md:items-center md:justify-between md:gap-10 md:[--tag:clamp(2rem,5.15cqi,4.5rem)]">
+            <Reveal className="min-w-0">
+              <h1 id="hero-title" className="text-h2 text-pretty md:text-(length:--tag) md:leading-[1.06] md:tracking-[-0.03em]">
                 {hero.tagLines.map((line) => (
-                  <span key={line} className="block">
+                  <span key={line} className="block md:whitespace-nowrap">
                     {line}
                   </span>
                 ))}
               </h1>
             </Reveal>
-            <Reveal delay={140}>
-              <p className="mt-6 max-w-[46ch] text-body-lg text-muted">{hero.support}</p>
-            </Reveal>
-            <Reveal delay={240} className="mt-10 flex flex-wrap gap-3">
-              <Button href={hero.cta.primary.href} size="lg">
-                {hero.cta.primary.label}
-              </Button>
-              {hero.cta.secondary && (
-                <Button href={hero.cta.secondary.href} variant="secondary" size="lg">
-                  {hero.cta.secondary.label}
-                </Button>
-              )}
+            <Reveal variant="scale" delay={150} className="shrink-0">
+              <Mark size={72} title="" className="md:size-[calc(var(--tag)*2.4)]" />
             </Reveal>
           </div>
-          <Reveal variant="scale" delay={180} className="order-first lg:order-none lg:col-span-5 lg:flex lg:justify-center">
-            <span className="relative inline-flex items-center justify-center">
-              <Mark size={96} title="" className="relative size-24 lg:size-[clamp(14rem,22vw,19rem)]" />
-            </span>
+          <Reveal delay={260}>
+            <p className="mt-8 max-w-none border-t border-line pt-6 text-body-lg text-muted xl:whitespace-nowrap xl:text-[min(var(--text-body-lg),1.5cqi)]">
+              {hero.support}
+            </p>
+          </Reveal>
+          <Reveal delay={360} className="mt-8 flex flex-wrap gap-3">
+            <Button href={hero.cta.primary.href} size="lg">
+              {hero.cta.primary.label}
+            </Button>
+            {hero.cta.secondary && (
+              <Button href={hero.cta.secondary.href} variant="secondary" size="lg">
+                {hero.cta.secondary.label}
+              </Button>
+            )}
           </Reveal>
         </div>
 
