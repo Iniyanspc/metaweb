@@ -45,7 +45,7 @@ export function Hero({ hero }: { hero: HomeContent["hero"] }) {
               </p>
             </div>
           </Reveal>
-          <Reveal delay={360} className="mt-8 flex flex-wrap gap-3">
+          <Reveal delay={360} className="mt-8 flex flex-wrap gap-3 md:justify-end">
             <Button href={hero.cta.primary.href} size="lg">
               {hero.cta.primary.label}
             </Button>
@@ -57,7 +57,7 @@ export function Hero({ hero }: { hero: HomeContent["hero"] }) {
           </Reveal>
         </div>
 
-        <div className="relative mt-12 md:mt-16 md:mb-20">
+        <div className="relative mt-12 md:mt-24">
           <ParallaxPhoto
             name={hero.images.main}
             priority
@@ -68,13 +68,16 @@ export function Hero({ hero }: { hero: HomeContent["hero"] }) {
             // Frame low so the people at the table stay in view.
             imageClassName="object-[45%_75%]"
           />
-          {/* Picture in picture: the agent story in a 16:9 card, overlapping the photo's lower
-              right and drifting faster than the photo. */}
-          <Parallax speed={-70} className="absolute right-[2%] -bottom-20 hidden w-[35%] min-w-80 md:block">
-            <Reveal variant="scale" delay={550} className="aspect-[16/9] rounded-media shadow-[0_24px_48px_-24px_rgb(0_0_0/0.35)] ring-8 ring-canvas">
-              <AgentStory story={hero.agent} />
-            </Reveal>
-          </Parallax>
+          {/* Picture in picture: the agent story straddles the photo's top-left edge, half in the
+              white space beside the actions and half over the ceiling, so it shows on the first
+              screen without covering the people. It drifts gently against the photo. */}
+          <div className="absolute top-0 left-[3%] hidden w-[46%] min-w-80 -translate-y-1/2 md:block xl:w-[35%]">
+            <Parallax speed={-24}>
+              <Reveal variant="scale" delay={450} className="aspect-[16/9] rounded-media shadow-[0_24px_48px_-24px_rgb(0_0_0/0.35)] ring-8 ring-canvas">
+                <AgentStory story={hero.agent} />
+              </Reveal>
+            </Parallax>
+          </div>
         </div>
       </Container>
     </section>
