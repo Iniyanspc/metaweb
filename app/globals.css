@@ -257,3 +257,8 @@
   }
   .reveal[data-reveal="image"]:not([data-shown]) img { transform: scale(1.12); }
 }
+
+/* Picture-in-picture story: each scene and title card enters with this. */
+@keyframes pip-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+}

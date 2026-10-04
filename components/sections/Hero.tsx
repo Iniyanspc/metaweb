@@ -5,11 +5,12 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Mark } from "@/components/brand/Logo";
+import { AgentStory } from "./AgentStory";
 
 /**
  * Homepage opening: the two-line tagline with the mark on its right, the
  * description on a base line under both, actions, then the office photo with
- * a picture-in-picture card carrying the mark.
+ * a picture-in-picture card telling the agent story.
  */
 export function Hero({ hero }: { hero: HomeContent["hero"] }) {
   const split = hero.support.indexOf(". ");
@@ -56,7 +57,7 @@ export function Hero({ hero }: { hero: HomeContent["hero"] }) {
           </Reveal>
         </div>
 
-        <div className="relative mt-12 md:mt-16 md:mb-16">
+        <div className="relative mt-12 md:mt-16 md:mb-20">
           <ParallaxPhoto
             name={hero.images.main}
             priority
@@ -67,11 +68,11 @@ export function Hero({ hero }: { hero: HomeContent["hero"] }) {
             // Frame low so the people at the table stay in view.
             imageClassName="object-[45%_75%]"
           />
-          {/* Picture in picture: a white card with the mark, overlapping the photo's lower
-              right (clear of the people) and drifting faster than the photo. */}
-          <Parallax speed={-70} className="absolute right-[4%] -bottom-16 hidden w-[22%] min-w-52 md:block">
-            <Reveal variant="scale" delay={550} className="flex aspect-[4/5] items-center justify-center rounded-media bg-canvas shadow-[0_24px_48px_-24px_rgb(0_0_0/0.35)] ring-8 ring-canvas">
-              <Mark size={160} title="metadatum" className="size-[62%]" />
+          {/* Picture in picture: the agent story in a 16:9 card, overlapping the photo's lower
+              right and drifting faster than the photo. */}
+          <Parallax speed={-70} className="absolute right-[2%] -bottom-20 hidden w-[35%] min-w-80 md:block">
+            <Reveal variant="scale" delay={550} className="aspect-[16/9] rounded-media shadow-[0_24px_48px_-24px_rgb(0_0_0/0.35)] ring-8 ring-canvas">
+              <AgentStory story={hero.agent} />
             </Reveal>
           </Parallax>
         </div>

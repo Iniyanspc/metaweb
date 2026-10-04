@@ -264,6 +264,14 @@ export interface HomeContent {
     support: string;
     cta: Cta;
     images: { main: string };
+    /** The three-act agent story in the picture-in-picture card. */
+    agent: {
+      label: string;
+      acts: { name: string; line: string }[];
+      task: { goal: string; steps: { text: string; kind: "data" | "reason" | "act" }[]; done: string; working: string };
+      loop: { stage: string; note: string }[];
+      chat: { question: string; answer: string; chips: { label: string; review?: boolean }[]; thinking: string };
+    };
     /** The graph card layered over the hero photo. */
     graph: { caption: string; legend: { data: string; intelligence: string; outcomes: string }; description: string };
   };

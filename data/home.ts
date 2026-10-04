@@ -19,6 +19,38 @@ export const home: HomeContent = {
       secondary: { label: "Explore our capabilities", href: "#capabilities" },
     },
     images: { main: "office-open" },
+    agent: {
+      label: "What our agents do",
+      acts: [
+        { name: "Agents do the work", line: "They plan a task, use your systems and get it done." },
+        { name: "They learn as they go", line: "Every run makes the next one sharper." },
+        { name: "You stay in charge", line: "Ask in plain words. Approve what matters." },
+      ],
+      task: {
+        goal: "Reorder stock running low",
+        steps: [
+          { text: "Read inventory data", kind: "data" },
+          { text: "Check supplier contracts", kind: "data" },
+          { text: "Forecast demand, next 30 days", kind: "reason" },
+          { text: "Draft purchase orders", kind: "act" },
+          { text: "Send for approval", kind: "act" },
+        ],
+        done: "Done",
+        working: "Working",
+      },
+      loop: [
+        { stage: "Perceive", note: "Reads three systems" },
+        { stage: "Reason", note: "Picks a plan" },
+        { stage: "Act", note: "Updates the ERP" },
+        { stage: "Learn", note: "Logs the outcome" },
+      ],
+      chat: {
+        question: "Which orders will miss their delivery date?",
+        answer: "Three are at risk. I've rerouted two and flagged one for you.",
+        chips: [{ label: "Rerouted" }, { label: "Rerouted" }, { label: "Needs review", review: true }],
+        thinking: "Thinking",
+      },
+    },
     graph: {
       caption: "From sources to decisions",
       legend: { data: "Data", intelligence: "Intelligence", outcomes: "Outcomes" },
