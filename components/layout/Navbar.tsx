@@ -13,9 +13,9 @@ export async function Navbar() {
     <HeaderShell>
       <Container className="flex h-(--nav-height) items-center justify-between gap-6">
         <NextLink href="/" aria-label="metadatum home" className="shrink-0 rounded-[2px] focus-visible:shadow-(--focus-ring)">
-          {/* Mark is 32px tall at desktop, 28px on mobile (lockup height × 0.78). */}
-          <LogoHorizontal height={41} title="" className="hidden lg:block" />
-          <LogoHorizontal height={36} title="" className="lg:hidden" />
+          {/* Mark is 32px tall at desktop, 28px on mobile (the mark is ~87% of the lockup's height). */}
+          <LogoHorizontal height={37} title="" className="hidden lg:block" />
+          <LogoHorizontal height={32} title="" className="lg:hidden" />
         </NextLink>
         <nav aria-label="Main" className="hidden lg:block">
           <DesktopNav items={nav.primary} />
@@ -24,7 +24,7 @@ export async function Navbar() {
           <div className="hidden lg:block">
             <Button href={nav.cta.href}>{nav.cta.label}</Button>
           </div>
-          <MobileMenu items={nav.primary} cta={nav.cta} logo={<LogoHorizontal tone="dark" height={36} title="metadatum home" />} />
+          <MobileMenu items={nav.primary} cta={nav.cta} logo={<LogoHorizontal tone="dark" height={32} title="metadatum home" />} />
         </div>
       </Container>
     </HeaderShell>

@@ -6,5 +6,5 @@ export const contentType = "image/png";
 export const alt = "metadatum — AI and data engineering company";
 
 export default function Image() {
-  return ogImage(home.hero.headline);
+  return ogImage(home.hero.tagLines.join("\n"));
 }

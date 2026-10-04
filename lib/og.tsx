@@ -4,7 +4,7 @@ import { ImageResponse } from "next/og";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 
-/** Shared OG card: white background, page title in Poppins, the mark bottom-right. */
+/** Shared OG card: white background, page title in Poppins (\n breaks lines), the mark bottom-right. */
 export async function ogImage(title: string, eyebrow?: string) {
   const [font, mark] = await Promise.all([
     readFile(path.join(process.cwd(), "assets/fonts/Poppins-Medium.ttf")),
@@ -28,7 +28,7 @@ export async function ogImage(title: string, eyebrow?: string) {
       >
         <div style={{ display: "flex", fontSize: 30, letterSpacing: "-0.02em" }}>metadatum{eyebrow ? `  /  ${eyebrow}` : ""}</div>
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 48 }}>
-          <div style={{ display: "flex", fontSize: title.length > 60 ? 56 : 68, lineHeight: 1.08, letterSpacing: "-0.03em", maxWidth: 860 }}>
+          <div style={{ display: "flex", fontSize: title.length > 60 ? 56 : 68, lineHeight: 1.08, letterSpacing: "-0.03em", maxWidth: 860, whiteSpace: "pre-line" }}>
             {title}
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text -- ImageResponse renders to PNG */}

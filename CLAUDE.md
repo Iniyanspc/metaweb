@@ -54,9 +54,8 @@ Technology names (e.g. Databricks, Azure, PySpark, Power BI) may appear as *tech
 
 ## Decisions made during the build (override docs/)
 
-- **The official logo has no ring.** It is the neuron-compact mark (`public/brand/`, geometry in `components/brand/Logo.tsx`). Ignore every reference to "the ring" in docs/01 and docs/02: the hero load sequence starts with the spokes, and clear space is measured from the mark's bounding box.
+- **The official logo is the neuron mark from `neuron-logo-brand-package`** (2026-10-04; replaces the earlier neuron-compact mark). No ring. Files in `public/brand/`, geometry generated into `components/brand/mark-geometry.ts`. Usage: clear space ≥ nucleus width; full mark ≥64px, small-size icon below; never recolour arms, add 3D/shadows/glow, reorder nodes or stretch it. Colour names: Neuron Pink, Synapse Violet, Nucleus blend, Axon Ink.
 - **Chain colour follows the background:** black on white/mist, white on plum/ink. Spokes and soma keep their colours on both.
-- Hero labels on the compact mark: 4 pink spokes (ERP, CRM, Documents, Sensors and IoT), 2 violet spokes (Models, Knowledge), sticks Quality → APIs and Governance → Search, chain Decisions → Actions → Outcomes.
 - The internal styleguide lives at `app/%5Fstyleguide` (folders starting with `_` are private in the App Router).
 - Industries mega-menu lists the four industries plus "Custom enterprise solutions" (five rows), then "Other industries".
 - **Redesign (2026-10-03, at the client's request) overrides docs/02 where they conflict:**

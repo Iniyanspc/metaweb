@@ -41,8 +41,6 @@ export function Hero({ hero }: { hero: HomeContent["hero"] }) {
           </div>
           <Reveal variant="scale" delay={180} className="order-first lg:order-none lg:col-span-5 lg:flex lg:justify-center">
             <span className="relative inline-flex items-center justify-center">
-              {/* A faint soma-coloured glow seats the mark on the page. */}
-              <span aria-hidden className="absolute inset-[-18%] hidden rounded-full lg:block bg-[radial-gradient(closest-side,rgb(208_10_136/0.10),rgb(108_17_152/0.06)_55%,transparent)]" />
               <Mark size={96} title="" className="relative size-24 lg:size-[clamp(14rem,22vw,19rem)]" />
             </span>
           </Reveal>

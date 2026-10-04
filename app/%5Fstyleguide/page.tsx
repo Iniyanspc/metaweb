@@ -19,10 +19,10 @@ export const metadata: Metadata = {
 
 const colours = [
   { token: "canvas", hex: "#FFFFFF", role: "Page background", swatch: "bg-canvas" },
-  { token: "ink", hex: "#000000", role: "Text, ink nodes, footer", swatch: "bg-ink" },
-  { token: "pink", hex: "#F7147F", role: "Data. Graphics, fills, large display text only", swatch: "bg-pink" },
+  { token: "ink", hex: "#000000", role: "Axon Ink. Text, the axon chain, footer", swatch: "bg-ink" },
+  { token: "pink", hex: "#F7147F", role: "Neuron Pink. Data. Graphics, fills, large display text only", swatch: "bg-pink" },
   { token: "pink-ink", hex: "#C8076A", role: "Pink at body text size (5.7:1)", swatch: "bg-pink-ink" },
-  { token: "violet", hex: "#820AAA", role: "Intelligence. Graphics and text (8.2:1)", swatch: "bg-violet" },
+  { token: "violet", hex: "#820AAA", role: "Synapse Violet. Intelligence. Graphics and text (8.2:1)", swatch: "bg-violet" },
   { token: "soma-from", hex: "#D00A88", role: "Gradient start", swatch: "bg-soma-from" },
   { token: "soma-to", hex: "#6C1198", role: "Gradient end", swatch: "bg-soma-to" },
   { token: "plum", hex: "#3D0B52", role: "Dark sections", swatch: "bg-plum" },
@@ -72,12 +72,13 @@ function Tile({ tone, children, label }: { tone: "canvas" | "mist" | "plum" | "i
   );
 }
 
-const markTiles: { variant: MarkVariant; tone: "canvas" | "plum" | "ink"; label: string }[] = [
+const markTiles: { variant: MarkVariant; tone: "canvas" | "plum" | "ink"; label: string; flat?: boolean }[] = [
   { variant: "color", tone: "canvas", label: "Primary, light" },
   { variant: "color-dark", tone: "ink", label: "Dark background (ink)" },
   { variant: "color-dark", tone: "plum", label: "Dark background (plum)" },
   { variant: "mono-black", tone: "canvas", label: "Monochrome black" },
   { variant: "mono-white", tone: "plum", label: "Monochrome white" },
+  { variant: "color", tone: "canvas", label: "Flat (no sheen)", flat: true },
 ];
 
 const lockupTiles: { tone: LogoTone; bg: "canvas" | "plum" | "ink"; label: string }[] = [
@@ -112,7 +113,7 @@ export default function Styleguide() {
             ))}
             <li>
               <div className="h-24 rounded-card bg-soma" />
-              <p className="mt-3 font-medium">Soma gradient</p>
+              <p className="mt-3 font-medium">Nucleus blend</p>
               <p className="text-small text-muted">135°, soma-from to soma-to</p>
               <p className="text-small text-muted">Max two per viewport. Never a section background.</p>
             </li>
@@ -158,10 +159,10 @@ export default function Styleguide() {
         </Block>
 
         <Block id="logo" title="Logo">
-          <div className="grid gap-(--gutter) sm:grid-cols-2 lg:grid-cols-5">
+          <div className="grid gap-(--gutter) sm:grid-cols-3">
             {markTiles.map((t) => (
               <Tile key={t.label} tone={t.tone} label={t.label}>
-                <Mark variant={t.variant} size={128} />
+                <Mark variant={t.variant} size={128} sheen={!t.flat} />
               </Tile>
             ))}
           </div>
@@ -188,10 +189,10 @@ export default function Styleguide() {
           </div>
           <div className="mt-10 grid gap-(--gutter) md:grid-cols-2">
             <Tile tone="canvas" label="Navbar, desktop (mark 32px)">
-              <LogoHorizontal height={41} />
+              <LogoHorizontal height={37} />
             </Tile>
             <Tile tone="canvas" label="Navbar, mobile (mark 28px)">
-              <LogoHorizontal height={36} />
+              <LogoHorizontal height={32} />
             </Tile>
           </div>
         </Block>
