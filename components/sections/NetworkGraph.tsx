@@ -358,7 +358,7 @@ function Graph({ frame, animate, description, className }: { frame: Frame; anima
 const WIDE: Frame = { id: "ngw", w: 1600, h: 860, pad: 70, vertical: false, r: { data: 11, intel: 10, hub: 20, outcome: 11, minor: 4 }, font: 17, speed: 80 };
 const TALL: Frame = { id: "ngt", w: 420, h: 820, pad: 40, vertical: true, r: { data: 7, intel: 6.5, hub: 13, outcome: 7, minor: 2.6 }, font: 11.5, speed: 40 };
 
-export function NetworkGraph({ graph }: { graph: HomeContent["hero"]["graph"] }) {
+export function NetworkGraph({ graph, headingId }: { graph: HomeContent["hero"]["graph"]; headingId: string }) {
   // Pulses run only when motion is welcome; SMIL ignores CSS media queries.
   const [animate, setAnimate] = useState(false);
   useEffect(() => {
@@ -371,22 +371,26 @@ export function NetworkGraph({ graph }: { graph: HomeContent["hero"]["graph"] })
 
   return (
     <figure className="flex h-full flex-col text-ink">
-      <figcaption className="text-center text-caption text-muted">{graph.caption}</figcaption>
-      <div className="relative mt-4 min-h-0 flex-1">
+      <figcaption>
+        <h2 id={headingId} className="text-h2">
+          {graph.caption}
+        </h2>
+      </figcaption>
+      <div className="relative mt-6 min-h-0 flex-1">
         <Graph frame={WIDE} animate={animate} description={graph.description} className="absolute inset-0 hidden size-full md:block" />
         <Graph frame={TALL} animate={animate} description={graph.description} className="absolute inset-0 size-full md:hidden" />
       </div>
-      <ul aria-hidden className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-caption text-muted">
-        <li className="flex items-center gap-1.5">
-          <span className="size-2.5 rounded-full" style={{ background: C.pink }} />
+      <ul aria-hidden className="mt-6 flex flex-wrap justify-center gap-x-10 gap-y-3 text-body font-semibold text-ink">
+        <li className="flex items-center gap-2.5">
+          <span className="size-3.5 rounded-full" style={{ background: C.pink }} />
           {graph.legend.data}
         </li>
-        <li className="flex items-center gap-1.5">
-          <span className="size-2.5 rounded-full" style={{ background: C.violet }} />
+        <li className="flex items-center gap-2.5">
+          <span className="size-3.5 rounded-full" style={{ background: C.violet }} />
           {graph.legend.intelligence}
         </li>
-        <li className="flex items-center gap-1.5">
-          <span className="size-2.5 rounded-full" style={{ background: C.plum }} />
+        <li className="flex items-center gap-2.5">
+          <span className="size-3.5 rounded-full" style={{ background: C.plum }} />
           {graph.legend.outcomes}
         </li>
       </ul>
