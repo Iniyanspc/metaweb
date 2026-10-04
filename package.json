@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "next build && node scripts/static-fixups.mjs",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "placeholders": "node scripts/placeholders.mjs"
+    "placeholders": "node scripts/placeholders.mjs",
+    "preview": "python3 -m http.server 3000 --directory out"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

@@ -77,7 +77,12 @@ export async function getInsights() {
 }
 
 export async function getInsight(slug: string) {
-  return (await readInsights()).find((f) => f.meta.slug === slug);
+  return (await readInsights({ includeSamples: true })).find((f) => f.meta.slug === slug);
+}
+
+/** Every article slug that gets a page, hidden samples included (static export needs at least one). */
+export async function getInsightSlugs() {
+  return (await readInsights({ includeSamples: true })).map((f) => f.meta.slug);
 }
 
 export async function getTeamMember(id: string) {

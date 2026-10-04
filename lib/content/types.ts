@@ -45,8 +45,6 @@ export interface SiteConfig {
   /** Public email and phone. Omit to hide them site-wide. */
   email?: Verified<string>;
   phone?: Verified<string>;
-  /** Where contact-form enquiries are delivered. Server-only; never rendered. */
-  formRecipient: string;
   /** `address` is the full postal address, city included; `city` is for short labels. */
   offices: Verified<{ city: string; address: string }>[];
   social: { network: "linkedin" | "x" | "github" | "youtube"; url: Verified<string> }[];

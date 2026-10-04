@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# metadatum website
 
-## Getting Started
+The corporate site for metadatum, live at https://themetadatum.com.
+Next.js (App Router) exported as a static site and hosted on GitHub Pages.
 
-First, run the development server:
+## Develop
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+pnpm dev            # http://localhost:3000
+pnpm typecheck && pnpm lint
+pnpm build          # static site in out/
+pnpm placeholders   # lists content still to fill in
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Every push to `main` builds and publishes the site through
+`.github/workflows/deploy.yml`. One-time setup on GitHub:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Settings → Pages → Source: GitHub Actions.**
+2. **Settings → Pages → Custom domain:** `themetadatum.com` (also in `public/CNAME`).
+3. **Settings → Secrets and variables → Actions → Variables:** add
+   `NEXT_PUBLIC_WEB3FORMS_KEY` (free key from web3forms.com, registered to the
+   address that should receive contact-form enquiries).
 
-## Learn More
+## Edit content
 
-To learn more about Next.js, take a look at the following resources:
+All copy lives in `data/` (homepage in `data/home.ts`, other pages in
+`data/pages.ts`, company facts in `data/site.ts`) and articles in
+`content/insights/*.mdx`. Photos are registered in `lib/images.ts`; client
+logos live in `public/clients/`. Fields typed `missing("[…]")` show as a
+visible placeholder until replaced with `known(…)`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Static hosting constraints
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The site has no server at runtime, so: no server actions or API routes (the
+contact form posts to Web3Forms from the browser), no image optimiser (photos
+are served as stored), and every dynamic route needs `generateStaticParams`.
+`scripts/static-fixups.mjs` runs after `next build` to give generated preview
+images a `.png` extension so GitHub Pages serves the right content type.

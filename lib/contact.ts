@@ -34,3 +34,34 @@ export function fieldErrors(error: z.ZodError): FieldErrors {
   }
   return out;
 }
+
+/** Web3Forms public access key (safe to ship; it only allows submitting to the
+ * address registered with it). Set NEXT_PUBLIC_WEB3FORMS_KEY at build time. */
+const FORM_ENDPOINT = "https://api.web3forms.com/submit";
+
+/** Sends a validated enquiry from the browser. Returns true when delivered. */
+export async function submitContact(data: ContactInput, honeypot: string): Promise<boolean> {
+  if (honeypot) return true; // bots fill the hidden field; pretend it worked
+  const key = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+  if (!key) {
+    console.error("Contact form: NEXT_PUBLIC_WEB3FORMS_KEY is not set, so enquiries cannot be sent.");
+    return false;
+  }
+  try {
+    const res = await fetch(FORM_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({
+        access_key: key,
+        subject: `Website enquiry: ${data.company} (${data.building})`,
+        from_name: data.name,
+        replyto: data.email,
+        ...data,
+      }),
+    });
+    const json = (await res.json().catch(() => ({}))) as { success?: boolean };
+    return res.ok && json.success === true;
+  } catch {
+    return false;
+  }
+}

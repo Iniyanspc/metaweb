@@ -3,6 +3,7 @@ import { OG_SIZE, ogImage } from "@/lib/og";
 
 export const size = OG_SIZE;
 export const contentType = "image/png";
+export const dynamic = "force-static";
 export const alt = pages.team.seo.title;
 
 export default function Image() {

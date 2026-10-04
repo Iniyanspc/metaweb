@@ -14,3 +14,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...insights.filter((i) => !i.sample).map((i) => ({ url: absoluteUrl(`/insights/${i.slug}`), lastModified: i.publishedAt, priority: 0.5 })),
   ];
 }
+
+// Written to a file at build time (static export).
+export const dynamic = "force-static";

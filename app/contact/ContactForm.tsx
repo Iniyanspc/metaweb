@@ -1,13 +1,12 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useActionState, useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import type { PagesContent } from "@/lib/content/types";
-import { contactSchema, fieldErrors, type ContactState, type FieldErrors } from "@/lib/contact";
+import { contactSchema, fieldErrors, submitContact, type ContactState, type FieldErrors } from "@/lib/contact";
 import { cn } from "@/lib/cn";
 import { buttonClasses } from "@/components/ui/Button";
 import { PlaceholderText } from "@/components/ui/PlaceholderText";
-import { sendContact } from "./actions";
 
 type Copy = PagesContent["contact"]["form"];
 
@@ -22,7 +21,9 @@ const TOPIC_INDUSTRY: Record<string, string> = {
 };
 
 export function ContactForm({ copy }: { copy: Copy }) {
-  const [state, action, pending] = useActionState<ContactState, FormData>(sendContact, { status: "idle" });
+  // The site is static, so the form posts straight to the form service from the browser.
+  const [state, setState] = useState<ContactState>({ status: "idle" });
+  const [pending, setPending] = useState(false);
   const [clientErrors, setClientErrors] = useState<FieldErrors>({});
   const topic = useSearchParams().get("topic") ?? "";
   const formRef = useRef<HTMLFormElement>(null);
@@ -47,19 +48,23 @@ export function ContactForm({ copy }: { copy: Copy }) {
   return (
     <form
       ref={formRef}
-      action={action}
       noValidate
-      onSubmit={(e) => {
-        const parsed = contactSchema.safeParse(Object.fromEntries(new FormData(e.currentTarget)));
+      onSubmit={async (e) => {
+        e.preventDefault();
+        const form = new FormData(e.currentTarget);
+        const parsed = contactSchema.safeParse(Object.fromEntries(form));
         if (!parsed.success) {
-          e.preventDefault();
           const errs = fieldErrors(parsed.error);
           setClientErrors(errs);
           const first = Object.keys(errs)[0];
           formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
-        } else {
-          setClientErrors({});
+          return;
         }
+        setClientErrors({});
+        setPending(true);
+        const sent = await submitContact(parsed.data, String(form.get("website") ?? ""));
+        setPending(false);
+        setState({ status: sent ? "success" : "error" });
       }}
       className="grid gap-6 sm:grid-cols-2"
     >

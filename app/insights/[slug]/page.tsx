@@ -10,11 +10,11 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/motion/Reveal";
 import { Photo } from "@/components/ui/Photo";
 import { VerifiedText } from "@/components/ui/Placeholder";
-import { getInsight, getInsights, getPages, getTeamMember } from "@/lib/content";
+import { getInsight, getInsightSlugs, getInsights, getPages, getTeamMember } from "@/lib/content";
 import { absoluteUrl, pageMetadata } from "@/lib/seo";
 
 export async function generateStaticParams() {
-  return (await getInsights()).map((i) => ({ slug: i.slug }));
+  return (await getInsightSlugs()).map((slug) => ({ slug }));
 }
 
 export const dynamicParams = false;

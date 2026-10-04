@@ -8,7 +8,8 @@ export const site: SiteConfig = {
   // Public email and phone are hidden for now. To show them, add for example:
   //   email: known("founder@themetadatum.com"),  (rendered masked, never as a plain address)
   //   phone: known("+91 80737 53030"),
-  formRecipient: "founder@themetadatum.com",
+  // Contact-form enquiries go to the address registered with the Web3Forms key
+  // (NEXT_PUBLIC_WEB3FORMS_KEY), set up for founder@themetadatum.com; it never appears in the code.
   offices: [
     known({
       city: "Chennai",

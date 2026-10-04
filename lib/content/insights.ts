@@ -37,8 +37,12 @@ export interface InsightFile {
 
 const hideSamples = () => process.env.HIDE_SAMPLE_CONTENT === "1";
 
-/** Every article in content/insights, newest first. Frontmatter is validated. */
-export async function readInsights(): Promise<InsightFile[]> {
+/**
+ * Articles in content/insights, newest first. Frontmatter is validated.
+ * Samples are left out when HIDE_SAMPLE_CONTENT=1, unless `includeSamples` is set:
+ * static export still builds their (unlinked, noindex) pages.
+ */
+export async function readInsights({ includeSamples = false } = {}): Promise<InsightFile[]> {
   const files = (await readdir(DIR)).filter((f) => f.endsWith(".mdx"));
   const all = await Promise.all(
     files.map(async (file) => {
@@ -56,6 +60,6 @@ export async function readInsights(): Promise<InsightFile[]> {
     }),
   );
   return all
-    .filter((f) => !(hideSamples() && f.meta.sample))
+    .filter((f) => includeSamples || !(hideSamples() && f.meta.sample))
     .sort((a, b) => b.meta.publishedAt.localeCompare(a.meta.publishedAt));
 }
