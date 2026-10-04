@@ -3,6 +3,8 @@ import { IndustryCard } from "@/components/cards/IndustryCard";
 import { FoundationFlow } from "@/components/diagrams/FoundationFlow";
 import { ParallaxPhoto } from "@/components/motion/ParallaxPhoto";
 import { Reveal } from "@/components/motion/Reveal";
+import Image from "next/image";
+import type { CSSProperties } from "react";
 import { CapabilityStack } from "@/components/sections/CapabilityStack";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { Hero } from "@/components/sections/Hero";
@@ -55,14 +57,22 @@ export default async function Home() {
             <h2 id="trust-title" className="shrink-0 text-small font-medium text-muted lg:max-w-[16ch]">
               {home.trust.line}
             </h2>
-            <ul className="grid flex-1 grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            <ul className="flex flex-1 flex-wrap items-center gap-x-12 gap-y-8 lg:justify-around">
               {site.clientLogos.map((logo, i) => (
                 <li key={i}>
                   {logo.verified ? (
-                    // eslint-disable-next-line @next/next/no-img-element -- swap to next/image once real logos exist
-                    <img src={logo.value.src} alt={logo.value.name} width={160} height={64} className="h-14 w-full object-contain" />
+                    <Image
+                      src={logo.value.src}
+                      alt={logo.value.alt}
+                      width={logo.value.width}
+                      height={logo.value.height}
+                      // Equal visual weight: height scales with 1/√(aspect ratio), so wide wordmarks
+                      // and compact marks cover roughly the same area.
+                      style={{ "--logo-h": `${(90 / Math.sqrt(logo.value.width / logo.value.height)).toFixed(1)}px` } as CSSProperties}
+                      className="h-[calc(var(--logo-h)*0.85)] w-auto md:h-(--logo-h)"
+                    />
                   ) : (
-                    <LogoSlot label={logo.placeholder} className="h-14 w-full" />
+                    <LogoSlot label={logo.placeholder} className="h-14 w-40" />
                   )}
                 </li>
               ))}

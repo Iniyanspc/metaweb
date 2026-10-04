@@ -21,7 +21,12 @@ export const site: SiteConfig = {
   responseTime: known("two business days"),
   // Only list industries you have actually delivered in.
   industriesServed: ["Education", "Healthcare", "Logistics", "HR and workforce", "Government", "Retail"],
-  clientLogos: Array.from({ length: 6 }, () => missing("[CLIENT LOGO]")),
+  // Clients who have agreed to be shown. Files live in public/clients/.
+  clientLogos: [
+    known({ name: "Government of Tamil Nadu, State Planning Commission", src: "/clients/tn-state-planning-commission.png", alt: "Government of Tamil Nadu, State Planning Commission", width: 530, height: 93 }),
+    known({ name: "USF", src: "/clients/usf.png", alt: "USF", width: 761, height: 250 }),
+    known({ name: "Vattara", src: "/clients/vattara.png", alt: "Vattara", width: 636, height: 87 }),
+  ],
 };
 
 // When a fact is confirmed, swap missing(...) for known(...) from "@/lib/content/types",
