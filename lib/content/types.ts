@@ -282,7 +282,8 @@ export interface HomeContent {
     headline: string;
     /** The five-step flow; icon names come from components/ui/Icon. */
     steps: { label: string; pillar: Pillar; icon: string }[];
-    closing: string[];
+    /** Closing lines; `key` is the phrase within `text` shown in its pillar colour. */
+    closing: { text: string; key: string }[];
   };
   ai: { headline: string; support: string; flow: string[]; services: string[]; cta: Link; image: string };
   process: { headline: string; support: string; steps: { title: string; body: string }[]; image: string };

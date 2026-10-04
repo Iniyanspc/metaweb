@@ -79,7 +79,12 @@ export const home: HomeContent = {
       { label: "Applications", pillar: "business", icon: "code" },
       { label: "Business decisions", pillar: "business", icon: "briefcase" },
     ],
-    closing: ["Data is infrastructure.", "AI is intelligence.", "Business is the outcome."],
+    // Client wording.
+    closing: [
+      { text: "Organise your data.", key: "data" },
+      { text: "Build your AI.", key: "AI" },
+      { text: "Ace the business decisions.", key: "business decisions" },
+    ],
   },
   ai: {
     headline: "AI built on data your business can trust.",

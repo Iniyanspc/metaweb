@@ -10,7 +10,7 @@ import styles from "./FoundationFlow.module.css";
 const DOT: Record<Pillar, string> = { data: "bg-pink", ai: "bg-violet", business: "bg-ink", bridge: "bg-soma" };
 const ICON_TONE: Record<Pillar, string> = { data: "text-pink-ink", ai: "text-violet", business: "text-ink", bridge: "text-violet" };
 
-/* Closing lines: Data, AI, Business. Pink is allowed here as large display text. */
+/* Closing key phrases: data, AI, business decisions. Pink is allowed here as large display text. */
 const CLOSING_TONE = ["text-pink", "text-violet", "text-ink"];
 /** Index of the step whose arrival starts each closing line: Sources, AI and analytics, Business decisions. */
 const CLOSING_NODE = [0, 2, 4];
@@ -62,20 +62,21 @@ export function FoundationFlow({ foundation }: { foundation: HomeContent["founda
       </ol>
 
       {/* Each closing line steps in by one tab and starts as the pulse reaches its node.
-          The first word carries its pillar colour; the rest is muted. */}
+          Its key phrase carries the pillar colour; the rest is muted. */}
       <p className="mt-12 flex flex-col gap-2 font-display text-h2 md:mt-16 md:gap-3">
         {closing.map((line, i) => {
-          const space = line.indexOf(" ");
-          const word = space === -1 ? line : line.slice(0, space);
-          const rest = space === -1 ? "" : line.slice(space);
+          const at = line.text.indexOf(line.key);
+          const before = at === -1 ? line.text : line.text.slice(0, at);
+          const after = at === -1 ? "" : line.text.slice(at + line.key.length);
           return (
             <span
-              key={line}
+              key={line.text}
               style={{ "--node": CLOSING_NODE[i % CLOSING_NODE.length], paddingLeft: `${i * 1.5}em` } as CSSProperties}
-              className={cn("block", styles.closing)}
+              className={cn("block text-muted", styles.closing)}
             >
-              <span className={cn("font-semibold", CLOSING_TONE[i % CLOSING_TONE.length])}>{word}</span>
-              <span className="text-muted">{rest}</span>
+              {before}
+              {at !== -1 && <span className={cn("font-semibold", CLOSING_TONE[i % CLOSING_TONE.length])}>{line.key}</span>}
+              {after}
             </span>
           );
         })}
