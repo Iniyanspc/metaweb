@@ -10,6 +10,10 @@ import styles from "./FoundationFlow.module.css";
 const DOT: Record<Pillar, string> = { data: "bg-pink", ai: "bg-violet", business: "bg-ink", bridge: "bg-soma" };
 const ICON_TONE: Record<Pillar, string> = { data: "text-pink-ink", ai: "text-violet", business: "text-ink", bridge: "text-violet" };
 
+/* Closing lines: Data, AI, Business. Pink is allowed here as large display text. */
+const CLOSING_TONE = ["text-pink", "text-violet", "text-ink"];
+const CLOSING_ALIGN = ["md:text-left", "md:text-center", "md:text-right"];
+
 /**
  * Five numbered steps, horizontal from 1024px and vertical below, followed by
  * the closing lines. Timings live in FoundationFlow.module.css.
@@ -56,12 +60,24 @@ export function FoundationFlow({ foundation }: { foundation: HomeContent["founda
         })}
       </ol>
 
-      <p className="mt-16 font-display text-h2 md:mt-20">
-        {closing.map((line, i) => (
-          <span key={line} style={{ "--i": i } as CSSProperties} className={cn("block", styles.closing)}>
-            {line}
-          </span>
-        ))}
+      {/* Closing lines step across the page, left, centre, right, like the flow itself.
+          Each line's first word carries its pillar colour; the rest is muted. */}
+      <p className="mt-16 flex flex-col gap-1 font-display text-h2 md:mt-24 md:gap-2">
+        {closing.map((line, i) => {
+          const space = line.indexOf(" ");
+          const word = space === -1 ? line : line.slice(0, space);
+          const rest = space === -1 ? "" : line.slice(space);
+          return (
+            <span
+              key={line}
+              style={{ "--i": i } as CSSProperties}
+              className={cn("block", CLOSING_ALIGN[i % CLOSING_ALIGN.length], styles.closing)}
+            >
+              <span className={cn("font-semibold", CLOSING_TONE[i % CLOSING_TONE.length])}>{word}</span>
+              <span className="text-muted">{rest}</span>
+            </span>
+          );
+        })}
       </p>
     </div>
   );
