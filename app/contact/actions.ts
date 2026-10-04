@@ -4,7 +4,7 @@ import { site } from "@/data/site";
 import { contactSchema, fieldErrors, type ContactState } from "@/lib/contact";
 
 /** Where enquiries are delivered. Server-only; never sent to the browser. */
-const CONTACT_TO = process.env.CONTACT_TO_EMAIL ?? (site.email.verified ? site.email.value : "");
+const CONTACT_TO = process.env.CONTACT_TO_EMAIL ?? site.formRecipient;
 
 export async function sendContact(_prev: ContactState, formData: FormData): Promise<ContactState> {
   // Honeypot: real people never see or fill this field. Pretend it worked.

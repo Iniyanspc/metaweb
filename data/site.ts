@@ -5,9 +5,10 @@ export const site: SiteConfig = {
   url: known("https://themetadatum.com"),
   legalEntity: known("Metadatum Technology Private Limited"),
   tagline: "We engineer the data and intelligence behind better businesses.",
-  // Rendered masked ("founder at themetadatum.com"); never as a plain address in markup.
-  email: known("founder@themetadatum.com"),
-  phone: known("+91 80737 53030"),
+  // Public email and phone are hidden for now. To show them, add for example:
+  //   email: known("founder@themetadatum.com"),  (rendered masked, never as a plain address)
+  //   phone: known("+91 80737 53030"),
+  formRecipient: "founder@themetadatum.com",
   offices: [
     known({
       city: "Chennai",

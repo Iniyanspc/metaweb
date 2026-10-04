@@ -37,11 +37,13 @@ export async function Footer() {
         </div>
 
         <div className="mt-16 grid gap-8 border-t border-canvas/15 pt-10 text-small md:grid-cols-3">
-          <div className="flex flex-col items-start gap-2">
-            <h2 className="font-sans text-caption text-canvas/60">Contact</h2>
-            <SiteEmail site={site} />
-            <SitePhone site={site} />
-          </div>
+          {(site.email?.verified || site.phone?.verified) && (
+            <div className="flex flex-col items-start gap-2">
+              <h2 className="font-sans text-caption text-canvas/60">Contact</h2>
+              <SiteEmail site={site} />
+              <SitePhone site={site} />
+            </div>
+          )}
           <div className="flex flex-col items-start gap-2">
             <h2 className="font-sans text-caption text-canvas/60">Office</h2>
             {site.offices.map((office, i) => (

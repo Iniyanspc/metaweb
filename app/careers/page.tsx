@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function CareersPage() {
   const [{ careers: c }, roles, site, home] = await Promise.all([getPages(), getRoles(), getSite(), getHome()]);
-  const emptyText = site.email.verified ? c.roles.empty.replace("[EMAIL]", maskEmail(site.email.value)) : c.roles.empty;
+  const emptyText = site.email?.verified ? c.roles.empty.replace("[EMAIL]", maskEmail(site.email.value)) : c.roles.emptyNoEmail;
 
   return (
     <>

@@ -55,7 +55,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 sameAs: site.social.flatMap((s) => (s.url.verified ? [s.url.value] : [])),
                 ...(site.legalEntity.verified ? { legalName: site.legalEntity.value } : {}),
                 // Phone and postal address help search; the email is deliberately left out.
-                ...(site.phone.verified ? { telephone: site.phone.value.replace(/\s/g, "") } : {}),
+                ...(site.phone?.verified ? { telephone: site.phone.value.replace(/\s/g, "") } : {}),
                 ...(site.offices[0]?.verified
                   ? {
                       address: {

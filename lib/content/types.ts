@@ -42,8 +42,11 @@ export interface SiteConfig {
   url: Verified<string>;
   legalEntity: Verified<string>;
   tagline: string;
-  email: Verified<string>;
-  phone: Verified<string>;
+  /** Public email and phone. Omit to hide them site-wide. */
+  email?: Verified<string>;
+  phone?: Verified<string>;
+  /** Where contact-form enquiries are delivered. Server-only; never rendered. */
+  formRecipient: string;
   /** `address` is the full postal address, city included; `city` is for short labels. */
   offices: Verified<{ city: string; address: string }>[];
   social: { network: "linkedin" | "x" | "github" | "youtube"; url: Verified<string> }[];
@@ -363,7 +366,7 @@ export interface PagesContent {
     learning: { heading: string; body: string };
     hiring: { heading: string; steps: { title: string; body: string }[] };
     benefits: { heading: string; items: string[] };
-    roles: { heading: string; empty: string; apply: string };
+    roles: { heading: string; empty: string; emptyNoEmail: string; apply: string };
   };
   contact: PageIntro & {
     form: {
@@ -384,6 +387,7 @@ export interface PagesContent {
       errorEmail: string;
       errorRequired: string;
       errorServer: string;
+      errorServerNoEmail: string;
     };
     details: { heading: string; email: string; phone: string; offices: string; response: string };
   };

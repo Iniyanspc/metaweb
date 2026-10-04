@@ -237,6 +237,7 @@ export const pages: PagesContent = {
     roles: {
       heading: "Open positions",
       empty: "No open roles right now. Send us your profile at [EMAIL].", // copy deck
+      emptyNoEmail: "No open roles right now. Tell us about yourself through our contact page.",
       apply: "Apply for this role",
     },
   },
@@ -266,6 +267,7 @@ export const pages: PagesContent = {
       errorEmail: "Enter a work email so we can reply.", // copy deck
       errorRequired: "This field is required.",
       errorServer: "Your message didn't send. Check your connection and try again, or email us at [EMAIL].", // copy deck
+      errorServerNoEmail: "Your message didn't send. Check your connection and try again.",
     },
     details: { heading: "Other ways to reach us", email: "Email", phone: "Phone", offices: "Office", response: "We reply within" },
   },

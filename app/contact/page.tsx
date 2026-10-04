@@ -20,7 +20,7 @@ export default async function ContactPage() {
   const formCopy = {
     ...c.form,
     success: site.responseTime.verified ? c.form.success.replace("[RESPONSE TIME]", site.responseTime.value) : c.form.success,
-    errorServer: site.email.verified ? c.form.errorServer.replace("[EMAIL]", maskEmail(site.email.value)) : c.form.errorServer,
+    errorServer: site.email?.verified ? c.form.errorServer.replace("[EMAIL]", maskEmail(site.email.value)) : c.form.errorServerNoEmail,
   };
   return (
     <>
@@ -38,18 +38,22 @@ export default async function ContactPage() {
                 {c.details.heading}
               </h2>
               <dl className="mt-6 flex flex-col gap-5 text-small">
-                <div className="flex flex-col items-start gap-1">
-                  <dt className="text-caption text-muted">{c.details.email}</dt>
-                  <dd>
-                    <SiteEmail site={site} />
-                  </dd>
-                </div>
-                <div className="flex flex-col items-start gap-1">
-                  <dt className="text-caption text-muted">{c.details.phone}</dt>
-                  <dd>
-                    <SitePhone site={site} />
-                  </dd>
-                </div>
+                {site.email?.verified && (
+                  <div className="flex flex-col items-start gap-1">
+                    <dt className="text-caption text-muted">{c.details.email}</dt>
+                    <dd>
+                      <SiteEmail site={site} />
+                    </dd>
+                  </div>
+                )}
+                {site.phone?.verified && (
+                  <div className="flex flex-col items-start gap-1">
+                    <dt className="text-caption text-muted">{c.details.phone}</dt>
+                    <dd>
+                      <SitePhone site={site} />
+                    </dd>
+                  </div>
+                )}
                 <div className="flex flex-col items-start gap-1">
                   <dt className="text-caption text-muted">{c.details.offices}</dt>
                   {site.offices.map((o, i) => (
