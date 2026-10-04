@@ -72,8 +72,6 @@ export const home: HomeContent = {
   },
   foundation: {
     headline: "The foundation is data.",
-    support:
-      "Before AI, analytics or automation can create value, an organisation needs data it can rely on. That is where every engagement begins.",
     steps: [
       { label: "Sources", pillar: "data", icon: "lake" },
       { label: "Ingest and transform", pillar: "data", icon: "pipeline" },

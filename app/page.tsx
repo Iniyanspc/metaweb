@@ -34,7 +34,7 @@ export default async function Home() {
 
       {/* The foundation is data: five steps, then the closing lines */}
       <Section pillar="data" tone="mist" labelledBy="foundation-title">
-        <SectionHeader id="foundation-title" pillar="data" title={home.foundation.headline} support={home.foundation.support} />
+        <SectionHeader id="foundation-title" pillar="data" title={home.foundation.headline} className="mb-10 md:mb-14" />
         <FoundationFlow foundation={home.foundation} />
       </Section>
 

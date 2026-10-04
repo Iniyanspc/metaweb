@@ -280,7 +280,6 @@ export interface HomeContent {
   capabilities: { headline: string; support: string };
   foundation: {
     headline: string;
-    support: string;
     /** The five-step flow; icon names come from components/ui/Icon. */
     steps: { label: string; pillar: Pillar; icon: string }[];
     closing: string[];

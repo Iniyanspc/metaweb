@@ -12,7 +12,6 @@ const ICON_TONE: Record<Pillar, string> = { data: "text-pink-ink", ai: "text-vio
 
 /* Closing lines: Data, AI, Business. Pink is allowed here as large display text. */
 const CLOSING_TONE = ["text-pink", "text-violet", "text-ink"];
-const CLOSING_ALIGN = ["md:text-left", "md:text-center", "md:text-right"];
 
 /**
  * Five numbered steps, horizontal from 1024px and vertical below, followed by
@@ -60,9 +59,8 @@ export function FoundationFlow({ foundation }: { foundation: HomeContent["founda
         })}
       </ol>
 
-      {/* Closing lines step across the page, left, centre, right, like the flow itself.
-          Each line's first word carries its pillar colour; the rest is muted. */}
-      <p className="mt-16 flex flex-col gap-1 font-display text-h2 md:mt-24 md:gap-2">
+      {/* Each closing line's first word carries its pillar colour; the rest is muted. */}
+      <p className="mt-12 flex flex-col font-display text-h2 md:mt-16">
         {closing.map((line, i) => {
           const space = line.indexOf(" ");
           const word = space === -1 ? line : line.slice(0, space);
@@ -71,7 +69,7 @@ export function FoundationFlow({ foundation }: { foundation: HomeContent["founda
             <span
               key={line}
               style={{ "--i": i } as CSSProperties}
-              className={cn("block", CLOSING_ALIGN[i % CLOSING_ALIGN.length], styles.closing)}
+              className={cn("block", styles.closing)}
             >
               <span className={cn("font-semibold", CLOSING_TONE[i % CLOSING_TONE.length])}>{word}</span>
               <span className="text-muted">{rest}</span>
