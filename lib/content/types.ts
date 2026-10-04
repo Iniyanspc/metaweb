@@ -44,6 +44,7 @@ export interface SiteConfig {
   tagline: string;
   email: Verified<string>;
   phone: Verified<string>;
+  /** `address` is the full postal address, city included; `city` is for short labels. */
   offices: Verified<{ city: string; address: string }>[];
   social: { network: "linkedin" | "x" | "github" | "youtube"; url: Verified<string> }[];
   responseTime: Verified<string>;
@@ -245,7 +246,6 @@ export interface Navigation {
   primary: NavItem[];
   cta: Link;
   footer: { heading: string; links: Link[] }[];
-  legal: Link[];
 }
 
 /* ---------- Page copy ---------- */
@@ -387,6 +387,5 @@ export interface PagesContent {
     };
     details: { heading: string; email: string; phone: string; offices: string; response: string };
   };
-  legal: { privacy: PageIntro; terms: PageIntro };
   notFound: { title: string; support: string; cta: Link };
 }

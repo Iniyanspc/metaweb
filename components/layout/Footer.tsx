@@ -2,12 +2,14 @@ import { getNavigation, getSite } from "@/lib/content";
 import { LogoHorizontal } from "@/components/brand/Logo";
 import { Container } from "@/components/ui/Container";
 import { Link } from "@/components/ui/Link";
+import { SiteEmail, SitePhone } from "@/components/ui/ContactDetails";
 import { VerifiedText } from "@/components/ui/Placeholder";
 
 const SOCIAL_LABEL = { linkedin: "LinkedIn", x: "X", github: "GitHub", youtube: "YouTube" } as const;
 
 export async function Footer() {
   const [site, nav] = await Promise.all([getSite(), getNavigation()]);
+  const social = site.social.flatMap((s) => (s.url.verified ? [{ network: s.network, url: s.url.value }] : []));
   return (
     <footer className="bg-ink text-canvas [&_::selection]:bg-pink">
       <Container className="py-16 md:py-24">
@@ -37,43 +39,33 @@ export async function Footer() {
         <div className="mt-16 grid gap-8 border-t border-canvas/15 pt-10 text-small md:grid-cols-3">
           <div className="flex flex-col items-start gap-2">
             <h2 className="font-sans text-caption text-canvas/60">Contact</h2>
-            <VerifiedText field={site.email} render={(email) => <Link href={`mailto:${email}`}>{email}</Link>} />
-            <VerifiedText field={site.phone} render={(phone) => <Link href={`tel:${phone}`}>{phone}</Link>} />
+            <SiteEmail site={site} />
+            <SitePhone site={site} />
           </div>
           <div className="flex flex-col items-start gap-2">
-            <h2 className="font-sans text-caption text-canvas/60">Offices</h2>
+            <h2 className="font-sans text-caption text-canvas/60">Office</h2>
             {site.offices.map((office, i) => (
-              <VerifiedText key={i} field={office} render={(o) => `${o.city}, ${o.address}`} />
+              <VerifiedText key={i} field={office} render={(o) => <address className="max-w-[32ch] not-italic">{o.address}</address>} />
             ))}
           </div>
-          <div className="flex flex-col items-start gap-2">
-            <h2 className="font-sans text-caption text-canvas/60">Follow</h2>
-            <ul className="flex flex-wrap gap-x-4 gap-y-2">
-              {site.social.map((s) => (
-                <li key={s.network}>
-                  {s.url.verified ? (
-                    <Link href={s.url.value}>{SOCIAL_LABEL[s.network]}</Link>
-                  ) : (
-                    <span className="placeholder">{s.url.placeholder}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Social links appear once verified; the column is hidden until then. */}
+          {social.length > 0 && (
+            <div className="flex flex-col items-start gap-2">
+              <h2 className="font-sans text-caption text-canvas/60">Follow</h2>
+              <ul className="flex flex-wrap gap-x-4 gap-y-2">
+                {social.map((s) => (
+                  <li key={s.network}>
+                    <Link href={s.url}>{SOCIAL_LABEL[s.network]}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
-        <div className="mt-12 flex flex-col gap-4 text-caption text-canvas/60 md:flex-row md:items-center md:justify-between">
-          <p>
-            © {new Date().getFullYear()} <VerifiedText field={site.legalEntity} />
-          </p>
-          <ul className="flex gap-6">
-            {nav.legal.map((link) => (
-              <li key={link.href}>
-                <Link href={link.href}>{link.label}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <p className="mt-12 text-caption text-canvas/60">
+          © {new Date().getFullYear()} <VerifiedText field={site.legalEntity} />
+        </p>
       </Container>
     </footer>
   );

@@ -1,6 +1,10 @@
 "use server";
 
+import { site } from "@/data/site";
 import { contactSchema, fieldErrors, type ContactState } from "@/lib/contact";
+
+/** Where enquiries are delivered. Server-only; never sent to the browser. */
+const CONTACT_TO = process.env.CONTACT_TO_EMAIL ?? (site.email.verified ? site.email.value : "");
 
 export async function sendContact(_prev: ContactState, formData: FormData): Promise<ContactState> {
   // Honeypot: real people never see or fill this field. Pretend it worked.
@@ -10,8 +14,8 @@ export async function sendContact(_prev: ContactState, formData: FormData): Prom
   if (!parsed.success) return { status: "invalid", errors: fieldErrors(parsed.error) };
 
   try {
-    // TODO: wire to [EMAIL SERVICE] (e.g. Resend, Postmark, SES) or a CRM webhook.
-    console.info("[contact] new enquiry", { ...parsed.data, message: `${parsed.data.message.length} chars` });
+    // TODO: send via an email service (e.g. Resend, Postmark, SES) to CONTACT_TO.
+    console.info("[contact] new enquiry for", CONTACT_TO.replace("@", " at "), { ...parsed.data, message: `${parsed.data.message.length} chars` });
     return { status: "success" };
   } catch {
     return { status: "error" };

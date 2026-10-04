@@ -103,8 +103,4 @@ export const navigation: Navigation = {
       ],
     },
   ],
-  legal: [
-    { label: "Privacy", href: "/privacy" },
-    { label: "Terms", href: "/terms" },
-  ],
 };

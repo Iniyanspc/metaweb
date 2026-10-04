@@ -99,9 +99,9 @@ export default async function AboutPage() {
             <h2 className="text-h3">{a.locations.heading}</h2>
             <ul className="mt-6 flex flex-col gap-3 text-body">
               {site.offices.map((o, i) => (
-                <li key={i} className="flex items-center gap-3">
-                  <Node pillar="business" size={8} />
-                  <VerifiedText field={o} render={(v) => `${v.city}, ${v.address}`} />
+                <li key={i} className="flex items-start gap-3">
+                  <Node pillar="business" size={8} className="mt-2.5" />
+                  <VerifiedText field={o} render={(v) => <address className="not-italic">{v.address}</address>} />
                 </li>
               ))}
             </ul>

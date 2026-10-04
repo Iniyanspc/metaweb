@@ -7,7 +7,15 @@ to see what is still missing in the code.
 
 ---
 
-## 1. Company and contact (required)
+## 1. Company and contact — done (2026-10-04)
+
+Domain https://themetadatum.com · Metadatum Technology Private Limited ·
+founder at themetadatum.com (shown masked) · +91 80737 53030 ·
+S94, 2nd Floor, Phase III, Spencer Plaza Mall, Anna Road, Chennai, Tamil Nadu 600002 ·
+replies within two business days · form delivers to the founder address.
+
+<details><summary>Original questions</summary>
+
 
 | # | Item | Shown on | Your answer |
 |---|---|---|---|
@@ -18,6 +26,8 @@ to see what is still missing in the code.
 | 5 | Office(s): city and full address — one per line | Footer, about, contact | → |
 | 6 | How quickly you reply to enquiries (e.g. "two working days") | Contact page, form success message | → |
 | 7 | Where contact-form messages should go (email address) | Not shown; for wiring the form | → |
+
+</details>
 
 ## 2. Social links (optional; blanks are hidden)
 
@@ -92,12 +102,9 @@ If you have none to show yet, the products section can be hidden at launch — t
 | 40 | Benefits (up to 4, one per line) | → |
 | 41 | Open roles: title, team, location, type (full-time / contract / internship), one-line summary, link to apply | → (none is fine; the page then invites people to email you) |
 
-## 8. Legal (required before launch)
+## 8. Legal — not needed
 
-| # | Item | Your answer |
-|---|---|---|
-| 42 | Privacy policy text (from your legal adviser) | → |
-| 43 | Terms of use text | → |
+Privacy and terms pages removed at your request (2026-10-04).
 
 ---
 

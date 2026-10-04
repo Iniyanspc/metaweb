@@ -8,6 +8,7 @@ import { PlaceholderText } from "@/components/ui/PlaceholderText";
 import { Section } from "@/components/ui/Section";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { getHome, getPages, getRoles, getSite } from "@/lib/content";
+import { maskEmail } from "@/lib/email";
 import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -17,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function CareersPage() {
   const [{ careers: c }, roles, site, home] = await Promise.all([getPages(), getRoles(), getSite(), getHome()]);
-  const emptyText = site.email.verified ? c.roles.empty.replace("[EMAIL]", site.email.value) : c.roles.empty;
+  const emptyText = site.email.verified ? c.roles.empty.replace("[EMAIL]", maskEmail(site.email.value)) : c.roles.empty;
 
   return (
     <>

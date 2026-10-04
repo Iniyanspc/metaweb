@@ -267,21 +267,9 @@ export const pages: PagesContent = {
       errorRequired: "This field is required.",
       errorServer: "Your message didn't send. Check your connection and try again, or email us at [EMAIL].", // copy deck
     },
-    details: { heading: "Other ways to reach us", email: "Email", phone: "Phone", offices: "Offices", response: "Response time" },
+    details: { heading: "Other ways to reach us", email: "Email", phone: "Phone", offices: "Office", response: "We reply within" },
   },
 
-  legal: {
-    privacy: {
-      title: "Privacy policy",
-      support: "[PRIVACY POLICY — to be provided by legal counsel before launch]",
-      seo: { title: "Privacy policy", description: "How metadatum collects, uses and protects personal data." },
-    },
-    terms: {
-      title: "Terms of use",
-      support: "[TERMS OF USE — to be provided by legal counsel before launch]",
-      seo: { title: "Terms of use", description: "The terms that apply when you use the metadatum website." },
-    },
-  },
 
   notFound: {
     title: "This page isn't in the pipeline.", // copy deck

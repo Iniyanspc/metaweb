@@ -53,6 +53,21 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 logo: absoluteUrl("/brand/metadatum-mark-512.png"),
                 // sameAs only from verified social links
                 sameAs: site.social.flatMap((s) => (s.url.verified ? [s.url.value] : [])),
+                ...(site.legalEntity.verified ? { legalName: site.legalEntity.value } : {}),
+                // Phone and postal address help search; the email is deliberately left out.
+                ...(site.phone.verified ? { telephone: site.phone.value.replace(/\s/g, "") } : {}),
+                ...(site.offices[0]?.verified
+                  ? {
+                      address: {
+                        "@type": "PostalAddress",
+                        streetAddress: "S94, 2nd Floor, Phase III, Spencer Plaza Mall, Anna Road",
+                        addressLocality: site.offices[0].value.city,
+                        addressRegion: "Tamil Nadu",
+                        postalCode: "600002",
+                        addressCountry: "IN",
+                      },
+                    }
+                  : {}),
               },
               { "@type": "WebSite", name: "metadatum", url: siteUrl },
             ],
