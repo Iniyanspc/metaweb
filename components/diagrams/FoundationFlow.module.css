@@ -1,9 +1,9 @@
 /* Homepage foundation flow. One timeline, started when the section scrolls in:
    the pulse reaches a new node every --step (5 nodes, so the trip is 4 steps),
-   each node's icon pops as the pulse arrives, and the closing lines rise
-   alongside it: each one lands as the pulse reaches nodes 3, 4 and 5, so
-   "Business is the outcome." arrives with the pulse at Business decisions and
-   the whole sequence ends together. Change --step to retime everything.
+   each node's icon pops as the pulse arrives, and each closing line starts
+   rising as the pulse reaches its node (--node: Sources for Data, AI and
+   analytics for AI, Business decisions for Business). Change --step to
+   retime everything.
    Hidden start states apply only with scripting on and motion allowed. */
 
 .root {
@@ -22,7 +22,7 @@
   .played .pulse { animation: travel-y var(--trip) linear both; }
   .played .icon { animation: pop 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both; animation-delay: calc(var(--i) * var(--step)); }
   .played .dot { animation: light 400ms var(--ease-out) both; animation-delay: calc(var(--i) * var(--step)); }
-  .played .closing { animation: rise var(--rise) var(--ease-out) both; animation-delay: calc((var(--i) + 2) * var(--step) - var(--rise)); }
+  .played .closing { animation: rise var(--rise) var(--ease-out) both; animation-delay: calc(var(--node) * var(--step)); }
 
   @media (min-width: 1024px) {
     .played .pulse { animation-name: travel-x; }
