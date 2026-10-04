@@ -1,10 +1,6 @@
 import type { HomeContent } from "@/lib/content/types";
-import { capabilities } from "./capabilities";
 
-/** Homepage copy, verbatim from docs/04-copy-deck.md. */
-
-const dataEngineering = capabilities.find((c) => c.slug === "data-engineering");
-if (!dataEngineering?.detail?.architecture) throw new Error("data-engineering architecture missing");
+/** Homepage copy, verbatim from docs/04-copy-deck.md unless noted. */
 
 export const home: HomeContent = {
   hero: {
@@ -78,7 +74,13 @@ export const home: HomeContent = {
     headline: "The foundation is data.",
     support:
       "Before AI, analytics or automation can create value, an organisation needs data it can rely on. That is where every engagement begins.",
-    flow: dataEngineering.detail.architecture,
+    steps: [
+      { label: "Sources", pillar: "data", icon: "lake" },
+      { label: "Ingest and transform", pillar: "data", icon: "pipeline" },
+      { label: "AI and analytics", pillar: "ai", icon: "model" },
+      { label: "Applications", pillar: "business", icon: "code" },
+      { label: "Business decisions", pillar: "business", icon: "briefcase" },
+    ],
     closing: ["Data is infrastructure.", "AI is intelligence.", "Business is the outcome."],
   },
   ai: {

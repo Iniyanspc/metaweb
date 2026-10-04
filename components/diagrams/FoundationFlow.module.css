@@ -1,0 +1,57 @@
+/* Homepage foundation flow. One timeline, started when the section scrolls in:
+   the pulse reaches a new node every --step (5 nodes, so the trip is 4 steps),
+   each node's icon pops as the pulse arrives, then the closing lines rise one
+   after another. Change --step to retime everything.
+   Hidden start states apply only with scripting on and motion allowed. */
+
+.root {
+  --step: 800ms;
+  --trip: calc(var(--step) * 4);
+}
+
+.pulse { opacity: 0; }
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .root:not(.played) .icon,
+  .root:not(.played) .closing { opacity: 0; }
+  .root:not(.played) .dot { opacity: 0.35; transform: scale(0.6); }
+
+  .played .pulse { animation: travel-y var(--trip) linear both; }
+  .played .icon { animation: pop 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both; animation-delay: calc(var(--i) * var(--step)); }
+  .played .dot { animation: light 400ms var(--ease-out) both; animation-delay: calc(var(--i) * var(--step)); }
+  .played .closing { animation: rise 700ms var(--ease-out) both; animation-delay: calc(var(--trip) + var(--i) * 360ms); }
+
+  @media (min-width: 1024px) {
+    .played .pulse { animation-name: travel-x; }
+  }
+}
+
+@keyframes pop {
+  0% { opacity: 0; transform: translateY(10px) scale(0.4); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes light {
+  from { opacity: 0.35; transform: scale(0.6); }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(16px); }
+}
+/* Pink through the data steps, violet from AI and analytics, ink from Applications. */
+@keyframes travel-x {
+  0% { left: 0%; opacity: 1; background: var(--color-pink); }
+  49% { background: var(--color-pink); }
+  50% { background: var(--color-violet); }
+  74% { background: var(--color-violet); }
+  75% { background: var(--color-ink); }
+  98% { opacity: 1; }
+  100% { left: 100%; opacity: 0; background: var(--color-ink); }
+}
+@keyframes travel-y {
+  0% { top: 0%; opacity: 1; background: var(--color-pink); }
+  49% { background: var(--color-pink); }
+  50% { background: var(--color-violet); }
+  74% { background: var(--color-violet); }
+  75% { background: var(--color-ink); }
+  98% { opacity: 1; }
+  100% { top: 100%; opacity: 0; background: var(--color-ink); }
+}

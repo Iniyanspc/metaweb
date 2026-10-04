@@ -1,6 +1,6 @@
 import { CaseStudyCard } from "@/components/cards/CaseStudyCard";
 import { IndustryCard } from "@/components/cards/IndustryCard";
-import { ArchitectureFlow } from "@/components/diagrams/ArchitectureFlow";
+import { FoundationFlow } from "@/components/diagrams/FoundationFlow";
 import { ParallaxPhoto } from "@/components/motion/ParallaxPhoto";
 import { Reveal } from "@/components/motion/Reveal";
 import { CapabilityStack } from "@/components/sections/CapabilityStack";
@@ -12,18 +12,16 @@ import { LogoSlot } from "@/components/ui/Placeholder";
 import { Section } from "@/components/ui/Section";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Tag } from "@/components/ui/Tag";
-import { getCapabilities, getCaseStudies, getHome, getIndustries, getPages, getSite, getTechnologies } from "@/lib/content";
+import { getCapabilities, getCaseStudies, getHome, getIndustries, getPages, getSite } from "@/lib/content";
 import type { Pillar } from "@/lib/content/types";
-import { flowNodes } from "@/lib/content/resolve";
 
 export default async function Home() {
-  const [home, site, capabilities, industries, caseStudies, technologies, pages] = await Promise.all([
+  const [home, site, capabilities, industries, caseStudies, pages] = await Promise.all([
     getHome(),
     getSite(),
     getCapabilities(),
     getIndustries(),
     getCaseStudies(),
-    getTechnologies(),
     getPages(),
   ]);
   const pillarLabels = Object.fromEntries(pages.solutions.pillars.map((p) => [p.pillar, p.heading])) as Record<Pillar, string>;
@@ -34,17 +32,10 @@ export default async function Home() {
     <>
       <Hero hero={home.hero} />
 
-      {/* The foundation is data — kept exactly as approved */}
+      {/* The foundation is data: five steps, then the closing lines */}
       <Section pillar="data" tone="mist" labelledBy="foundation-title">
         <SectionHeader id="foundation-title" pillar="data" title={home.foundation.headline} support={home.foundation.support} />
-        <ArchitectureFlow nodes={flowNodes(home.foundation.flow, technologies)} label="From sources to business outcomes" />
-        <p className="mt-12 font-display text-h2 lg:mt-4">
-          {home.foundation.closing.map((line) => (
-            <span key={line} className="block">
-              {line}
-            </span>
-          ))}
-        </p>
+        <FoundationFlow foundation={home.foundation} />
       </Section>
 
       {/* The knowledge graph: one full screen, page-wide, with white space above and below */}

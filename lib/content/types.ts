@@ -281,7 +281,8 @@ export interface HomeContent {
   foundation: {
     headline: string;
     support: string;
-    flow: ArchitectureDiagram;
+    /** The five-step flow; icon names come from components/ui/Icon. */
+    steps: { label: string; pillar: Pillar; icon: string }[];
     closing: string[];
   };
   ai: { headline: string; support: string; flow: string[]; services: string[]; cta: Link; image: string };
