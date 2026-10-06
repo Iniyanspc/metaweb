@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { TeamMemberCard } from "@/components/cards/TeamMemberCard";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { Container } from "@/components/ui/Container";
@@ -13,6 +14,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function TeamPage() {
   const [{ team: page }, team, home] = await Promise.all([getPages(), getTeam(), getHome()]);
+  // Nothing published yet: the section stays off the live site (see lib/publish.ts).
+  if (team.length === 0) notFound();
   // Groups with no members are hidden, not shown empty.
   const groups = page.groupOrder.map((g) => ({ group: g, members: team.filter((m) => m.group === g) })).filter((g) => g.members.length);
 

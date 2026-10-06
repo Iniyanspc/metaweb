@@ -2,6 +2,7 @@
  * The only module pages import content from. Swap `source` for a CMS adapter
  * that implements ContentSource; pages and components don't change.
  */
+import { isPublished } from "@/lib/publish";
 import { readInsights } from "./insights";
 import { staticSource } from "./source/static";
 import type {
@@ -40,12 +41,28 @@ const source: ContentSource = staticSource;
 export const getSite = () => source.getSite();
 export const getHome = () => source.getHome();
 export const getPages = () => source.getPages();
-export const getNavigation = () => source.getNavigation();
+/** Navigation with links to unpublished sections removed. */
+export async function getNavigation() {
+  const [nav, hidden] = await Promise.all([source.getNavigation(), getHiddenRoutes()]);
+  const keep = (href: string) => !hidden.has(href.replace(/[?#].*$/, ""));
+  return {
+    ...nav,
+    primary: nav.primary
+      .filter((item) => keep(item.href))
+      .map((item) =>
+        item.menu
+          ? { ...item, menu: { ...item.menu, columns: item.menu.columns.map((c) => ({ ...c, links: c.links.filter((l) => keep(l.href)) })) } }
+          : item,
+      ),
+    footer: nav.footer.map((col) => ({ ...col, links: col.links.filter((l) => keep(l.href)) })).filter((col) => col.links.length > 0),
+  };
+}
 export const getCapabilities = () => source.getCapabilities();
 export const getIndustries = () => source.getIndustries();
 export const getOtherIndustriesLine = () => source.getOtherIndustriesLine();
-export const getProducts = () => source.getProducts();
-export const getTeam = () => source.getTeam();
+/* Collections return published items only; drafts stay in data/ (see lib/publish.ts). */
+export const getProducts = async () => (await source.getProducts()).filter(isPublished);
+export const getTeam = async () => (await source.getTeam()).filter(isPublished);
 export const getTechnologies = () => source.getTechnologies();
 export const getTechPhilosophy = () => source.getTechPhilosophy();
 export const getRoles = () => source.getRoles();
@@ -59,15 +76,21 @@ export async function getIndustry(slug: string) {
 }
 
 export async function getCaseStudies(filter: { industry?: string; capability?: string } = {}) {
-  return (await source.getCaseStudies()).filter(
+  return (await source.getCaseStudies()).filter(isPublished).filter(
     (cs) =>
       (!filter.industry || cs.industry === filter.industry) &&
       (!filter.capability || cs.capabilities.includes(filter.capability)),
   );
 }
 
+/** A case study by slug, drafts included; pages check isPublished themselves. */
 export async function getCaseStudy(slug: string) {
   return (await source.getCaseStudies()).find((cs) => cs.slug === slug);
+}
+
+/** Every case-study slug that gets a route, drafts included (static export needs at least one). */
+export async function getCaseStudySlugs() {
+  return (await source.getCaseStudies()).map((cs) => cs.slug);
 }
 
 /* ---------- Insights (MDX) ---------- */
@@ -86,5 +109,22 @@ export async function getInsightSlugs() {
 }
 
 export async function getTeamMember(id: string) {
-  return (await source.getTeam()).find((m) => m.id === id);
+  return (await getTeam()).find((m) => m.id === id);
+}
+
+/** Which optional sections have anything published. Drives pages, menus, footer and sitemap. */
+export async function getPublishedSections() {
+  const [caseStudies, team, products, insights] = await Promise.all([getCaseStudies(), getTeam(), getProducts(), getInsights()]);
+  return { caseStudies: caseStudies.length > 0, team: team.length > 0, products: products.length > 0, insights: insights.length > 0 };
+}
+
+/** Section routes to drop from navigation while they have nothing published. */
+export async function getHiddenRoutes() {
+  const s = await getPublishedSections();
+  return new Set([
+    ...(s.caseStudies ? [] : ["/case-studies"]),
+    ...(s.team ? [] : ["/team"]),
+    ...(s.products ? [] : ["/products"]),
+    ...(s.insights ? [] : ["/insights"]),
+  ]);
 }

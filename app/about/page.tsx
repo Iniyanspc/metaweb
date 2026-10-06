@@ -10,6 +10,7 @@ import { PlaceholderText } from "@/components/ui/PlaceholderText";
 import { Section } from "@/components/ui/Section";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { getHome, getPages, getSite, getTeam } from "@/lib/content";
+import { isReady } from "@/lib/publish";
 import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -20,6 +21,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function AboutPage() {
   const [{ about: a }, home, site, team] = await Promise.all([getPages(), getHome(), getSite(), getTeam()]);
   const leadership = team.filter((m) => m.group === "Leadership").slice(0, 4);
+  // Blocks with unfilled [PLACEHOLDERS] stay off the live site until filled (see lib/publish.ts).
+  const showMission = isReady(a.mission.body);
+  const milestones = a.timeline.entries.filter((e) => isReady(e.year) && isReady(e.text));
 
   return (
     <>
@@ -49,12 +53,14 @@ export default async function AboutPage() {
             </span>
           ))}
         </p>
+        {showMission && (
         <div className="mt-16 grid gap-6 border-t border-line pt-10 lg:grid-cols-12 lg:gap-x-(--gutter)">
           <h2 className="text-h3 lg:col-span-4">{a.mission.heading}</h2>
           <p className="text-body-lg lg:col-span-8">
             <PlaceholderText text={a.mission.body} />
           </p>
         </div>
+        )}
       </Section>
 
       <Section reveal pillar="business" labelledBy="approach-title">
@@ -76,13 +82,14 @@ export default async function AboutPage() {
 
       <Section reveal pillar="business" labelledBy="timeline-title">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-x-(--gutter)">
+          {milestones.length > 0 && (
           <div className="lg:col-span-7">
             <h2 id="timeline-title" className="text-h2">
               {a.timeline.heading}
             </h2>
             <ol className="relative mt-10 flex flex-col gap-8 pl-10">
               <span aria-hidden className="absolute top-2 bottom-2 left-[7px] w-0.5 bg-ink/15" />
-              {a.timeline.entries.map((e, i) => (
+              {milestones.map((e, i) => (
                 <li key={i} className="relative">
                   <span aria-hidden className="absolute top-1 -left-10 size-4 rounded-full bg-ink ring-4 ring-canvas" />
                   <p className="text-caption text-muted">
@@ -95,8 +102,9 @@ export default async function AboutPage() {
               ))}
             </ol>
           </div>
-          <div className="lg:col-span-4 lg:col-start-9">
-            <h2 className="text-h3">{a.locations.heading}</h2>
+          )}
+          <div className={milestones.length > 0 ? "lg:col-span-4 lg:col-start-9" : "lg:col-span-12"}>
+            <h2 id={milestones.length > 0 ? undefined : "timeline-title"} className="text-h3">{a.locations.heading}</h2>
             <ul className="mt-6 flex flex-col gap-3 text-body">
               {site.offices.map((o, i) => (
                 <li key={i} className="flex items-start gap-3">
@@ -121,7 +129,9 @@ export default async function AboutPage() {
         </ul>
       </Section>
 
-      <Section reveal pillar="business" labelledBy="leaders-title">
+      <Section reveal pillar="business" labelledBy={leadership.length > 0 ? "leaders-title" : "careers-title"}>
+        {leadership.length > 0 && (
+        <>
         <SectionHeader
           id="leaders-title"
           title={a.leadership.heading}
@@ -134,9 +144,11 @@ export default async function AboutPage() {
             </li>
           ))}
         </ul>
-        <div className="mt-20 flex flex-col gap-6 rounded-card border border-line p-8 md:flex-row md:items-center md:justify-between md:p-12">
+        </>
+        )}
+        <div className={`${leadership.length > 0 ? "mt-20 " : ""}flex flex-col gap-6 rounded-card border border-line p-8 md:flex-row md:items-center md:justify-between md:p-12`}>
           <div>
-            <h2 className="text-h3">{a.careers.heading}</h2>
+            <h2 id="careers-title" className="text-h3">{a.careers.heading}</h2>
             <p className="mt-3 text-body text-muted">{a.careers.body}</p>
           </div>
           <Button href={a.careers.cta.href} variant="secondary" className="self-start md:self-auto">

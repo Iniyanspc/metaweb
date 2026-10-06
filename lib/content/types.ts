@@ -110,6 +110,8 @@ export type ProductCategory =
 
 export interface Product {
   slug: Slug;
+  /** Shown on the live site. Leave false while drafting (see lib/publish.ts). */
+  published: boolean;
   name: Verified<string>;
   category: ProductCategory;
   problem: Verified<string>;
@@ -131,6 +133,8 @@ export interface Metric {
 
 export interface CaseStudy {
   slug: Slug;
+  /** Shown on the live site. Leave false while drafting (see lib/publish.ts). */
+  published: boolean;
   client: Verified<string>;
   clientLogo?: Verified<Image>;
   industry: Slug;
@@ -158,6 +162,8 @@ export type TeamGroup =
 
 export interface TeamMember {
   id: string;
+  /** Shown on the live site. Leave false while drafting (see lib/publish.ts). */
+  published: boolean;
   name: Verified<string>;
   role: Verified<string>;
   group: TeamGroup;
@@ -200,7 +206,10 @@ export interface Insight {
   /** Photo key from lib/images.ts. */
   image?: string;
   featured?: boolean;
-  sample?: boolean; // sample content — excluded from sitemap; hidden when HIDE_SAMPLE_CONTENT=1
+  /** Draft or sample article: kept out of the live site (see lib/publish.ts). */
+  sample?: boolean;
+  /** Set false to hold an article back. */
+  published?: boolean;
 }
 
 /* ---------- Careers ---------- */

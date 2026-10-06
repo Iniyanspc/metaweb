@@ -9,6 +9,7 @@ import { Section } from "@/components/ui/Section";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { getHome, getPages, getRoles, getSite } from "@/lib/content";
 import { maskEmail } from "@/lib/email";
+import { isReady } from "@/lib/publish";
 import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -18,6 +19,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function CareersPage() {
   const [{ careers: c }, roles, site, home] = await Promise.all([getPages(), getRoles(), getSite(), getHome()]);
+  // Blocks with unfilled [PLACEHOLDERS] stay off the live site until filled (see lib/publish.ts).
+  const showLearning = isReady(c.learning.body);
+  const benefits = c.benefits.items.filter(isReady);
   const emptyText = site.email?.verified ? c.roles.empty.replace("[EMAIL]", maskEmail(site.email.value)) : c.roles.emptyNoEmail;
 
   return (
@@ -60,12 +64,14 @@ export default async function CareersPage() {
               ))}
             </div>
           </div>
+          {showLearning && (
           <div>
             <h2 className="text-h3">{c.learning.heading}</h2>
             <p className="mt-5 text-body">
               <PlaceholderText text={c.learning.body} />
             </p>
           </div>
+          )}
         </div>
       </Section>
 
@@ -74,18 +80,20 @@ export default async function CareersPage() {
         <ProcessTimeline steps={c.hiring.steps} label={c.hiring.heading} compact />
       </Section>
 
+      {benefits.length > 0 && (
       <Section reveal pillar="business" tone="mist" labelledBy="benefits-title">
         <h2 id="benefits-title" className="text-h3">
           {c.benefits.heading}
         </h2>
         <ul className="mt-6 flex flex-wrap gap-3">
-          {c.benefits.items.map((b, i) => (
+          {benefits.map((b, i) => (
             <li key={i}>
               <PlaceholderText text={b} />
             </li>
           ))}
         </ul>
       </Section>
+      )}
 
       <Section reveal id="roles" pillar="business" labelledBy="roles-title" className="scroll-mt-(--nav-height)">
         <SectionHeader id="roles-title" title={c.roles.heading} />

@@ -32,10 +32,27 @@ All copy lives in `data/` (homepage in `data/home.ts`, other pages in
 logos live in `public/clients/`. Fields typed `missing("[…]")` show as a
 visible placeholder until replaced with `known(…)`.
 
+## Drafts and publishing
+
+Unfinished content stays in the repo but off the live site (`lib/publish.ts`):
+
+- **Case studies, team members, products:** each item has `published: true/false`
+  in `data/`. **Articles** in `content/insights/` publish unless their frontmatter
+  says `sample: true` or `published: false`.
+- A section with nothing published disappears from its page, the menus, the
+  footer and the sitemap, and its address returns 404.
+- Single text blocks (about: mission, timeline; careers: learning, benefits)
+  stay hidden while they contain a `[PLACEHOLDER]`; fill them in to show them.
+- Preview everything, drafts included: `SHOW_DRAFTS=1 pnpm dev`
+  (also enables the internal `/_styleguide`).
+
+To publish: fill in the content, set `published: true`, push.
+
 ## Static hosting constraints
 
 The site has no server at runtime, so: no server actions or API routes (the
 contact form posts to Web3Forms from the browser), no image optimiser (photos
 are served as stored), and every dynamic route needs `generateStaticParams`.
-`scripts/static-fixups.mjs` runs after `next build` to give generated preview
-images a `.png` extension so GitHub Pages serves the right content type.
+`scripts/static-fixups.mjs` runs after `next build`: it removes routes for
+unpublished sections (so they 404) and gives generated preview images a `.png`
+extension so GitHub Pages serves the right content type.

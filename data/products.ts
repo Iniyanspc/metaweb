@@ -4,6 +4,7 @@ import { missing, type Product } from "@/lib/content/types";
 export const products: Product[] = [
   {
     slug: "product-1",
+    published: false, // fill in, then set true
     name: missing("[PRODUCT NAME]"),
     category: "HRMS",
     problem: missing("[PROBLEM SOLVED]"),

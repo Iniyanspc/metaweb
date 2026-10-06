@@ -35,8 +35,6 @@ jobs:
         run: pnpm build
         env:
           NEXT_PUBLIC_WEB3FORMS_KEY: ${{ vars.NEXT_PUBLIC_WEB3FORMS_KEY }}
-          # Sample article stays out of the live site.
-          HIDE_SAMPLE_CONTENT: "1"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: out

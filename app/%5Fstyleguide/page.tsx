@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { showDrafts } from "@/lib/publish";
 import type { ReactNode } from "react";
 import { LogoHorizontal, LogoStacked, Mark, type LogoTone, type MarkVariant } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/Button";
@@ -92,6 +94,8 @@ const states = ["default", "hover", "focus", "disabled"] as const;
 const force = (s: (typeof states)[number]) => (s === "hover" || s === "focus" ? s : undefined);
 
 export default function Styleguide() {
+  // Internal reference: available when previewing drafts, never on the live site.
+  if (!showDrafts) notFound();
   return (
     <>
       <Container className="pt-16 pb-8">

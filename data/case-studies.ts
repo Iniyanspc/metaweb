@@ -8,6 +8,7 @@ import { missing, type CaseStudy } from "@/lib/content/types";
 export const caseStudies: CaseStudy[] = [
   {
     slug: "case-study-template",
+    published: false, // template: fill in, then set true
     client: missing("[CLIENT NAME]"),
     clientLogo: missing("[CLIENT LOGO]"),
     industry: "healthcare",

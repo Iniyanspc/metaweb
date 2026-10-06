@@ -11,12 +11,13 @@ import { Photo } from "@/components/ui/Photo";
 import { PageHero } from "@/components/ui/PageHero";
 import { PlaceholderText } from "@/components/ui/PlaceholderText";
 import { Tag } from "@/components/ui/Tag";
-import { getCapabilities, getCaseStudies, getCaseStudy, getHome, getIndustries, getPages, getTechnologies } from "@/lib/content";
+import { getCapabilities, getCaseStudy, getCaseStudySlugs, getHome, getIndustries, getPages, getTechnologies } from "@/lib/content";
 import { flowNodes, techNames } from "@/lib/content/resolve";
+import { isPublished } from "@/lib/publish";
 import { pageMetadata } from "@/lib/seo";
 
 export async function generateStaticParams() {
-  return (await getCaseStudies()).map((s) => ({ slug: s.slug }));
+  return (await getCaseStudySlugs()).map((slug) => ({ slug }));
 }
 
 export const dynamicParams = false;
@@ -52,7 +53,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/case-studies
     getTechnologies(),
     getHome(),
   ]);
-  if (!study) notFound();
+  if (!study || !isPublished(study)) notFound();
   const industry = industries.find((i) => i.slug === study.industry);
   const caps = capabilities.filter((c) => study.capabilities.includes(c.slug));
   const techs = techNames(study.architecture.technologies, technologies);

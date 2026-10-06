@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { InsightCard } from "@/components/cards/InsightCard";
 import { CategoryFilter } from "@/components/sections/CategoryFilter";
@@ -16,6 +17,8 @@ const GRID = "grid gap-(--gutter) md:grid-cols-2 lg:grid-cols-3";
 
 export default async function InsightsPage() {
   const [{ insights: page }, insights] = await Promise.all([getPages(), getInsights()]);
+  // Nothing published yet: the section stays off the live site (see lib/publish.ts).
+  if (insights.length === 0) notFound();
   const featured = insights.find((i) => i.featured);
   const categories = [...new Set(insights.map((i) => i.category))];
   // The featured article leads the unfiltered view; filtered views list everything matching.

@@ -11,6 +11,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Photo } from "@/components/ui/Photo";
 import { VerifiedText } from "@/components/ui/Placeholder";
 import { getInsight, getInsightSlugs, getInsights, getPages, getTeamMember } from "@/lib/content";
+import { isInsightLive } from "@/lib/content/insights";
 import { absoluteUrl, pageMetadata } from "@/lib/seo";
 
 export async function generateStaticParams() {
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: PageProps<"/insights/[slug]">
 export default async function InsightPage({ params }: PageProps<"/insights/[slug]">) {
   const { slug } = await params;
   const [file, all, { insights: labels }] = await Promise.all([getInsight(slug), getInsights(), getPages()]);
-  if (!file) notFound();
+  if (!file || !isInsightLive(file.meta)) notFound();
   const { meta, body } = file;
   const author = await getTeamMember(meta.author);
   const { content } = await compileMDX({

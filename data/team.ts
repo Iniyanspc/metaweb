@@ -1,8 +1,9 @@
 import { missing, type TeamMember } from "@/lib/content/types";
 
-/** Add people here. Groups with no members are hidden on /team. */
+/** Add people here; set published: true once their details are real. Groups with no published members are hidden. */
 const placeholderPerson = (id: string, group: TeamMember["group"], order: number): TeamMember => ({
   id,
+  published: false,
   name: missing("[TEAM MEMBER NAME]"),
   role: missing("[ROLE]"),
   group,

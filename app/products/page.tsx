@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ProductCard } from "@/components/cards/ProductCard";
 import { CategoryFilter } from "@/components/sections/CategoryFilter";
@@ -18,6 +19,8 @@ const GRID = "grid gap-(--gutter) md:grid-cols-2 lg:grid-cols-3";
 
 export default async function ProductsPage() {
   const [{ products: page }, products, home] = await Promise.all([getPages(), getProducts(), getHome()]);
+  // Nothing published yet: the section stays off the live site (see lib/publish.ts).
+  if (products.length === 0) notFound();
   const categories = [...new Set(products.map((p) => p.category))];
   const items = products.map((p) => ({ key: p.slug, category: p.category, node: <ProductCard product={p} /> }));
   const anyReal = products.some((p) => p.name.verified);

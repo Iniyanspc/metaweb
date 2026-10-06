@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { CaseStudyCard } from "@/components/cards/CaseStudyCard";
 import { FinalCta } from "@/components/sections/FinalCta";
 import { Container } from "@/components/ui/Container";
@@ -13,6 +14,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function CaseStudiesPage() {
   const [{ caseStudies: page }, studies, industries, home] = await Promise.all([getPages(), getCaseStudies(), getIndustries(), getHome()]);
+  // Nothing published yet: the section stays off the live site (see lib/publish.ts).
+  if (studies.length === 0) notFound();
   const [feature, ...rest] = [...studies].sort((a, b) => Number(b.featured ?? false) - Number(a.featured ?? false));
   const industryOf = (slug: string) => industries.find((i) => i.slug === slug);
 
