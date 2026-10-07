@@ -33,7 +33,6 @@ export default async function CaseStudiesPage() {
             ))}
           </ul>
         )}
-        <p className="mt-10 text-body text-muted">{page.empty}</p>
       </Container>
       <FinalCta {...home.finalCta} />
     </>

@@ -49,7 +49,6 @@ export const pages: PagesContent = {
     technologies: "Technologies we work with",
     industries: "Where we apply it",
     caseStudies: "Related case studies",
-    noCaseStudies: "Case studies for this work are being written up with our clients' approval.",
   },
 
   industries: {
@@ -71,7 +70,6 @@ export const pages: PagesContent = {
     aiOpportunities: "Where AI helps",
     solutions: "What we build",
     caseStudies: "Relevant case studies",
-    noCaseStudies: "Case studies in this sector are being written up with our clients' approval.",
   },
 
   products: {
@@ -91,7 +89,6 @@ export const pages: PagesContent = {
       title: "Case studies",
       description: "How metadatum engineers data platforms, AI systems and custom software, and what changed for each client's business.",
     },
-    empty: "More case studies are being written up with our clients' approval.",
   },
 
   caseStudyTemplate: {

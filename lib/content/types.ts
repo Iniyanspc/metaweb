@@ -300,7 +300,7 @@ export interface HomeContent {
   process: { headline: string; support: string; steps: { title: string; body: string }[]; image: string };
   industries: { headline: string; support: string; cta: Link; otherCta: Link };
   products: { headline: string; support: string; empty: string };
-  caseStudies: { headline: string; support: string; cta: Link; more: string };
+  caseStudies: { headline: string; support: string; cta: Link };
   technology: { headline: string; support: string; note: string; cta: Link };
   team: { headline: string; support: string; cta: Link };
   insights: { headline: string; cta: Link; empty: string };
@@ -330,7 +330,6 @@ export interface PagesContent {
     technologies: string;
     industries: string;
     caseStudies: string;
-    noCaseStudies: string;
   };
   industries: PageIntro & { otherHeading: string; otherCta: Link };
   industryTemplate: {
@@ -339,10 +338,9 @@ export interface PagesContent {
     aiOpportunities: string;
     solutions: string;
     caseStudies: string;
-    noCaseStudies: string;
   };
   products: PageIntro & { allLabel: string };
-  caseStudies: PageIntro & { empty: string };
+  caseStudies: PageIntro;
   caseStudyTemplate: {
     client: string;
     industry: string;

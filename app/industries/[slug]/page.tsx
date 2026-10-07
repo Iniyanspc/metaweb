@@ -92,11 +92,12 @@ export default async function IndustryPage({ params }: PageProps<"/industries/[s
         </ul>
       </Section>
 
-      <Section reveal pillar="business" tone="mist" labelledBy="cases-title">
-        <h2 id="cases-title" className="text-h2">
-          {t.caseStudies}
-        </h2>
-        {studies.length ? (
+      {/* Relevant case studies appear once one is published (BACKLOG.md). */}
+      {studies.length > 0 && (
+        <Section reveal pillar="business" tone="mist" labelledBy="cases-title">
+          <h2 id="cases-title" className="text-h2">
+            {t.caseStudies}
+          </h2>
           <ul className="mt-10 grid gap-(--gutter) md:grid-cols-2">
             {studies.map((s) => (
               <li key={s.slug}>
@@ -104,10 +105,8 @@ export default async function IndustryPage({ params }: PageProps<"/industries/[s
               </li>
             ))}
           </ul>
-        ) : (
-          <p className="mt-6 text-body text-muted">{t.noCaseStudies}</p>
-        )}
-      </Section>
+        </Section>
+      )}
 
       <FinalCta {...home.finalCta} />
     </>

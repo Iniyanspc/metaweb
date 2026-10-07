@@ -14,7 +14,8 @@ Last updated: 2026-10-07.
 
 | Item | File | What's needed | To publish |
 |---|---|---|---|
-| Case study (template) | `data/case-studies.ts` | Real client (or anonymous), challenge, approach, delivery, outcome, 2 verifiable results, date, client approval | Fill in, set `published: true`. Restores the homepage "Work that shipped." section, the Case studies page and menu link, and related case studies on solution/industry pages |
+| Case study (template) | `data/case-studies.ts` | Real client (or anonymous), challenge, approach, delivery, outcome, 2 verifiable results, date, **client approval to publish** | Fill in, set `published: true`. Restores the homepage "Work that shipped." section, the Case studies page and menu link, "Related case studies" on the solution pages and "Relevant case studies" on the industry pages |
+| "Case studies are being written up with our clients' approval" note | Removed 2026-10-07 | Decide whether to show a note like this while case studies are pending | Not needed once a case study is published |
 | Team: 3 leadership entries | `data/team.ts` | Name, role, two-sentence bio, experience, LinkedIn, square portrait (≥800px) per person | Fill in, set `published: true` per person. Restores the Team page, About leadership section and About-menu link; articles can then credit authors |
 | Product | `data/products.ts` | Name, category, problem solved, target customer, status, screenshot (16:10, ≥1600px) | Fill in, set `published: true`. Restores the Products page and menu link |
 | About: company timeline | `data/pages.ts` → `about.timeline` | Three milestones: year and event | Replace the `[YEAR]` / `[MILESTONE]` text; each entry appears once filled |

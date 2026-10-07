@@ -120,9 +120,10 @@ export default async function SolutionPage({ params }: PageProps<"/solutions/[sl
 
       <Section reveal pillar="business" tone="mist" labelledBy="related-title">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-x-(--gutter)">
-          <div className="lg:col-span-4">
-            <h2 className="text-h3">{t.industries}</h2>
-            <ul className="mt-6 flex flex-col gap-3">
+          {/* Alone (no published case studies), the industries run as a row across the section. */}
+          <div className={studies.length > 0 ? "lg:col-span-4" : "lg:col-span-12"}>
+            <h2 id="related-title" className="text-h3">{t.industries}</h2>
+            <ul className={studies.length > 0 ? "mt-6 flex flex-col gap-3" : "mt-6 flex flex-wrap gap-x-10 gap-y-3"}>
               {industries
                 .filter((i) => i.hasPage)
                 .map((i) => (
@@ -134,11 +135,10 @@ export default async function SolutionPage({ params }: PageProps<"/solutions/[sl
                 ))}
             </ul>
           </div>
-          <div className="lg:col-span-7 lg:col-start-6">
-            <h2 id="related-title" className="text-h3">
-              {t.caseStudies}
-            </h2>
-            {studies.length ? (
+          {/* Related case studies appear once one is published (BACKLOG.md). */}
+          {studies.length > 0 && (
+            <div className="lg:col-span-7 lg:col-start-6">
+              <h2 className="text-h3">{t.caseStudies}</h2>
               <ul className="mt-6 grid gap-(--gutter)">
                 {studies.slice(0, 2).map((s) => (
                   <li key={s.slug}>
@@ -146,10 +146,8 @@ export default async function SolutionPage({ params }: PageProps<"/solutions/[sl
                   </li>
                 ))}
               </ul>
-            ) : (
-              <p className="mt-6 text-body text-muted">{t.noCaseStudies}</p>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </Section>
 

@@ -124,7 +124,6 @@ export const home: HomeContent = {
     headline: "Work that shipped.",
     support: "What was broken, what we built, and what changed.",
     cta: { label: "See all case studies", href: "/case-studies" },
-    more: "More case studies are being written up with our clients' approval.",
   },
   technology: {
     headline: "The right tool, not the fashionable one.",
