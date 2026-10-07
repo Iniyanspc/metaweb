@@ -46,7 +46,8 @@ Unfinished content stays in the repo but off the live site (`lib/publish.ts`):
 - Preview everything, drafts included: `SHOW_DRAFTS=1 pnpm dev`
   (also enables the internal `/_styleguide`).
 
-To publish: fill in the content, set `published: true`, push.
+To publish: fill in the content, set `published: true`, push. Everything
+waiting to be filled, reviewed or set up is tracked in **BACKLOG.md**.
 
 ## Static hosting constraints
 

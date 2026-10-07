@@ -8,8 +8,9 @@ import type { PagesContent } from "@/lib/content/types";
  */
 export const pages: PagesContent = {
   solutions: {
-    title: "Data is infrastructure. AI is intelligence. Business is the outcome.",
-    titleLines: ["Data is infrastructure.", "AI is intelligence.", "Business is the outcome."], // copy deck
+    title: "Organise your data. Build your AI. Ace the business decisions.",
+    // Client wording, matching the homepage foundation section.
+    titleLines: ["Organise your data.", "Build your AI.", "Ace the business decisions."],
     support:
       "Three disciplines, one team, one architecture. We take you from business problem to running system without handing you between vendors.", // copy deck
     image: "hero-team",
@@ -120,10 +121,11 @@ export const pages: PagesContent = {
         "We build the foundation first, then the intelligence on top, then the products people actually use. And we stay to run them.",
       ],
     },
-    beliefs: { heading: "What we believe", lines: ["Data is infrastructure.", "AI is intelligence.", "Business is the outcome."] }, // copy deck
+    beliefs: { heading: "What we help you do", lines: ["Organise your data.", "Build your AI.", "Ace the business decisions."] }, // client wording
     mission: {
       heading: "Our mission",
-      body: "[MISSION STATEMENT — draft: Make reliable data and useful AI available to every organisation that needs it, not only the largest.]", // copy deck
+      // Drafted copy, published for launch; review it in BACKLOG.md.
+      body: "Make reliable data and useful AI available to every organisation that needs it, not only the largest.",
     },
     approach: { heading: "How we work", support: "Seven steps, from the first conversation to a system that keeps improving." },
     philosophy: {
@@ -194,6 +196,7 @@ export const pages: PagesContent = {
     empty: "No articles in this category yet.",
     related: "Related articles",
     by: "Written by",
+    teamByline: "The metadatum team",
   },
 
   careers: {

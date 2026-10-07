@@ -200,7 +200,8 @@ export interface Insight {
   title: string;
   excerpt: string;
   category: InsightCategory;
-  author: Slug; // TeamMember.id
+  /** TeamMember.id; omit (or point at an unpublished member) to credit the team. */
+  author?: Slug;
   publishedAt: string; // ISO
   readingMinutes: number; // computed at build
   /** Photo key from lib/images.ts. */
@@ -366,7 +367,7 @@ export interface PagesContent {
   };
   team: PageIntro & { groupOrder: TeamGroup[] };
   technology: PageIntro & { note: string };
-  insights: PageIntro & { allLabel: string; featuredLabel: string; empty: string; related: string; by: string };
+  insights: PageIntro & { allLabel: string; featuredLabel: string; empty: string; related: string; by: string; teamByline: string };
   careers: PageIntro & {
     why: { heading: string; points: { title: string; body: string }[] };
     culture: { heading: string; body: string[] };

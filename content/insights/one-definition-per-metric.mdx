@@ -1,0 +1,35 @@
+---
+title: "One definition per metric: why your dashboards disagree"
+excerpt: "When two reports show different revenue for the same month, the problem is rarely the maths. It is that the business never agreed what the number means."
+category: "Business intelligence"
+publishedAt: "2026-10-07"
+image: "cap-analytics"
+---
+
+Every growing organisation reaches the meeting where two people bring two different numbers for the same thing. Revenue, active customers, on-time delivery. Both reports are "right", because each calculates the figure its own way. The meeting turns into a debate about the data instead of a decision.
+
+## Where the differences come from
+
+- **Different filters.** One report excludes refunds, another doesn't. One counts trial users, another only paying ones.
+- **Different timing.** Orders counted when placed in one place and when invoiced in another.
+- **Different sources.** Finance reads from the ledger, sales from the CRM, and the two never quite reconcile.
+- **Logic copied by hand.** The same calculation rebuilt in five dashboards, each drifting a little as people fix things locally.
+
+## A semantic layer: define it once
+
+A semantic layer is a single place where each metric is defined, in code, with its filters, timing and source. Every dashboard, spreadsheet and AI assistant reads the metric from there instead of recalculating it.
+
+| Without one | With one |
+|---|---|
+| Each report computes revenue its own way | Revenue is defined once and reused |
+| Fixes are made in one dashboard at a time | A fix in the definition reaches every report |
+| Nobody knows which number is official | The definition is the official number |
+
+## Getting started
+
+1. **Pick the ten metrics leadership argues about most.** Start there, not with everything.
+2. **Agree the definition in writing,** with the people who own each number, before writing any code.
+3. **Encode it once** in the semantic layer, with tests that check known results.
+4. **Point the most-used dashboards at it** and retire the copies.
+
+The goal isn't a perfect catalogue. It's that the next time a number is questioned, the answer is a definition everyone already agreed, not another spreadsheet.

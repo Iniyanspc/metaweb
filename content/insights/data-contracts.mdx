@@ -1,18 +1,12 @@
 ---
 title: "Data contracts: stop upstream changes breaking everything downstream"
-excerpt: "A data contract is a promise between the team that produces data and the teams that depend on it. Here is how we put them in place without slowing anyone down."
+excerpt: "A data contract is a promise between the team that produces data and the teams that depend on it. Here is how to put them in place without slowing anyone down."
 category: "Data engineering"
-author: "leader-1"
-publishedAt: "2026-10-01"
+publishedAt: "2026-10-07"
 image: "cap-data-engineering"
-sample: true
 ---
 
-<Callout title="Article template">
-Writing template: copy this file, change the frontmatter, and remove `sample: true`. It shows the layout for headings, tables, callouts and code. It never appears on the live site.
-</Callout>
-
-Most pipeline failures we're called in to fix don't start in the pipeline. They start upstream, when a source system renames a column, changes a type, or starts sending nulls where there never were any. Nothing tells the data team until a dashboard is wrong.
+Most pipeline failures don't start in the pipeline. They start upstream, when a source system renames a column, changes a type, or starts sending nulls where there never were any. Nothing tells the data team until a dashboard is wrong, and by then the people relying on it have stopped trusting the numbers.
 
 ## What a data contract is
 
@@ -25,7 +19,7 @@ A data contract is an agreement, written down and enforced in code, about the sh
 | Freshness | How late data may arrive | Monitoring and alerts |
 | Ownership | Who to call when it breaks | The contract itself |
 
-## How we put them in place
+## How to put them in place
 
 1. Start with the three datasets that break most often, not all of them.
 2. Write the contract with the producing team, in their terms.
@@ -46,6 +40,10 @@ class Order(BaseModel):
 def validate(rows: list[dict]) -> list[Order]:
     return [Order(**row) for row in rows]
 ```
+
+## Keep the contract alive
+
+A contract nobody updates is worse than none, because people believe it. Store contracts next to the code that produces the data, review changes like any other pull request, and version them, so a breaking change becomes a new version that consumers move to on their own schedule.
 
 ## What changes
 

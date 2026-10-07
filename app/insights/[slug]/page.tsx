@@ -35,7 +35,7 @@ export default async function InsightPage({ params }: PageProps<"/insights/[slug
   const [file, all, { insights: labels }] = await Promise.all([getInsight(slug), getInsights(), getPages()]);
   if (!file || !isInsightLive(file.meta)) notFound();
   const { meta, body } = file;
-  const author = await getTeamMember(meta.author);
+  const author = meta.author ? await getTeamMember(meta.author) : undefined;
   const { content } = await compileMDX({
     source: body,
     components: mdxComponents,
@@ -76,18 +76,21 @@ export default async function InsightPage({ params }: PageProps<"/insights/[slug
             </p>
             <h1 className="mt-5 text-h1">{meta.title}</h1>
             <p className="mt-6 text-body-lg text-muted">{meta.excerpt}</p>
-            {author && (
-              <p className="mt-8 flex items-center gap-3 text-small">
-                <span aria-hidden className="block size-10 rounded-full bg-mist" />
-                <span>
-                  <span className="sr-only">{labels.by} </span>
-                  <VerifiedText field={author.name} />
+            {/* A published team member, or the team when the author isn't public yet. */}
+            <p className="mt-8 flex items-center gap-3 text-small">
+              <span aria-hidden className="grid size-10 place-items-center rounded-full bg-mist">
+                <span className="size-2.5 rounded-full bg-pink" />
+              </span>
+              <span>
+                <span className="sr-only">{labels.by} </span>
+                {author ? <VerifiedText field={author.name} /> : labels.teamByline}
+                {author && (
                   <span className="block text-caption text-muted">
                     <VerifiedText field={author.role} />
                   </span>
-                </span>
-              </p>
-            )}
+                )}
+              </span>
+            </p>
           </header>
           <Reveal variant="image" className="relative mx-auto mt-12 aspect-[21/9] max-w-5xl rounded-media">
             <Photo name={meta.image} sizes="(min-width: 1024px) 1024px, 100vw" priority />

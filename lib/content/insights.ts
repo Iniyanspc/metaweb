@@ -24,7 +24,7 @@ const frontmatter = z.object({
   title: z.string(),
   excerpt: z.string(),
   category: z.enum(INSIGHT_CATEGORIES),
-  author: z.string(),
+  author: z.string().optional(),
   publishedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}/),
   featured: z.boolean().optional(),
   sample: z.boolean().optional(),
@@ -57,7 +57,7 @@ export async function readInsights({ includeSamples = false } = {}): Promise<Ins
       const meta: Insight = {
         ...parsed.data,
         slug: file.replace(/\.mdx$/, ""),
-        readingMinutes: Math.max(1, Math.round(words / WORDS_PER_MINUTE)),
+        readingMinutes: Math.max(1, Math.ceil(words / WORDS_PER_MINUTE)),
       };
       return { meta, body: content };
     }),

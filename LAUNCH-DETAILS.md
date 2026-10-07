@@ -1,5 +1,8 @@
 # metadatum — details needed before launch
 
+> Status of every item (published, held back as a draft, or to review) is in
+> **BACKLOG.md**. This sheet keeps the fill-in questions.
+
 Fill in each blank after the arrow and send this file back. Leave a line
 blank if you don't have it yet; anything left blank either stays hidden or
 shows a visible placeholder, as noted. Run `pnpm placeholders` at any time

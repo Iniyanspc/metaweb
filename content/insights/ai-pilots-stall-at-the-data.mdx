@@ -1,0 +1,34 @@
+---
+title: "Why AI pilots stall at the data, not the model"
+excerpt: "A pilot that dazzles in a demo often falters in production. The reason is rarely the model. It is the data underneath it, and that is fixable."
+category: "AI"
+publishedAt: "2026-10-07"
+featured: true
+image: "cap-ai-screen"
+---
+
+The pattern is familiar. A team builds an AI pilot on a carefully prepared sample. The demo goes well. Then the pilot meets the real systems, the real documents and the real edge cases, and the answers get worse. Confidence drops, and the project quietly stalls.
+
+The model is usually fine. What changed is the data.
+
+## Four ways the data lets the model down
+
+**It isn't the data the business actually runs on.** Pilots are built on exports and cleaned samples. Production means live systems with duplicates, gaps and fields that mean different things in different places.
+
+**Nobody owns it.** When an answer is wrong, there is no one to ask whether the source was wrong, stale or misread. Without ownership, every error becomes an argument about the AI.
+
+**It goes stale.** Retrieval and reporting both depend on how fresh the underlying data is. A knowledge base that was accurate in March can be confidently wrong by June.
+
+**Access rules weren't designed in.** A pilot often runs with broad access. In production, people should only see answers drawn from data they are allowed to see, and retrofitting that is hard.
+
+## What to do before scaling a pilot
+
+1. **Name the sources.** List every system the AI reads from and who owns each one.
+2. **Measure quality where it matters.** Check completeness, duplication and freshness on the fields the AI actually uses, not on everything.
+3. **Build the pipeline, not a one-off load.** The data the AI reads should arrive the same way, on a schedule, every time.
+4. **Carry permissions through.** Make access control part of retrieval from the start.
+5. **Evaluate against real questions.** Keep a set of questions with known good answers and run it on every change.
+
+## The order matters
+
+AI is only as good as the data beneath it. Teams that put the foundation in place first spend less time defending their answers and more time using them. The model is the easy part to change later. The data foundation is what lasts.
